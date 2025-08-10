@@ -1,6 +1,3 @@
-import { ref, push } from "firebase/database";
-import { database } from "../firebase/config"; // Fixed import path
-
 /**
  * Advanced Scoring Matrix
  * Based on word length and board number
@@ -156,33 +153,6 @@ export const getScoringDescription = (boardNumber) => {
     return "⚡ Second Board - High Points!";
   } else {
     return `📊 Board ${boardNum} - Standard Points`;
-  }
-};
-
-/**
- * Save the user's score to Firebase Realtime Database.
- * @param {Object} user - The authenticated user object from Firebase.
- * @param {number} score - The user's score to save.
- */
-export const saveScoreToDatabase = (user, score) => {
-  if (user) {
-    const scoreData = {
-      userId: user.uid,
-      displayName: user.displayName,
-      score,
-      timestamp: new Date().toISOString(),
-    };
-
-    const userScoresRef = ref(database, `scores/${user.uid}`);
-    push(userScoresRef, scoreData)
-      .then(() => {
-        console.log("Score saved successfully!");
-      })
-      .catch((error) => {
-        console.error("Error saving score:", error);
-      });
-  } else {
-    console.error("User not authenticated. Cannot save score.");
   }
 };
 

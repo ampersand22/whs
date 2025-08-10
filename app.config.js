@@ -2,8 +2,8 @@ import 'dotenv/config';
 
 export default {
   expo: {
-    name: "word_test",
-    slug: "word_test",
+    name: "Worzzle",
+    slug: "worzzle",
     version: "1.0.0",
     orientation: "portrait",
     icon: "./assets/icon.png",
@@ -12,7 +12,7 @@ export default {
     splash: {
       image: "./assets/splash-icon.png",
       resizeMode: "contain",
-      backgroundColor: "#ffffff"
+      backgroundColor: "#6B46C1"
     },
     ios: {
       supportsTablet: true
@@ -20,7 +20,7 @@ export default {
     android: {
       adaptiveIcon: {
         foregroundImage: "./assets/adaptive-icon.png",
-        backgroundColor: "#ffffff"
+        backgroundColor: "#6B46C1"
       },
       edgeToEdgeEnabled: true
     },

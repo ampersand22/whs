@@ -10,8 +10,9 @@ import {
 } from "react-native";
 import { Surface } from "react-native-paper";
 import { isValidWord } from "../utils/WordList";
+import { getResponsiveDimensions, isTablet } from "../utils/responsive";
 
-const screenWidth = Dimensions.get("window").width;
+const { width: screenWidth } = Dimensions.get("window");
 
 export default function LetterGrid({ board, onWordFormed, previewWord, setPreviewWord, foundWords, setIsTouching }) {
   const [selectedCells, setSelectedCells] = useState([]);
@@ -185,11 +186,12 @@ export default function LetterGrid({ board, onWordFormed, previewWord, setPrevie
         onTouchEnd={handleTouchEnd}
         style={{
           width: "100%",
+          maxWidth: getResponsiveDimensions().gridMaxWidth,
           aspectRatio: 1,
           flexDirection: "column",
           alignSelf: "center",
           marginVertical: 4,
-          padding: 2,
+          padding: getResponsiveDimensions().gridPadding / 4,
         }}
       >
         {board.map((rowArr, row) => (
@@ -211,22 +213,25 @@ export default function LetterGrid({ board, onWordFormed, previewWord, setPrevie
                 backgroundColor = flashColor; // Green or red for flashing
               }
               
+              const dimensions = getResponsiveDimensions();
+              
               return (
                 <Surface
                   key={`${row}-${col}`}
                   style={{
                     flex: 1,
-                    margin: 2,
+                    margin: isTablet() ? 3 : 2,
                     backgroundColor: backgroundColor,
                     justifyContent: "center",
                     alignItems: "center",
-                    borderRadius: 6,
+                    borderRadius: isTablet() ? 8 : 6,
                     elevation: 4,
+                    minHeight: isTablet() ? 60 : 50,
                   }}
                 >
                   <Text
                     style={{
-                      fontSize: 24,
+                      fontSize: dimensions.letterFontSize,
                       fontWeight: "bold",
                       color: isSelected ? "white" : "#333",
                     }}

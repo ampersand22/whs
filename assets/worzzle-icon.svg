@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+  <!-- Purple background -->
+  <rect width="1024" height="1024" fill="#6B46C1" rx="180"/>
+  
+  <!-- White Worzzle text -->
+  <text x="512" y="580" font-family="Arial, sans-serif" font-size="140" font-weight="bold" 
+        text-anchor="middle" fill="white">Worzzle</text>
+  
+  <!-- Decorative elements -->
+  <circle cx="200" cy="250" r="8" fill="white" opacity="0.6"/>
+  <circle cx="824" cy="200" r="6" fill="white" opacity="0.4"/>
+  <circle cx="150" cy="800" r="10" fill="white" opacity="0.5"/>
+  <circle cx="874" cy="824" r="7" fill="white" opacity="0.6"/>
+  
+  <!-- Letter grid pattern -->
+  <g opacity="0.2" stroke="white" stroke-width="2" fill="none">
+    <rect x="300" y="200" width="40" height="40"/>
+    <rect x="350" y="200" width="40" height="40"/>
+    <rect x="400" y="200" width="40" height="40"/>
+    <rect x="300" y="250" width="40" height="40"/>
+    <rect x="350" y="250" width="40" height="40"/>
+    <rect x="400" y="250" width="40" height="40"/>
+  </g>
+</svg>

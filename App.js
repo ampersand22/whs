@@ -1,17 +1,21 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { PaperProvider, MD3LightTheme } from "react-native-paper";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { StatusBar } from "expo-status-bar";
-import { View, Text } from "react-native";
+import { View, Text, Dimensions } from "react-native";
 
 // Screens
 import StartScreen from "./src/screens/StartScreen";
 import GameScreen from "./src/screens/GameScreen";
+import ProfileScreen from "./src/screens/ProfileScreen";
 
 // Store
 import useUserStore from "./src/stores/userStore";
+
+// Responsive utilities
+import { isTablet } from "./src/utils/responsive";
 
 const theme = {
   ...MD3LightTheme,
@@ -26,10 +30,20 @@ const Stack = createStackNavigator();
 
 function AppNavigator() {
   const { initialize, isLoading } = useUserStore();
+  const [screenData, setScreenData] = useState(Dimensions.get('window'));
 
   // Initialize the user store when app starts
   useEffect(() => {
     initialize();
+  }, []);
+
+  // Handle orientation changes
+  useEffect(() => {
+    const subscription = Dimensions.addEventListener('change', ({ window }) => {
+      setScreenData(window);
+    });
+
+    return () => subscription?.remove();
   }, []);
 
   // Show loading screen while initializing
@@ -78,6 +92,13 @@ function AppNavigator() {
           component={GameScreen}
           options={{
             title: "Game",
+          }}
+        />
+        <Stack.Screen
+          name="Profile"
+          component={ProfileScreen}
+          options={{
+            title: "Profile",
           }}
         />
       </Stack.Navigator>

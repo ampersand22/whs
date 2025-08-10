@@ -1,5 +1,5 @@
 {
-  "name": "word_test",
+  "name": "worzzle",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
@@ -15,6 +15,7 @@
     "@supabase/supabase-js": "^2.52.1",
     "dotenv": "^17.2.1",
     "expo": "~53.0.20",
+    "expo-ads-admob": "^13.0.0",
     "expo-constants": "^17.1.7",
     "expo-status-bar": "~2.2.3",
     "react": "19.0.0",
