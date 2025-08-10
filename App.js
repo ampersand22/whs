@@ -17,6 +17,9 @@ import useUserStore from "./src/stores/userStore";
 // Responsive utilities
 import { isTablet } from "./src/utils/responsive";
 
+// Ad Manager
+import AdManager from "./src/components/AdManager";
+
 const theme = {
   ...MD3LightTheme,
   colors: {
@@ -32,9 +35,10 @@ function AppNavigator() {
   const { initialize, isLoading } = useUserStore();
   const [screenData, setScreenData] = useState(Dimensions.get('window'));
 
-  // Initialize the user store when app starts
+  // Initialize the user store and ads when app starts
   useEffect(() => {
     initialize();
+    AdManager.initialize();
   }, []);
 
   // Handle orientation changes

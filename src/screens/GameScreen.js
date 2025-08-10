@@ -18,6 +18,7 @@ import WordPreview from '../components/WordPreview';
 import GameControls from '../components/GameControls';
 import GameOverScreen from '../components/GameOverScreen';
 import GameMenuModal from '../modals/GameMenuModal';
+import AdManager, { BannerAd } from '../components/AdManager';
 
 // Utils
 import { getResponsiveDimensions } from '../utils/responsive';
@@ -79,13 +80,21 @@ function GameScreen() {
     setMenuModalVisible(false);
   };
 
-  const handleRestartGame = () => {
+  const handleRestartGame = async () => {
     setMenuModalVisible(false);
+    
+    // Show interstitial ad before restarting
+    await AdManager.showInterstitialAd();
+    
     gameLogic.restartGame();
   };
 
-  const handleBackToMenu = () => {
+  const handleBackToMenu = async () => {
     setMenuModalVisible(false);
+    
+    // Show interstitial ad before going back to menu
+    await AdManager.showInterstitialAd();
+    
     goBackToStart();
   };
 
@@ -98,8 +107,16 @@ function GameScreen() {
         score={gameLogic.score}
         foundWords={gameLogic.foundWords}
         isNewHighScore={gameLogic.isNewHighScore}
-        onPlayAgain={gameLogic.restartGame}
-        onBackToStart={goBackToStart}
+        onPlayAgain={async () => {
+          // Show interstitial ad before playing again
+          await AdManager.showInterstitialAd();
+          gameLogic.restartGame();
+        }}
+        onBackToStart={async () => {
+          // Show interstitial ad before going back to start
+          await AdManager.showInterstitialAd();
+          goBackToStart();
+        }}
       />
     );
   }
@@ -141,6 +158,9 @@ function GameScreen() {
                 resetCount={gameLogic.resetCount}
               />
             </View>
+
+            {/* Banner Ad at top */}
+            <BannerAd style={{ marginTop: 10 }} />
 
             {/* Main Game Area */}
             <View
@@ -189,6 +209,9 @@ function GameScreen() {
                 onShowMenu={handleShowMenu}
               />
             </View>
+
+            {/* Banner Ad at bottom */}
+            <BannerAd style={{ marginBottom: 10 }} />
           </View>
         </SafeAreaView>
       </ImageBackground>

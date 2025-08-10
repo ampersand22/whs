@@ -27,6 +27,16 @@ export default {
     web: {
       favicon: "./assets/favicon.png"
     },
+    plugins: [
+      "expo-dev-client",
+      [
+        "react-native-google-mobile-ads",
+        {
+          androidAppId: "ca-app-pub-3940256099942544~3347511713", // Test ID - replace with your real ID
+          iosAppId: "ca-app-pub-3940256099942544~1458002511", // Test ID - replace with your real ID
+        }
+      ]
+    ],
     extra: {
       supabaseUrl: process.env.SUPABASE_URL,
       supabaseAnonKey: process.env.SUPABASE_ANON_KEY,

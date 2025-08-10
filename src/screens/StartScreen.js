@@ -8,6 +8,7 @@ import LeaderboardModal from "../modals/LeaderboardModal";
 import UnauthenticatedView from "../components/UnauthenticatedView";
 import AuthenticatedView from "../components/AuthenticatedView";
 import AuthDialogs from "../components/AuthDialogs";
+import { BannerAd } from "../components/AdManager";
 import { getResponsiveDimensions, isTablet } from "../utils/responsive";
 
 const StartScreen = ({ navigation }) => {
@@ -187,7 +188,6 @@ const StartScreen = ({ navigation }) => {
               <UnauthenticatedView
                 onSignUp={handleShowSignUp}
                 onSignIn={handleShowSignIn}
-                onHowToPlay={handleShowHowToPlay}
               />
             ) : (
               <AuthenticatedView
@@ -202,6 +202,9 @@ const StartScreen = ({ navigation }) => {
             )}
           </View>
         </ScrollView>
+
+        {/* Banner Ad at bottom */}
+        <BannerAd style={{ marginBottom: 10 }} />
 
         {/* All Authentication Dialogs */}
         <AuthDialogs
