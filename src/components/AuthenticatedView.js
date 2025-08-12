@@ -1,17 +1,26 @@
 import React, { useState } from "react";
-import { View } from "react-native";
-import { Card, Title, Paragraph, Button, Text } from "react-native-paper";
+import { View, StyleSheet } from "react-native";
+import {
+  Card,
+  Title,
+  Paragraph,
+  Button,
+  Text,
+  Avatar,
+  Chip,
+} from "react-native-paper";
+import { LinearGradient } from "expo-linear-gradient";
 import Logo from "./Logo";
 import MenuModal from "./MenuModal";
 
-const AuthenticatedView = ({ 
+const AuthenticatedView = ({
   userData,
   user,
   onPlayGame,
   onShowLeaderboard,
   onEditProfile,
   onHowToPlay,
-  onSignOut
+  onSignOut,
 }) => {
   const [menuVisible, setMenuVisible] = useState(false);
 
@@ -24,49 +33,76 @@ const AuthenticatedView = ({
       <Logo size="medium" marginBottom={20} />
 
       {/* Welcome Card */}
-      <Card style={{ marginBottom: 20, elevation: 4 }} data-testid="welcome-card">
-        <Card.Content>
-          <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
-            <View style={{ flex: 1 }}>
-              <Title 
-                data-testid="welcome-title"
-                style={{ 
-                  fontSize: 20, 
-                  fontWeight: '600',
-                  marginBottom: 4
-                }}
-              >
-                Welcome back, {userData?.display_name || user?.email?.split("@")[0]}!
-              </Title>
-              <Paragraph 
-                data-testid="user-stats"
-                style={{
-                  fontSize: 16,
-                  color: '#666'
-                }}
-              >
-                High Score: {userData?.high_score || 0}
-              </Paragraph>
+      <Card style={styles.welcomeCard} data-testid="welcome-card">
+        <LinearGradient
+          colors={["#667eea", "#764ba2"]}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={styles.gradientBackground}
+        >
+          <Card.Content style={styles.cardContent}>
+            <View style={styles.welcomeHeader}>
+              <Avatar.Icon
+                size={50}
+                icon="account-circle"
+                style={styles.avatar}
+                color="#fff"
+              />
+              <View style={styles.welcomeText}>
+                <Title data-testid="welcome-title" style={styles.welcomeTitle}>
+                  Welcome back! 👋
+                </Title>
+                <Text style={styles.userName}>
+                  {userData?.display_name || user?.email?.split("@")[0]}
+                </Text>
+              </View>
             </View>
-          </View>
-        </Card.Content>
+
+            <View style={styles.statsContainer}>
+              <View style={styles.statItem}>
+                <Text style={styles.statLabel}>🏆 High Score</Text>
+                <Text style={styles.statValue} data-testid="user-stats">
+                  {userData?.high_score || 0}
+                </Text>
+              </View>
+
+              <View style={styles.statItem}>
+                <Text style={styles.statLabel}>🎮 Games Played</Text>
+                <Text style={styles.statValue}>
+                  {userData?.total_games_played || 0}
+                </Text>
+              </View>
+
+              {userData?.total_stars > 0 && (
+                <View style={styles.statItem}>
+                  <Text style={styles.statLabel}>⭐ Stars</Text>
+                  <Text style={styles.statValue}>
+                    {userData?.total_stars}
+                  </Text>
+                </View>
+              )}
+            </View>
+          </Card.Content>
+        </LinearGradient>
       </Card>
 
       {/* Game Actions */}
       <View style={{ marginBottom: 20 }} data-testid="game-actions">
         {/* Play Game and How to Play buttons side by side */}
-        <View style={{ 
-          flexDirection: 'row', 
-          justifyContent: 'space-between', 
-          marginBottom: 20,
-          gap: 10
-        }}>
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            marginBottom: 20,
+            gap: 10,
+          }}
+        >
           <Button
             mode="contained"
             onPress={onPlayGame}
-            style={{ 
+            style={{
               flex: 1,
-              height: 48 
+              height: 48,
             }}
             contentStyle={{ height: 48 }}
             labelStyle={{ fontSize: 16 }}
@@ -78,9 +114,9 @@ const AuthenticatedView = ({
           <Button
             mode="contained"
             onPress={onHowToPlay}
-            style={{ 
+            style={{
               flex: 1,
-              height: 48 
+              height: 48,
             }}
             contentStyle={{ height: 48 }}
             labelStyle={{ fontSize: 16 }}
@@ -94,13 +130,13 @@ const AuthenticatedView = ({
         <Button
           mode="outlined"
           onPress={showMenu}
-          style={{ 
+          style={{
             height: 48,
-            borderColor: 'white',
-            backgroundColor: 'transparent'
+            borderColor: "white",
+            backgroundColor: "transparent",
           }}
           contentStyle={{ height: 48 }}
-          labelStyle={{ fontSize: 16, color: 'white' }}
+          labelStyle={{ fontSize: 16, color: "white" }}
           data-testid="menu-button"
         >
           Menu
@@ -117,21 +153,95 @@ const AuthenticatedView = ({
       />
 
       {/* Copyright Footer */}
-      <View style={{
-        marginTop: 'auto',
-        paddingTop: 20,
-        alignItems: 'center'
-      }}>
-        <Text style={{
-          fontSize: 12,
-          color: 'rgba(255, 255, 255, 0.7)',
-          textAlign: 'center'
-        }}>
+      <View
+        style={{
+          marginTop: "auto",
+          paddingTop: 20,
+          alignItems: "center",
+        }}
+      >
+        <Text
+          style={{
+            fontSize: 12,
+            color: "rgba(255, 255, 255, 0.7)",
+            textAlign: "center",
+          }}
+        >
           © 2025 UA Interactive
         </Text>
       </View>
     </>
   );
 };
+
+const styles = StyleSheet.create({
+  welcomeCard: {
+    marginBottom: 20,
+    elevation: 8,
+    borderRadius: 16,
+    overflow: "hidden",
+  },
+  gradientBackground: {
+    borderRadius: 16,
+  },
+  cardContent: {
+    padding: 20,
+  },
+  welcomeHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 20,
+  },
+  avatar: {
+    backgroundColor: "rgba(255, 255, 255, 0.2)",
+    marginRight: 15,
+  },
+  welcomeText: {
+    flex: 1,
+  },
+  welcomeTitle: {
+    fontSize: 22,
+    fontWeight: "bold",
+    color: "#fff",
+    marginBottom: 4,
+  },
+  userName: {
+    fontSize: 16,
+    color: "rgba(255, 255, 255, 0.9)",
+    fontWeight: "500",
+  },
+  statsContainer: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    marginBottom: 16,
+    backgroundColor: "rgba(255, 255, 255, 0.1)",
+    borderRadius: 12,
+    padding: 16,
+  },
+  statItem: {
+    alignItems: "center",
+    flex: 1,
+  },
+  statLabel: {
+    fontSize: 12,
+    color: "rgba(255, 255, 255, 0.8)",
+    marginBottom: 4,
+    textAlign: "center",
+  },
+  statValue: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#fff",
+  },
+  motivationChip: {
+    alignSelf: "center",
+    backgroundColor: "rgba(255, 255, 255, 0.2)",
+    borderColor: "rgba(255, 255, 255, 0.3)",
+  },
+  chipText: {
+    color: "#fff",
+    fontWeight: "500",
+  },
+});
 
 export default AuthenticatedView;

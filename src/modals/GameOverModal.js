@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Modal, View, Animated } from "react-native";
+import { Modal, View, Animated, ScrollView } from "react-native";
 import { 
   Text, 
   Button, 
@@ -8,26 +8,26 @@ import {
   Card, 
   Title, 
   Paragraph,
-  Avatar,
-  Badge
 } from "react-native-paper";
-import useUserStore from "../stores/userStore";
 
 export default function GameOverModal({
   visible,
   onClose,
   score,
-  highScore,
+  foundWords,
   isNewHighScore,
-  onSignIn,
+  onPlayAgain,
   onBackToStart,
 }) {
   const scaleAnim = useRef(new Animated.Value(0.8)).current;
   const opacityAnim = useRef(new Animated.Value(0)).current;
-  const { isAuthenticated, userStats } = useUserStore();
 
   useEffect(() => {
+    console.log('GameOverModal visibility changed:', visible);
+    console.log('GameOverModal props:', { score, foundWords: foundWords?.length, isNewHighScore });
+    
     if (visible) {
+      console.log('GameOverModal: Starting animation');
       // Animate modal appearance
       Animated.parallel([
         Animated.timing(scaleAnim, {
@@ -42,6 +42,7 @@ export default function GameOverModal({
         }),
       ]).start();
     } else {
+      console.log('GameOverModal: Resetting animation');
       // Reset animation values
       scaleAnim.setValue(0.8);
       opacityAnim.setValue(0);
@@ -49,15 +50,11 @@ export default function GameOverModal({
   }, [visible]);
 
   const handlePlayAgain = () => {
-    onClose();
+    onPlayAgain();
   };
 
   const handleBackToMenu = () => {
-    if (onBackToStart) {
-      onBackToStart();
-    } else {
-      onClose();
-    }
+    onBackToStart();
   };
 
   return (
@@ -65,7 +62,10 @@ export default function GameOverModal({
       visible={visible}
       transparent={true}
       animationType="fade"
-      onRequestClose={onClose}
+      onRequestClose={() => {
+        // Prevent modal from being dismissed by back button or gestures
+        // Users must use Play Again or Back to Menu buttons
+      }}
     >
       <View
         style={{
@@ -136,70 +136,87 @@ export default function GameOverModal({
                 </Text>
               </Surface>
 
-              {/* High Score Info */}
-              {isAuthenticated && (
-                <View style={{ width: "100%", marginBottom: 20 }}>
-                  {isNewHighScore ? (
-                    <Surface
-                      style={{
-                        backgroundColor: "#4CAF50",
-                        padding: 15,
-                        borderRadius: 10,
-                        alignItems: "center",
-                      }}
-                    >
-                      <Text
-                        style={{
-                          color: "white",
-                          fontSize: 18,
-                          fontWeight: "bold",
-                        }}
-                      >
-                        🎉 New High Score! 🎉
-                      </Text>
-                    </Surface>
-                  ) : (
-                    <View style={{ alignItems: "center" }}>
-                      <Text style={{ color: "#666", fontSize: 16 }}>
-                        Your High Score: {userStats.highScore}
-                      </Text>
-                    </View>
-                  )}
-                </View>
-              )}
-
-              {/* Monthly Rank Info */}
-              {isAuthenticated && userStats.monthlyRank && (
+              {/* New High Score Display */}
+              {isNewHighScore && (
                 <View style={{ width: "100%", marginBottom: 20 }}>
                   <Surface
                     style={{
-                      backgroundColor: "#FF6B35",
-                      padding: 10,
-                      borderRadius: 8,
+                      backgroundColor: "#4CAF50",
+                      padding: 15,
+                      borderRadius: 10,
                       alignItems: "center",
                     }}
                   >
-                    <Text style={{ color: "white", fontSize: 14, fontWeight: "bold" }}>
-                      Monthly Rank: #{userStats.monthlyRank}
+                    <Text
+                      style={{
+                        color: "white",
+                        fontSize: 18,
+                        fontWeight: "bold",
+                      }}
+                    >
+                      🎉 New High Score! 🎉
                     </Text>
                   </Surface>
                 </View>
               )}
 
-              {/* Stars Display */}
-              {isAuthenticated && userStats.totalStars > 0 && (
+              {/* Found Words Display */}
+              {foundWords && foundWords.length > 0 && (
                 <View style={{ width: "100%", marginBottom: 20 }}>
                   <Surface
                     style={{
-                      backgroundColor: "#FFD700",
-                      padding: 10,
-                      borderRadius: 8,
-                      alignItems: "center",
+                      backgroundColor: "#f5f5f5",
+                      padding: 15,
+                      borderRadius: 10,
+                      maxHeight: 120,
                     }}
                   >
-                    <Text style={{ color: "#333", fontSize: 14, fontWeight: "bold" }}>
-                      ⭐ {userStats.totalStars} Stars Earned
+                    <Text
+                      style={{
+                        fontSize: 16,
+                        fontWeight: "bold",
+                        color: "#333",
+                        marginBottom: 10,
+                        textAlign: "center",
+                      }}
+                    >
+                      Words Found: {foundWords.length}
                     </Text>
+                    <ScrollView 
+                      horizontal={true}
+                      showsHorizontalScrollIndicator={false}
+                      contentContainerStyle={{
+                        paddingHorizontal: 5,
+                        alignItems: 'center',
+                      }}
+                      style={{ maxHeight: 60 }}
+                    >
+                      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                        {foundWords.map((word, index) => (
+                          <View key={index} style={{ marginHorizontal: 4 }}>
+                            <Surface
+                              style={{
+                                backgroundColor: "#6200ea",
+                                paddingHorizontal: 12,
+                                paddingVertical: 6,
+                                borderRadius: 15,
+                                elevation: 2,
+                              }}
+                            >
+                              <Text
+                                style={{
+                                  fontSize: 14,
+                                  color: "white",
+                                  fontWeight: "500",
+                                }}
+                              >
+                                {word.toUpperCase()}
+                              </Text>
+                            </Surface>
+                          </View>
+                        ))}
+                      </View>
+                    </ScrollView>
                   </Surface>
                 </View>
               )}
@@ -237,25 +254,6 @@ export default function GameOverModal({
                 >
                   Back to Menu
                 </Button>
-
-                {/* Sign In Button for unauthenticated users */}
-                {!isAuthenticated && (
-                  <Button
-                    mode="outlined"
-                    onPress={onSignIn}
-                    style={{
-                      borderColor: "#4CAF50",
-                      paddingVertical: 8,
-                      marginTop: 10,
-                    }}
-                    labelStyle={{
-                      color: "#4CAF50",
-                      fontSize: 14,
-                    }}
-                  >
-                    Sign In to Save Scores
-                  </Button>
-                )}
               </View>
             </Card.Content>
           </Card>

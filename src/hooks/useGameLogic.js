@@ -22,9 +22,12 @@ export const useGameLogic = () => {
   const [isWordRepeated, setIsWordRepeated] = useState(false);
   const [isTouching, setIsTouching] = useState(false);
   const [gameOverVisible, setGameOverVisible] = useState(false);
+  const [showGameOverModal, setShowGameOverModal] = useState(false); // Simple boolean state
 
   // Initialize game
   const initializeGame = async () => {
+    console.log('initializeGame called');
+    console.trace('initializeGame call stack:');
     setBoard(generateBoard());
 
     if (user) {
@@ -41,17 +44,39 @@ export const useGameLogic = () => {
 
   // Game timer effect
   useEffect(() => {
+    // Don't run timer if game is over
+    if (gameOverVisible || showGameOverModal) {
+      return;
+    }
+
     if (timeLeft <= 0) {
+      console.log('Timer hit 0, calling handleGameEnd');
       handleGameEnd();
       return;
     }
 
     const timer = setInterval(() => {
-      setTimeLeft((prev) => prev - 1);
+      setTimeLeft((prev) => {
+        if (prev <= 1) {
+          // Timer is about to hit 0, don't decrement further
+          return 0;
+        }
+        return prev - 1;
+      });
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [timeLeft]);
+  }, [timeLeft, gameOverVisible, showGameOverModal]);
+
+  // Debug effect to track showGameOverModal changes
+  useEffect(() => {
+    console.log('showGameOverModal changed to:', showGameOverModal);
+  }, [showGameOverModal]);
+
+  // Debug effect to log current state values
+  useEffect(() => {
+    console.log('Current state - gameOverVisible:', gameOverVisible, 'showGameOverModal:', showGameOverModal);
+  }, [gameOverVisible, showGameOverModal]);
 
   const handleWordFormed = (word, isRepeated) => {
     if (word.length >= 3 && isValidWord(word.toLowerCase())) {
@@ -89,18 +114,24 @@ export const useGameLogic = () => {
   };
 
   const handleGameEnd = async () => {
+    console.log('handleGameEnd called - setting showGameOverModal to true');
+    console.log('Current showGameOverModal before setting:', showGameOverModal);
+    
+    // Set modal state first and ensure it's rendered before doing async operations
+    setShowGameOverModal(true);
     setGameOverVisible(true);
-
+    
+    console.log('State setters called for showGameOverModal');
+    
+    // Wait for the next tick to ensure state has been applied and modal is rendered
+    await new Promise(resolve => setTimeout(resolve, 100));
+    console.log('After 100ms delay - modal should be visible now');
+    
     if (user) {
       try {
-        const scoreId = await saveUserScore(
-          user,
-          score,
-          timeLeft,
-          foundWords,
-          INITIAL_TIME - timeLeft
-        );
-
+        console.log('Starting game save process...');
+        
+        // Only use processGameCompletion since saveUserScore does the same thing
         const gameData = {
           score: score,
           timeLeft: timeLeft,
@@ -109,24 +140,30 @@ export const useGameLogic = () => {
           gameDuration: INITIAL_TIME - timeLeft,
         };
 
+        console.log('Calling processGameCompletion...');
         const result = await processGameCompletion(gameData);
+        console.log('processGameCompletion result:', result);
 
-        if (scoreId && result.success) {
-          console.log('Game results saved successfully via both methods');
+        if (result.success) {
+          console.log('Game results saved successfully');
 
           if (score > userHighScore) {
+            console.log('New high score! Updating from', userHighScore, 'to', score);
             setUserHighScore(score);
           }
         } else {
-          console.log('Game results saved with some issues');
+          console.log('Game results saved with issues:', result.error);
         }
       } catch (error) {
         console.error('Error saving game results:', error);
       }
     }
+    
+    console.log('handleGameEnd completed, modal should stay visible');
   };
 
   const restartGame = () => {
+    console.log('restartGame called - resetting all game state');
     setResetCount(0);
     setScore(0);
     setFoundWords([]);
@@ -136,7 +173,16 @@ export const useGameLogic = () => {
     setIsWordRepeated(false);
     setIsTouching(false);
     setGameOverVisible(false);
+    setShowGameOverModal(false); // Reset modal state
     initializeGame();
+  };
+
+  // Temporary method for testing - manually end the timer
+  const endTimer = () => {
+    console.log('endTimer called - current timeLeft:', timeLeft);
+    console.log('endTimer called - setting timeLeft to 0 and calling handleGameEnd directly');
+    setTimeLeft(0);
+    handleGameEnd(); // Call directly instead of relying on timer effect
   };
 
   return {
@@ -152,6 +198,7 @@ export const useGameLogic = () => {
     isWordRepeated,
     isTouching,
     gameOverVisible,
+    showGameOverModal, // Simple modal state
     
     // Actions
     handleWordFormed,
@@ -159,6 +206,7 @@ export const useGameLogic = () => {
     handleGameEnd,
     restartGame,
     initializeGame,
+    endTimer, // Temporary for testing
     setPreviewWord,
     setIsTouching,
     
