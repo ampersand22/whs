@@ -1,4 +1,4 @@
-# Ads Implementation Guide for Worzzle
+# Ads Implementation Guide for Worrzle
 
 ## Current Status
 ✅ **App Structure Ready**: All ad placement code is in place

@@ -1,4 +1,4 @@
-# Worzzle - React Native Expo Game
+# Worrzle - React Native Expo Game
 
 A competitive word-finding game built with React Native, Expo, and Supabase. Players compete monthly to find words on a 5x5 letter grid and earn stars for top performance.
 

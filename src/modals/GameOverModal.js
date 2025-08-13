@@ -9,6 +9,7 @@ import {
   Title, 
   Paragraph,
 } from "react-native-paper";
+import { LinearGradient } from 'expo-linear-gradient';
 
 export default function GameOverModal({
   visible,
@@ -21,6 +22,8 @@ export default function GameOverModal({
 }) {
   const scaleAnim = useRef(new Animated.Value(0.8)).current;
   const opacityAnim = useRef(new Animated.Value(0)).current;
+  const pulseAnim = useRef(new Animated.Value(1)).current;
+  const celebrationAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
     console.log('GameOverModal visibility changed:', visible);
@@ -32,22 +35,63 @@ export default function GameOverModal({
       Animated.parallel([
         Animated.timing(scaleAnim, {
           toValue: 1,
-          duration: 300,
+          duration: 400,
           useNativeDriver: true,
         }),
         Animated.timing(opacityAnim, {
           toValue: 1,
-          duration: 300,
+          duration: 400,
           useNativeDriver: true,
         }),
       ]).start();
+
+      // Start pulse animation
+      const pulseAnimation = Animated.loop(
+        Animated.sequence([
+          Animated.timing(pulseAnim, {
+            toValue: 1.02,
+            duration: 2500,
+            useNativeDriver: true,
+          }),
+          Animated.timing(pulseAnim, {
+            toValue: 1,
+            duration: 2500,
+            useNativeDriver: true,
+          }),
+        ])
+      );
+      pulseAnimation.start();
+
+      // Celebration animation for high score
+      if (isNewHighScore) {
+        Animated.loop(
+          Animated.sequence([
+            Animated.timing(celebrationAnim, {
+              toValue: 1,
+              duration: 1000,
+              useNativeDriver: true,
+            }),
+            Animated.timing(celebrationAnim, {
+              toValue: 0,
+              duration: 1000,
+              useNativeDriver: true,
+            }),
+          ])
+        ).start();
+      }
+
+      return () => {
+        pulseAnimation.stop();
+      };
     } else {
       console.log('GameOverModal: Resetting animation');
       // Reset animation values
       scaleAnim.setValue(0.8);
       opacityAnim.setValue(0);
+      pulseAnim.setValue(1);
+      celebrationAnim.setValue(0);
     }
-  }, [visible]);
+  }, [visible, isNewHighScore]);
 
   const handlePlayAgain = () => {
     onPlayAgain();
@@ -70,7 +114,7 @@ export default function GameOverModal({
       <View
         style={{
           flex: 1,
-          backgroundColor: "rgba(0, 0, 0, 0.7)",
+          backgroundColor: "rgba(0, 0, 0, 0.8)",
           justifyContent: "center",
           alignItems: "center",
           padding: 20,
@@ -78,109 +122,178 @@ export default function GameOverModal({
       >
         <Animated.View
           style={{
-            transform: [{ scale: scaleAnim }],
+            transform: [{ scale: scaleAnim }, { scale: pulseAnim }],
             opacity: opacityAnim,
             width: "100%",
-            maxWidth: 400,
+            maxWidth: 420,
           }}
         >
-          <Card
+          <View
             style={{
-              backgroundColor: "white",
-              borderRadius: 15,
-              elevation: 10,
+              borderRadius: 24,
+              elevation: 20,
+              shadowColor: "#000",
+              shadowOffset: { width: 0, height: 10 },
+              shadowOpacity: 0.4,
+              shadowRadius: 20,
+              overflow: 'hidden',
             }}
           >
-            <Card.Content style={{ padding: 30, alignItems: "center" }}>
-              {/* Game Over Title */}
-              <Title
-                style={{
-                  fontSize: 28,
-                  fontWeight: "bold",
-                  color: "#6200ea",
-                  marginBottom: 20,
-                  textAlign: "center",
-                }}
-              >
-                Game Over!
-              </Title>
+            <LinearGradient
+              colors={isNewHighScore ? ['#ff6b6b', '#feca57', '#48dbfb'] : ['#667eea', '#764ba2', '#f093fb']}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              style={{
+                padding: 32,
+                borderRadius: 24,
+              }}
+            >
+              {/* Decorative elements */}
+              <View style={{
+                position: 'absolute',
+                top: -30,
+                right: -30,
+                width: 80,
+                height: 80,
+                borderRadius: 40,
+                backgroundColor: 'rgba(255, 255, 255, 0.1)',
+              }} />
+              <View style={{
+                position: 'absolute',
+                bottom: -20,
+                left: -20,
+                width: 60,
+                height: 60,
+                borderRadius: 30,
+                backgroundColor: 'rgba(255, 255, 255, 0.08)',
+              }} />
+
+              {/* Game Over Title with Emoji */}
+              <View style={{ alignItems: 'center', marginBottom: 24 }}>
+                <Text style={{ fontSize: 56, marginBottom: 8 }}>
+                  {isNewHighScore ? '🏆' : '🎯'}
+                </Text>
+                <Title
+                  style={{
+                    fontSize: 32,
+                    fontWeight: "bold",
+                    color: "white",
+                    marginBottom: 8,
+                    textAlign: "center",
+                    textShadowColor: 'rgba(0, 0, 0, 0.3)',
+                    textShadowOffset: { width: 1, height: 1 },
+                    textShadowRadius: 3,
+                  }}
+                >
+                  {isNewHighScore ? 'New Record!' : 'Game Over!'}
+                </Title>
+                <Text style={{ 
+                  color: 'rgba(255, 255, 255, 0.9)', 
+                  fontSize: 16,
+                  textAlign: 'center'
+                }}>
+                  {isNewHighScore ? 'Congratulations! 🎉' : 'Great job playing!'}
+                </Text>
+              </View>
 
               {/* Score Display */}
-              <Surface
+              <View
                 style={{
-                  backgroundColor: "#f5f5f5",
-                  padding: 20,
-                  borderRadius: 10,
+                  backgroundColor: 'rgba(255, 255, 255, 0.2)',
+                  padding: 24,
+                  borderRadius: 16,
                   width: "100%",
                   marginBottom: 20,
                   alignItems: "center",
+                  borderWidth: 1,
+                  borderColor: 'rgba(255, 255, 255, 0.3)',
                 }}
               >
                 <Text
                   style={{
                     fontSize: 18,
-                    color: "#666",
-                    marginBottom: 10,
+                    color: 'rgba(255, 255, 255, 0.8)',
+                    marginBottom: 8,
+                    fontWeight: '500',
                   }}
                 >
                   Final Score
                 </Text>
                 <Text
                   style={{
-                    fontSize: 36,
+                    fontSize: 42,
                     fontWeight: "bold",
-                    color: "#6200ea",
+                    color: "white",
+                    textShadowColor: 'rgba(0, 0, 0, 0.3)',
+                    textShadowOffset: { width: 1, height: 1 },
+                    textShadowRadius: 3,
                   }}
                 >
                   {score}
                 </Text>
-              </Surface>
+              </View>
 
-              {/* New High Score Display */}
+              {/* New High Score Celebration */}
               {isNewHighScore && (
-                <View style={{ width: "100%", marginBottom: 20 }}>
-                  <Surface
+                <Animated.View 
+                  style={{ 
+                    width: "100%", 
+                    marginBottom: 20,
+                    transform: [{ scale: celebrationAnim.interpolate({
+                      inputRange: [0, 1],
+                      outputRange: [1, 1.05]
+                    })}]
+                  }}
+                >
+                  <View
                     style={{
-                      backgroundColor: "#4CAF50",
-                      padding: 15,
-                      borderRadius: 10,
+                      backgroundColor: 'rgba(255, 255, 255, 0.25)',
+                      padding: 16,
+                      borderRadius: 16,
                       alignItems: "center",
+                      borderWidth: 2,
+                      borderColor: 'rgba(255, 255, 255, 0.4)',
                     }}
                   >
                     <Text
                       style={{
                         color: "white",
-                        fontSize: 18,
+                        fontSize: 20,
                         fontWeight: "bold",
+                        textShadowColor: 'rgba(0, 0, 0, 0.3)',
+                        textShadowOffset: { width: 1, height: 1 },
+                        textShadowRadius: 3,
                       }}
                     >
-                      🎉 New High Score! 🎉
+                      🎉 Personal Best! 🎉
                     </Text>
-                  </Surface>
-                </View>
+                  </View>
+                </Animated.View>
               )}
 
               {/* Found Words Display */}
               {foundWords && foundWords.length > 0 && (
-                <View style={{ width: "100%", marginBottom: 20 }}>
-                  <Surface
+                <View style={{ width: "100%", marginBottom: 24 }}>
+                  <View
                     style={{
-                      backgroundColor: "#f5f5f5",
-                      padding: 15,
-                      borderRadius: 10,
-                      maxHeight: 120,
+                      backgroundColor: 'rgba(255, 255, 255, 0.15)',
+                      padding: 16,
+                      borderRadius: 16,
+                      maxHeight: 140,
+                      borderWidth: 1,
+                      borderColor: 'rgba(255, 255, 255, 0.2)',
                     }}
                   >
                     <Text
                       style={{
-                        fontSize: 16,
+                        fontSize: 18,
                         fontWeight: "bold",
-                        color: "#333",
-                        marginBottom: 10,
+                        color: "white",
+                        marginBottom: 12,
                         textAlign: "center",
                       }}
                     >
-                      Words Found: {foundWords.length}
+                      Words Found: {foundWords.length} 📝
                     </Text>
                     <ScrollView 
                       horizontal={true}
@@ -189,74 +302,83 @@ export default function GameOverModal({
                         paddingHorizontal: 5,
                         alignItems: 'center',
                       }}
-                      style={{ maxHeight: 60 }}
+                      style={{ maxHeight: 70 }}
                     >
                       <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                         {foundWords.map((word, index) => (
                           <View key={index} style={{ marginHorizontal: 4 }}>
-                            <Surface
+                            <View
                               style={{
-                                backgroundColor: "#6200ea",
+                                backgroundColor: 'rgba(255, 255, 255, 0.25)',
                                 paddingHorizontal: 12,
-                                paddingVertical: 6,
-                                borderRadius: 15,
-                                elevation: 2,
+                                paddingVertical: 8,
+                                borderRadius: 20,
+                                borderWidth: 1,
+                                borderColor: 'rgba(255, 255, 255, 0.3)',
                               }}
                             >
                               <Text
                                 style={{
                                   fontSize: 14,
                                   color: "white",
-                                  fontWeight: "500",
+                                  fontWeight: "600",
                                 }}
                               >
                                 {word.toUpperCase()}
                               </Text>
-                            </Surface>
+                            </View>
                           </View>
                         ))}
                       </View>
                     </ScrollView>
-                  </Surface>
+                  </View>
                 </View>
               )}
 
-              <Divider style={{ width: "100%", marginVertical: 20 }} />
-
               {/* Action Buttons */}
-              <View style={{ width: "100%", gap: 10 }}>
+              <View style={{ width: "100%", gap: 16 }}>
                 <Button
                   mode="contained"
                   onPress={handlePlayAgain}
+                  buttonColor="rgba(255, 255, 255, 0.2)"
+                  textColor="white"
                   style={{
-                    backgroundColor: "#6200ea",
-                    paddingVertical: 8,
+                    borderRadius: 16,
+                    paddingVertical: 4,
+                    borderWidth: 1,
+                    borderColor: 'rgba(255, 255, 255, 0.3)',
                   }}
+                  contentStyle={{ paddingVertical: 12 }}
                   labelStyle={{
-                    fontSize: 16,
+                    fontSize: 18,
                     fontWeight: "bold",
                   }}
                 >
-                  Play Again
+                  🔄 Play Again
                 </Button>
 
                 <Button
-                  mode="outlined"
+                  mode="contained"
                   onPress={handleBackToMenu}
+                  buttonColor="rgba(255, 255, 255, 0.1)"
+                  textColor="white"
                   style={{
-                    borderColor: "#6200ea",
-                    paddingVertical: 8,
+                    borderRadius: 16,
+                    paddingVertical: 4,
+                    borderWidth: 1,
+                    borderColor: 'rgba(255, 255, 255, 0.2)',
                   }}
+                  contentStyle={{ paddingVertical: 12 }}
                   labelStyle={{
-                    color: "#6200ea",
-                    fontSize: 16,
+                    fontSize: 18,
+                    fontWeight: "600",
                   }}
                 >
-                  Back to Menu
+                  🏠 Back to Menu
                 </Button>
               </View>
-            </Card.Content>
-          </Card>
+            </LinearGradient>
+          </View>
         </Animated.View>
       </View>
     </Modal>

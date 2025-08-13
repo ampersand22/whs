@@ -72,15 +72,6 @@ const AuthenticatedView = ({
                   {userData?.total_games_played || 0}
                 </Text>
               </View>
-
-              {userData?.total_stars > 0 && (
-                <View style={styles.statItem}>
-                  <Text style={styles.statLabel}>⭐ Stars</Text>
-                  <Text style={styles.statValue}>
-                    {userData?.total_stars}
-                  </Text>
-                </View>
-              )}
             </View>
           </Card.Content>
         </LinearGradient>

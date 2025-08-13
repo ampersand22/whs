@@ -1,6 +1,6 @@
-# AdMob Setup Guide for Worzzle
+# AdMob Setup Guide for Worrzle
 
-This guide will help you set up Google AdMob to monetize your Worzzle app.
+This guide will help you set up Google AdMob to monetize your Worrzle app.
 
 ## 1. Create Google AdMob Account
 
@@ -14,7 +14,7 @@ This guide will help you set up Google AdMob to monetize your Worzzle app.
 1. In AdMob console, click "Apps" → "Add App"
 2. Choose "Add your app manually" (since it's not published yet)
 3. Enter app details:
-   - **App name**: Worzzle
+   - **App name**: Worrzle
    - **Platform**: iOS and/or Android
    - **App category**: Games
 
@@ -24,16 +24,16 @@ Create these ad units for your app:
 
 ### Banner Ad Unit
 - **Ad format**: Banner
-- **Ad unit name**: Worzzle Banner
+- **Ad unit name**: Worrzle Banner
 - **Ad size**: Smart banner
 
 ### Interstitial Ad Unit
 - **Ad format**: Interstitial
-- **Ad unit name**: Worzzle Interstitial
+- **Ad unit name**: Worrzle Interstitial
 
 ### Rewarded Ad Unit (Optional)
 - **Ad format**: Rewarded
-- **Ad unit name**: Worzzle Rewarded
+- **Ad unit name**: Worrzle Rewarded
 
 ## 4. Update Configuration Files
 

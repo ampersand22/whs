@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Alert, ScrollView, ImageBackground, Dimensions } from "react-native";
+import { View, Alert, ScrollView, ImageBackground, Dimensions, KeyboardAvoidingView, Platform } from "react-native";
 import { Text, ActivityIndicator } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { supabase } from "../config/supabase";
@@ -182,26 +182,36 @@ const StartScreen = ({ navigation }) => {
       resizeMode="cover"
     >
       <SafeAreaView style={{ flex: 1 }} data-testid="start-screen">
-        <ScrollView style={{ flexGrow: 1 }}>
-          <View style={{ flex: 1, padding: 20, justifyContent: "center" }}>
-            {!isAuthenticated ? (
-              <UnauthenticatedView
-                onSignUp={handleShowSignUp}
-                onSignIn={handleShowSignIn}
-              />
-            ) : (
-              <AuthenticatedView
-                userData={userData}
-                user={user}
-                onPlayGame={handlePlayGame}
-                onShowLeaderboard={handleShowLeaderboard}
-                onEditProfile={handleEditProfile}
-                onHowToPlay={handleShowHowToPlay}
-                onSignOut={handleSignOut}
-              />
-            )}
-          </View>
-        </ScrollView>
+        <KeyboardAvoidingView 
+          style={{ flex: 1 }} 
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
+        >
+          <ScrollView 
+            style={{ flexGrow: 1 }}
+            keyboardShouldPersistTaps="handled"
+            showsVerticalScrollIndicator={false}
+          >
+            <View style={{ flex: 1, padding: 20, justifyContent: "center" }}>
+              {!isAuthenticated ? (
+                <UnauthenticatedView
+                  onSignUp={handleShowSignUp}
+                  onSignIn={handleShowSignIn}
+                />
+              ) : (
+                <AuthenticatedView
+                  userData={userData}
+                  user={user}
+                  onPlayGame={handlePlayGame}
+                  onShowLeaderboard={handleShowLeaderboard}
+                  onEditProfile={handleEditProfile}
+                  onHowToPlay={handleShowHowToPlay}
+                  onSignOut={handleSignOut}
+                />
+              )}
+            </View>
+          </ScrollView>
+        </KeyboardAvoidingView>
 
         {/* Banner Ad at bottom */}
         <BannerAd style={{ marginBottom: 10 }} />

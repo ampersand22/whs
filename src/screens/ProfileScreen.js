@@ -223,7 +223,7 @@ const ProfileScreen = ({ navigation }) => {
                     High Score: {userData.high_score || 0}
                   </Text>
                   <Text style={{ fontSize: 14, marginBottom: 4 }}>
-                    Games Played: {userData.games_played || 0}
+                    Games Played: {userData.total_games_played || 0}
                   </Text>
                   <Text style={{ fontSize: 14 }}>
                     Stars Earned: {userData.total_stars || 0} ⭐

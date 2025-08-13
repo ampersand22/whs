@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg width="1024" height="1024" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
-  <!-- White Worzzle text with shadow -->
+  <!-- White Worrzle text with shadow -->
   <text x="514" y="582" font-family="Arial, sans-serif" font-size="140" font-weight="bold" 
-        text-anchor="middle" fill="#000000" opacity="0.3">Worzzle</text>
+        text-anchor="middle" fill="#000000" opacity="0.3">Worrzle</text>
   <text x="512" y="580" font-family="Arial, sans-serif" font-size="140" font-weight="bold" 
-        text-anchor="middle" fill="#FFFFFF">Worzzle</text>
+        text-anchor="middle" fill="#FFFFFF">Worrzle</text>
   
   <!-- Decorative elements with glow effect -->
   <circle cx="200" cy="250" r="10" fill="#FFFFFF" opacity="0.9"/>

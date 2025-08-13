@@ -250,7 +250,6 @@ function GameScreen() {
                 maxResets={gameLogic.MAX_RESETS}
                 onResetBoard={gameLogic.resetBoard}
                 onShowMenu={handleShowMenu}
-                onEndTimer={gameLogic.endTimer}
               />
             </View>
 

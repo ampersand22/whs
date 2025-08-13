@@ -1,6 +1,6 @@
-import React from "react";
-import { ScrollView } from "react-native";
-import { Portal, Dialog, Button, TextInput, Text, Divider } from "react-native-paper";
+import React, { useState, useRef } from "react";
+import { ScrollView, KeyboardAvoidingView, Platform } from "react-native";
+import { Portal, Dialog, Button, TextInput, Text, Divider, IconButton } from "react-native-paper";
 
 const AuthDialogs = ({
   // Sign Up Dialog
@@ -28,44 +28,89 @@ const AuthDialogs = ({
   // Loading state
   loading
 }) => {
+  // Password visibility states
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  
+  // Refs for scrolling
+  const scrollViewRef = useRef(null);
+
+  const scrollToBottom = () => {
+    if (scrollViewRef.current) {
+      scrollViewRef.current.scrollToEnd({ animated: true });
+    }
+  };
+
   return (
     <>
       {/* Sign Up Dialog */}
       <Portal>
-        <Dialog visible={showSignUp} onDismiss={() => setShowSignUp(false)} data-testid="sign-up-dialog">
+        <Dialog 
+          visible={showSignUp} 
+          onDismiss={() => setShowSignUp(false)} 
+          data-testid="sign-up-dialog"
+          style={{ marginTop: -100 }} // Move dialog up to avoid keyboard
+        >
           <Dialog.Title>Create Account</Dialog.Title>
           <Dialog.Content>
-            <TextInput
-              label="Display Name"
-              value={displayName}
-              onChangeText={setDisplayName}
-              style={{ marginBottom: 12 }}
-              data-testid="display-name-input"
-            />
-            <TextInput
-              label="Email"
-              value={email}
-              onChangeText={setEmail}
-              keyboardType="email-address"
-              autoCapitalize="none"
-              style={{ marginBottom: 12 }}
-              data-testid="email-input"
-            />
-            <TextInput
-              label="Password"
-              value={password}
-              onChangeText={setPassword}
-              secureTextEntry
-              style={{ marginBottom: 12 }}
-              data-testid="password-input"
-            />
-            <TextInput
-              label="Confirm Password"
-              value={confirmPassword}
-              onChangeText={setConfirmPassword}
-              secureTextEntry
-              data-testid="confirm-password-input"
-            />
+            <ScrollView 
+              ref={scrollViewRef}
+              keyboardShouldPersistTaps="handled"
+              showsVerticalScrollIndicator={false}
+              contentContainerStyle={{ paddingBottom: 40 }}
+              style={{ maxHeight: 400 }}
+              nestedScrollEnabled={true}
+            >
+              <TextInput
+                label="Display Name"
+                value={displayName}
+                onChangeText={setDisplayName}
+                style={{ marginBottom: 12 }}
+                data-testid="display-name-input"
+                returnKeyType="next"
+              />
+              <TextInput
+                label="Email"
+                value={email}
+                onChangeText={setEmail}
+                keyboardType="email-address"
+                autoCapitalize="none"
+                style={{ marginBottom: 12 }}
+                data-testid="email-input"
+                returnKeyType="next"
+              />
+              <TextInput
+                label="Password"
+                value={password}
+                onChangeText={setPassword}
+                secureTextEntry={!showPassword}
+                style={{ marginBottom: 12 }}
+                data-testid="password-input"
+                returnKeyType="next"
+                right={
+                  <TextInput.Icon 
+                    icon={showPassword ? "eye-off" : "eye"} 
+                    onPress={() => setShowPassword(!showPassword)}
+                  />
+                }
+              />
+              <TextInput
+                label="Confirm Password"
+                value={confirmPassword}
+                onChangeText={setConfirmPassword}
+                secureTextEntry={!showConfirmPassword}
+                data-testid="confirm-password-input"
+                returnKeyType="done"
+                onSubmitEditing={handleSignUp}
+                onFocus={scrollToBottom}
+                right={
+                  <TextInput.Icon 
+                    icon={showConfirmPassword ? "eye-off" : "eye"} 
+                    onPress={() => setShowConfirmPassword(!showConfirmPassword)}
+                  />
+                }
+              />
+            </ScrollView>
           </Dialog.Content>
           <Dialog.Actions>
             <Button onPress={() => setShowSignUp(false)} data-testid="cancel-sign-up-button">
@@ -80,25 +125,47 @@ const AuthDialogs = ({
 
       {/* Sign In Dialog */}
       <Portal>
-        <Dialog visible={showLogIn} onDismiss={() => setShowLogIn(false)} data-testid="sign-in-dialog">
+        <Dialog 
+          visible={showLogIn} 
+          onDismiss={() => setShowLogIn(false)} 
+          data-testid="sign-in-dialog"
+          style={{ marginTop: -50 }} // Move dialog up to avoid keyboard
+        >
           <Dialog.Title>Sign In</Dialog.Title>
           <Dialog.Content>
-            <TextInput
-              label="Email"
-              value={email}
-              onChangeText={setEmail}
-              keyboardType="email-address"
-              autoCapitalize="none"
-              style={{ marginBottom: 12 }}
-              data-testid="email-input"
-            />
-            <TextInput
-              label="Password"
-              value={password}
-              onChangeText={setPassword}
-              secureTextEntry
-              data-testid="password-input"
-            />
+            <ScrollView 
+              keyboardShouldPersistTaps="handled"
+              showsVerticalScrollIndicator={false}
+              contentContainerStyle={{ paddingBottom: 20 }}
+              style={{ maxHeight: 250 }}
+              nestedScrollEnabled={true}
+            >
+              <TextInput
+                label="Email"
+                value={email}
+                onChangeText={setEmail}
+                keyboardType="email-address"
+                autoCapitalize="none"
+                style={{ marginBottom: 12 }}
+                data-testid="email-input"
+                returnKeyType="next"
+              />
+              <TextInput
+                label="Password"
+                value={password}
+                onChangeText={setPassword}
+                secureTextEntry={!showPassword}
+                data-testid="password-input"
+                returnKeyType="done"
+                onSubmitEditing={handleSignIn}
+                right={
+                  <TextInput.Icon 
+                    icon={showPassword ? "eye-off" : "eye"} 
+                    onPress={() => setShowPassword(!showPassword)}
+                  />
+                }
+              />
+            </ScrollView>
           </Dialog.Content>
           <Dialog.Actions>
             <Button onPress={() => setShowLogIn(false)} data-testid="cancel-sign-in-button">

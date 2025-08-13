@@ -3,9 +3,9 @@
   <!-- Purple background -->
   <rect width="1284" height="2778" fill="#6B46C1"/>
   
-  <!-- Main Worzzle text -->
+  <!-- Main Worrzle text -->
   <text x="642" y="1500" font-family="Arial, sans-serif" font-size="120" font-weight="bold" 
-        text-anchor="middle" fill="white">Worzzle</text>
+        text-anchor="middle" fill="white">Worrzle</text>
   
   <!-- Subtitle -->
   <text x="642" y="1600" font-family="Arial, sans-serif" font-size="36" 

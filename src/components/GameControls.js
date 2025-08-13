@@ -6,8 +6,7 @@ const GameControls = ({
   resetCount, 
   maxResets, 
   onResetBoard, 
-  onShowMenu,
-  onEndTimer // Temporary prop for testing
+  onShowMenu
 }) => {
   return (
     <View style={{ alignItems: 'center', gap: 10, marginBottom: 10 }}>
@@ -34,20 +33,6 @@ const GameControls = ({
           Game Menu
         </Button>
       </View>
-
-      {/* Temporary testing button */}
-      {onEndTimer && (
-        <Button
-          mode="contained"
-          onPress={onEndTimer}
-          buttonColor="#ff4444"
-          textColor="white"
-          style={{ marginTop: 5 }}
-          data-testid="end-timer-button"
-        >
-          🚨 End Timer (TEST)
-        </Button>
-      )}
     </View>
   );
 };
