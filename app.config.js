@@ -4,7 +4,7 @@ export default {
   expo: {
     name: "Worrzle",
     slug: "worrzle",
-    version: "1.0.0",
+    version: "1.0.1",
     orientation: "portrait",
     icon: "./assets/icon.png",
     userInterfaceStyle: "light",
@@ -20,23 +20,12 @@ export default {
     ios: {
       supportsTablet: true,
       bundleIdentifier: "com.worrzle.app", // You can change this to your preferred bundle ID
-      buildNumber: "1",
+      buildNumber: "5",
+      runtimeVersion: "1.0.1",
       infoPlist: {
-        NSUserTrackingUsageDescription: "This app uses advertising ID for personalized ads and analytics to improve your gaming experience."
+        NSUserTrackingUsageDescription: "This app uses advertising ID for personalized ads and analytics to improve your gaming experience.",
+        ITSAppUsesNonExemptEncryption: false
       }
-    },
-    android: {
-      package: "com.worrzle.app", // You can change this to match your iOS bundle ID
-      versionCode: 1,
-      adaptiveIcon: {
-        foregroundImage: "./assets/adaptive-icon.png",
-        backgroundColor: "#6B46C1"
-      },
-      edgeToEdgeEnabled: true,
-      permissions: [
-        "INTERNET",
-        "ACCESS_NETWORK_STATE"
-      ]
     },
     web: {
       favicon: "./assets/favicon.png"
@@ -51,9 +40,31 @@ export default {
         }
       ]
     ],
+    updates: {
+      url: "https://u.expo.dev/a329fc47-12f7-4466-8fa6-781ed75ea686"
+    },
+    android: {
+      package: "com.worrzle.app", // You can change this to match your iOS bundle ID
+      versionCode: 5,
+      adaptiveIcon: {
+        foregroundImage: "./assets/adaptive-icon.png",
+        backgroundColor: "#6B46C1"
+      },
+      edgeToEdgeEnabled: true,
+      permissions: [
+        "INTERNET",
+        "ACCESS_NETWORK_STATE"
+      ],
+      runtimeVersion: {
+        policy: "appVersion"
+      }
+    },
     extra: {
       supabaseUrl: process.env.SUPABASE_URL,
       supabaseAnonKey: process.env.SUPABASE_ANON_KEY,
+      eas: {
+        projectId: "a329fc47-12f7-4466-8fa6-781ed75ea686"
+      }
     }
   }
 };

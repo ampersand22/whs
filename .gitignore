@@ -108,3 +108,10 @@ jspm_packages/
 
 # Stores VSCode versions used for testing VSCode extensions
 .vscode-test
+Worrzle.app/
+*.dylib
+ios/build/
+Worrzle.app/
+*.dylib
+ios/build/
+android/app/build/
