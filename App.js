@@ -20,8 +20,6 @@ import useUserStore from "./src/stores/userStore";
 // Responsive utilities
 import { isTablet } from "./src/utils/responsive";
 
-
-
 const theme = {
   ...MD3LightTheme,
   colors: {
@@ -34,12 +32,22 @@ const theme = {
 const Stack = createStackNavigator();
 
 function AppNavigator() {
-  const { initialize, isLoading } = useUserStore();
+  const { initialize, isLoading, error } = useUserStore();
   const [screenData, setScreenData] = useState(Dimensions.get('window'));
+  const [initError, setInitError] = useState(null);
 
   // Initialize the user store and ads when app starts
   useEffect(() => {
-    initialize();
+    const initializeApp = async () => {
+      try {
+        await initialize();
+      } catch (error) {
+        console.error('App initialization error:', error);
+        setInitError(error.message || 'Failed to initialize app');
+      }
+    };
+
+    initializeApp();
   }, []);
 
   // Handle orientation changes
@@ -50,6 +58,32 @@ function AppNavigator() {
 
     return () => subscription?.remove();
   }, []);
+
+  // Show error screen if initialization failed
+  if (initError || error) {
+    return (
+      <View
+        style={{ 
+          flex: 1, 
+          justifyContent: "center", 
+          alignItems: "center",
+          padding: 20,
+          backgroundColor: '#f5f5f5'
+        }}
+        data-testid="app-error"
+      >
+        <Text style={{ fontSize: 24, fontWeight: 'bold', marginBottom: 16, textAlign: 'center' }}>
+          Oops! Something went wrong
+        </Text>
+        <Text style={{ fontSize: 16, textAlign: 'center', marginBottom: 24, color: '#666' }}>
+          {initError || error || 'An unexpected error occurred'}
+        </Text>
+        <Text style={{ fontSize: 14, textAlign: 'center', color: '#999' }}>
+          Please try restarting the app
+        </Text>
+      </View>
+    );
+  }
 
   // Show loading screen while initializing
   if (isLoading) {

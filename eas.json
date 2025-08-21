@@ -32,7 +32,7 @@
       },
       "android": {
         "resourceClass": "medium",
-        "buildType": "release"
+        "buildType": "app-bundle"
       },
       "env": {
         "NODE_ENV": "production"
