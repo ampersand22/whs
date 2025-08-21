@@ -24,6 +24,20 @@
         "resourceClass": "medium"
       }
     },
+    "production-debug": {
+      "distribution": "internal",
+      "ios": {
+        "resourceClass": "m-medium",
+        "buildConfiguration": "Release"
+      },
+      "android": {
+        "resourceClass": "medium",
+        "buildType": "release"
+      },
+      "env": {
+        "NODE_ENV": "production"
+      }
+    },
     "production": {
       "distribution": "store",
       "ios": {

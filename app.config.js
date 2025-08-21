@@ -4,7 +4,7 @@ export default {
   expo: {
     name: "Worrzle",
     slug: "worrzle",
-    version: "1.0.2",
+    version: "1.0.4",
     orientation: "portrait",
     icon: "./assets/icon.png",
     userInterfaceStyle: "light",
@@ -28,8 +28,8 @@ export default {
     ios: {
       supportsTablet: true,
       bundleIdentifier: "com.worrzle.app", // You can change this to your preferred bundle ID
-      buildNumber: "5",
-      runtimeVersion: "1.0.2",
+      buildNumber: "8",
+      runtimeVersion: "1.0.4",
       infoPlist: {
         NSUserTrackingUsageDescription:
           "This app uses advertising ID for personalized ads and analytics to improve your gaming experience.",
@@ -41,24 +41,13 @@ export default {
     },
     plugins: [
       "expo-dev-client",
-      [
-        "react-native-google-mobile-ads",
-        {
-          androidAppId:
-            process.env.ADMOB_ANDROID_APP_ID ||
-            "ca-app-pub-3940256099942544~3347511713",
-          iosAppId:
-            process.env.ADMOB_IOS_APP_ID ||
-            "ca-app-pub-3940256099942544~1458002511",
-        },
-      ],
     ],
     updates: {
       url: "https://u.expo.dev/a329fc47-12f7-4466-8fa6-781ed75ea686",
     },
     android: {
       package: "com.worrzle.app", // You can change this to match your iOS bundle ID
-      versionCode: 5,
+      versionCode: 7,
       adaptiveIcon: {
         foregroundImage: "./assets/adaptive-icon.png",
         backgroundColor: "#6B46C1",

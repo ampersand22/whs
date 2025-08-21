@@ -130,19 +130,19 @@ const GameMenuModal = ({ visible, onClose, onRestart, onBackToMenu }) => {
               shadowRadius: 15,
               transform: [{ scale: scaleAnim }, { scale: pulseAnim }],
               opacity: opacityAnim,
-              overflow: 'hidden',
             }}
             data-testid="modal-content"
           >
-            <LinearGradient
-              colors={['#667eea', '#764ba2', '#f093fb']}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 1 }}
-              style={{
-                padding: 24,
-                borderRadius: 24,
-              }}
-            >
+            <View style={{ overflow: 'hidden', borderRadius: 24 }}>
+              <LinearGradient
+                colors={['#667eea', '#764ba2', '#f093fb']}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={{
+                  padding: 24,
+                  borderRadius: 24,
+                }}
+              >
               {/* Header with emoji and title */}
               <View style={{ alignItems: 'center', marginBottom: 24 }}>
                 <Text style={{ fontSize: 48, marginBottom: 8 }}>⏸️</Text>
@@ -241,6 +241,7 @@ const GameMenuModal = ({ visible, onClose, onRestart, onBackToMenu }) => {
                 backgroundColor: 'rgba(255, 255, 255, 0.08)',
               }} />
             </LinearGradient>
+            </View>
           </Animated.View>
         </View>
 

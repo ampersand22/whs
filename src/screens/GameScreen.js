@@ -20,7 +20,7 @@ import GameOverModal from '../modals/GameOverModal';
 import GameOverModalNew from '../modals/GameOverModalNew';
 import GameMenuModal from '../modals/GameMenuModal';
 import FoundWordsModal from '../modals/FoundWordsModal';
-import AdManager, { BannerAd } from '../components/AdManager';
+
 
 // Utils
 import { getResponsiveDimensions } from '../utils/responsive';
@@ -142,8 +142,7 @@ function GameScreen() {
   const handleRestartGame = async () => {
     setMenuModalVisible(false);
     
-    // Show interstitial ad before restarting
-    await AdManager.showInterstitialAd();
+
     
     gameLogic.restartGame();
   };
@@ -152,8 +151,7 @@ function GameScreen() {
     console.log('handleBackToMenu called');
     setMenuModalVisible(false);
     
-    // Show interstitial ad before going back to menu
-    await AdManager.showInterstitialAd();
+
     
     console.log('handleBackToMenu: About to call goBackToStart');
     goBackToStart();
@@ -202,8 +200,7 @@ function GameScreen() {
               />
             </View>
 
-            {/* Banner Ad at top */}
-            <BannerAd style={{ marginTop: 10 }} />
+
 
             {/* Main Game Area */}
             <View
@@ -253,8 +250,7 @@ function GameScreen() {
               />
             </View>
 
-            {/* Banner Ad at bottom */}
-            <BannerAd style={{ marginBottom: 10 }} />
+
           </View>
         </SafeAreaView>
       </ImageBackground>
@@ -277,15 +273,11 @@ function GameScreen() {
         onPlayAgain={async () => {
           console.log('Play Again pressed');
           setGameOverModalVisible(false);
-          // Show interstitial ad before playing again
-          await AdManager.showInterstitialAd();
           gameLogic.restartGame();
         }}
         onMainMenu={async () => {
           console.log('Main Menu pressed');
           setGameOverModalVisible(false);
-          // Show interstitial ad before going back to start
-          await AdManager.showInterstitialAd();
           goBackToStart();
         }}
         onShowFoundWords={() => {
@@ -323,13 +315,9 @@ function GameScreen() {
         foundWords={gameLogic.foundWords}
         isNewHighScore={gameLogic.isNewHighScore}
         onPlayAgain={async () => {
-          // Show interstitial ad before playing again
-          await AdManager.showInterstitialAd();
           gameLogic.restartGame();
         }}
         onBackToStart={async () => {
-          // Show interstitial ad before going back to start
-          await AdManager.showInterstitialAd();
           goBackToStart();
         }}
       />

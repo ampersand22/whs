@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Alert, ScrollView, ImageBackground, Dimensions, KeyboardAvoidingView, Platform } from "react-native";
+import { View, Alert, ScrollView, ImageBackground, Dimensions, KeyboardAvoidingView, Platform, Linking, TouchableOpacity } from "react-native";
 import { Text, ActivityIndicator } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { supabase } from "../config/supabase";
@@ -8,7 +8,7 @@ import LeaderboardModal from "../modals/LeaderboardModal";
 import UnauthenticatedView from "../components/UnauthenticatedView";
 import AuthenticatedView from "../components/AuthenticatedView";
 import AuthDialogs from "../components/AuthDialogs";
-import { BannerAd } from "../components/AdManager";
+
 import { getResponsiveDimensions, isTablet } from "../utils/responsive";
 
 const StartScreen = ({ navigation }) => {
@@ -144,6 +144,22 @@ const StartScreen = ({ navigation }) => {
   const handleShowSignUp = () => setShowSignUp(true);
   const handleShowSignIn = () => setShowLogIn(true);
 
+  const handleOpenPatreon = async () => {
+    const patreonUrl = 'https://www.patreon.com/uainteractive';
+    
+    try {
+      const supported = await Linking.canOpenURL(patreonUrl);
+      if (supported) {
+        await Linking.openURL(patreonUrl);
+      } else {
+        Alert.alert('Error', 'Unable to open Patreon link');
+      }
+    } catch (error) {
+      console.error('Error opening Patreon:', error);
+      Alert.alert('Error', 'Unable to open Patreon link');
+    }
+  };
+
   if (isLoading) {
     return (
       <ImageBackground 
@@ -213,8 +229,40 @@ const StartScreen = ({ navigation }) => {
           </ScrollView>
         </KeyboardAvoidingView>
 
-        {/* Banner Ad at bottom */}
-        <BannerAd style={{ marginBottom: 10 }} />
+        {/* Patreon Support Button */}
+        <View style={{ 
+          position: 'absolute', 
+          bottom: 100, 
+          right: 20, 
+          zIndex: 1000 
+        }}>
+          <TouchableOpacity
+            onPress={handleOpenPatreon}
+            style={{
+              backgroundColor: '#FF424D',
+              paddingHorizontal: 16,
+              paddingVertical: 10,
+              borderRadius: 25,
+              flexDirection: 'row',
+              alignItems: 'center',
+              shadowColor: '#000',
+              shadowOffset: { width: 0, height: 2 },
+              shadowOpacity: 0.25,
+              shadowRadius: 3.84,
+              elevation: 5,
+            }}
+            activeOpacity={0.8}
+          >
+            <Text style={{ 
+              color: 'white', 
+              fontWeight: 'bold', 
+              fontSize: 14,
+              marginRight: 4
+            }}>
+              ❤️ Support
+            </Text>
+          </TouchableOpacity>
+        </View>
 
         {/* All Authentication Dialogs */}
         <AuthDialogs

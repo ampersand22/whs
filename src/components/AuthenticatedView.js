@@ -34,12 +34,13 @@ const AuthenticatedView = ({
 
       {/* Welcome Card */}
       <Card style={styles.welcomeCard} data-testid="welcome-card">
-        <LinearGradient
-          colors={["#667eea", "#764ba2"]}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-          style={styles.gradientBackground}
-        >
+        <View style={styles.welcomeCardContent}>
+          <LinearGradient
+            colors={["#667eea", "#764ba2"]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={styles.gradientBackground}
+          >
           <Card.Content style={styles.cardContent}>
             <View style={styles.welcomeHeader}>
               <Avatar.Icon
@@ -75,6 +76,7 @@ const AuthenticatedView = ({
             </View>
           </Card.Content>
         </LinearGradient>
+        </View>
       </Card>
 
       {/* Game Actions */}
@@ -170,7 +172,10 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     elevation: 8,
     borderRadius: 16,
+  },
+  welcomeCardContent: {
     overflow: "hidden",
+    borderRadius: 16,
   },
   gradientBackground: {
     borderRadius: 16,

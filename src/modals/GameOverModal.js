@@ -136,18 +136,18 @@ export default function GameOverModal({
               shadowOffset: { width: 0, height: 10 },
               shadowOpacity: 0.4,
               shadowRadius: 20,
-              overflow: 'hidden',
             }}
           >
-            <LinearGradient
-              colors={isNewHighScore ? ['#ff6b6b', '#feca57', '#48dbfb'] : ['#667eea', '#764ba2', '#f093fb']}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 1 }}
-              style={{
-                padding: 32,
-                borderRadius: 24,
-              }}
-            >
+            <View style={{ overflow: 'hidden', borderRadius: 24 }}>
+              <LinearGradient
+                colors={isNewHighScore ? ['#ff6b6b', '#feca57', '#48dbfb'] : ['#667eea', '#764ba2', '#f093fb']}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={{
+                  padding: 32,
+                  borderRadius: 24,
+                }}
+              >
               {/* Decorative elements */}
               <View style={{
                 position: 'absolute',
@@ -378,6 +378,7 @@ export default function GameOverModal({
                 </Button>
               </View>
             </LinearGradient>
+            </View>
           </View>
         </Animated.View>
       </View>

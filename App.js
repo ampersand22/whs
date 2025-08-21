@@ -11,14 +11,16 @@ import StartScreen from "./src/screens/StartScreen";
 import GameScreen from "./src/screens/GameScreen";
 import ProfileScreen from "./src/screens/ProfileScreen";
 
+// Components
+import ErrorBoundary from "./src/components/ErrorBoundary";
+
 // Store
 import useUserStore from "./src/stores/userStore";
 
 // Responsive utilities
 import { isTablet } from "./src/utils/responsive";
 
-// Ad Manager
-import AdManager from "./src/components/AdManager";
+
 
 const theme = {
   ...MD3LightTheme,
@@ -38,7 +40,6 @@ function AppNavigator() {
   // Initialize the user store and ads when app starts
   useEffect(() => {
     initialize();
-    AdManager.initialize();
   }, []);
 
   // Handle orientation changes
@@ -112,11 +113,13 @@ function AppNavigator() {
 
 export default function App() {
   return (
-    <SafeAreaProvider>
-      <PaperProvider theme={theme}>
-        <StatusBar style="light" backgroundColor="#6200ea" />
-        <AppNavigator />
-      </PaperProvider>
-    </SafeAreaProvider>
+    <ErrorBoundary>
+      <SafeAreaProvider>
+        <PaperProvider theme={theme}>
+          <StatusBar style="light" backgroundColor="#6200ea" />
+          <AppNavigator />
+        </PaperProvider>
+      </SafeAreaProvider>
+    </ErrorBoundary>
   );
 }
