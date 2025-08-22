@@ -4,7 +4,7 @@ export default {
   expo: {
     name: "Worrzle",
     slug: "worrzle",
-    version: "1.0.4",
+    version: "1.0.5",
     orientation: "portrait",
     icon: "./assets/icon.png",
     userInterfaceStyle: "light",
@@ -28,8 +28,8 @@ export default {
     ios: {
       supportsTablet: true,
       bundleIdentifier: "com.worrzle.app", // You can change this to your preferred bundle ID
-      buildNumber: "8",
-      runtimeVersion: "1.0.4",
+      buildNumber: "9",
+      runtimeVersion: "1.0.5",
       infoPlist: {
         NSUserTrackingUsageDescription:
           "This app uses advertising ID for personalized ads and analytics to improve your gaming experience.",
