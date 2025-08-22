@@ -40,11 +40,11 @@ export default {
       favicon: "./assets/favicon.png",
     },
     plugins: [
-      "expo-dev-client",
+      // "expo-dev-client", // Only for development builds
     ],
-    updates: {
-      url: "https://u.expo.dev/a329fc47-12f7-4466-8fa6-781ed75ea686",
-    },
+    // updates: {
+    //   url: "https://u.expo.dev/a329fc47-12f7-4466-8fa6-781ed75ea686",
+    // },
     android: {
       package: "com.worrzle.app", // You can change this to match your iOS bundle ID
       versionCode: 7,

@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Modal, Animated, Dimensions } from "react-native";
+import { View, Modal, Animated, Dimensions, Linking } from "react-native";
 import { Card, Title, Button, Text, IconButton } from "react-native-paper";
 
 const { width } = Dimensions.get('window');
@@ -11,6 +11,22 @@ const MenuModal = ({
   onEditProfile, 
   onSignOut 
 }) => {
+  // Handle opening Patreon link
+  const handleOpenPatreon = async () => {
+    const patreonUrl = 'https://www.patreon.com/uainteractive'; // Match original URL from StartScreen
+    
+    try {
+      const supported = await Linking.canOpenURL(patreonUrl);
+      if (supported) {
+        await Linking.openURL(patreonUrl);
+      } else {
+        console.log("Can't open Patreon URL");
+      }
+    } catch (error) {
+      console.error('Error opening Patreon:', error);
+    }
+  };
+
   const menuItems = [
     {
       title: "Leaderboard",
@@ -33,6 +49,17 @@ const MenuModal = ({
       },
       testId: "edit-profile-button",
       color: "#4ECDC4"
+    },
+    {
+      title: "Support Us",
+      icon: "❤️",
+      description: "Support on Patreon",
+      onPress: () => {
+        onClose();
+        handleOpenPatreon();
+      },
+      testId: "support-button",
+      color: "#FF424D"
     }
   ];
 

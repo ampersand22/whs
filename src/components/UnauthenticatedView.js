@@ -44,6 +44,7 @@ const UnauthenticatedView = ({
       <View style={{
         marginTop: 'auto',
         paddingTop: 20,
+        paddingBottom: 20, // Reduced padding since support button is positioned higher
         alignItems: 'center'
       }}>
         <Text style={{

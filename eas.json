@@ -17,6 +17,10 @@
     },
     "preview": {
       "distribution": "internal",
+      "env": {
+        "SUPABASE_URL": "https://mnuduacsnqdrypkzkfzi.supabase.co",
+        "SUPABASE_ANON_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1udWR1YWNzbnFkcnlwa3prZnppIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDg1MjkxNTEsImV4cCI6MjA2NDEwNTE1MX0.xFeewHbRkYgtLB0gS0Xi3YgMxaxS7SocXpO80pInSoQ"
+      },
       "ios": {
         "resourceClass": "m-medium"
       },
@@ -26,6 +30,11 @@
     },
     "production-debug": {
       "distribution": "internal",
+      "env": {
+        "NODE_ENV": "production",
+        "SUPABASE_URL": "https://mnuduacsnqdrypkzkfzi.supabase.co",
+        "SUPABASE_ANON_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1udWR1YWNzbnFkcnlwa3prZnppIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDg1MjkxNTEsImV4cCI6MjA2NDEwNTE1MX0.xFeewHbRkYgtLB0gS0Xi3YgMxaxS7SocXpO80pInSoQ"
+      },
       "ios": {
         "resourceClass": "m-medium",
         "buildConfiguration": "Release"
@@ -33,13 +42,14 @@
       "android": {
         "resourceClass": "medium",
         "buildType": "app-bundle"
-      },
-      "env": {
-        "NODE_ENV": "production"
       }
     },
     "production": {
       "distribution": "store",
+      "env": {
+        "SUPABASE_URL": "https://mnuduacsnqdrypkzkfzi.supabase.co",
+        "SUPABASE_ANON_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1udWR1YWNzbnFkcnlwa3prZnppIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDg1MjkxNTEsImV4cCI6MjA2NDEwNTE1MX0.xFeewHbRkYgtLB0gS0Xi3YgMxaxS7SocXpO80pInSoQ"
+      },
       "ios": {
         "resourceClass": "m-medium"
       },
