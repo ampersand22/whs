@@ -36,7 +36,6 @@ const useUserStore = create(
           const { data: { session }, error } = await supabase.auth.getSession();
           
           if (error) {
-            console.error('Error getting session:', error);
             set({ error: error.message, isLoading: false });
             return;
           }
@@ -47,7 +46,6 @@ const useUserStore = create(
           
           set({ isLoading: false });
         } catch (error) {
-          console.error('Error initializing auth:', error);
           set({ error: error.message, isLoading: false });
         }
       },
@@ -79,7 +77,6 @@ const useUserStore = create(
           
           set({ isLoading: false });
         } catch (error) {
-          console.error('Error setting user session:', error);
           set({ error: error.message, isLoading: false });
         }
       },
@@ -112,7 +109,6 @@ const useUserStore = create(
               });
 
             if (dbError) {
-              console.error('Error creating user profile:', dbError);
               // Don't fail the signup if profile creation fails
             }
           }
@@ -120,7 +116,6 @@ const useUserStore = create(
           set({ isLoading: false });
           return { success: true, user: authData.user };
         } catch (error) {
-          console.error('Error signing up:', error);
           set({ error: error.message, isLoading: false });
           return { success: false, error: error.message };
         }
@@ -144,7 +139,6 @@ const useUserStore = create(
           await get().setUserSession(data.session);
           return { success: true, user: data.user };
         } catch (error) {
-          console.error('Error signing in:', error);
           set({ error: error.message, isLoading: false });
           return { success: false, error: error.message };
         }
@@ -179,7 +173,6 @@ const useUserStore = create(
 
           return { success: true };
         } catch (error) {
-          console.error('Error signing out:', error);
           set({ error: error.message, isLoading: false });
           return { success: false, error: error.message };
         }
@@ -199,7 +192,6 @@ const useUserStore = create(
             .single();
 
           if (userError) {
-            console.error('Error fetching user stats:', userError);
             return;
           }
 
@@ -233,7 +225,6 @@ const useUserStore = create(
           });
 
         } catch (error) {
-          console.error('Error fetching user stats:', error);
         }
       },
 
@@ -260,7 +251,6 @@ const useUserStore = create(
           set({ isLoading: false });
           return { success: true };
         } catch (error) {
-          console.error('Error updating profile:', error);
           set({ error: error.message, isLoading: false });
           return { success: false, error: error.message };
         }
@@ -268,21 +258,17 @@ const useUserStore = create(
 
       // Process game completion
       processGameCompletion: async (gameData) => {
-        console.log('processGameCompletion started');
         const { user } = get();
         if (!user?.id) {
-          console.log('processGameCompletion: No user logged in');
           return { success: false, error: 'No user logged in' };
         }
 
         try {
-          console.log('processGameCompletion: NOT setting global loading state to avoid unmounting GameScreen');
           // Don't set global loading state as it causes App.js to show loading screen
           // and unmount the GameScreen component
           // set({ isLoading: true, error: null });
 
           // Get user's display name
-          console.log('processGameCompletion: Getting user display name');
           const { data: userData } = await supabase
             .from('whs-users')
             .select('display_name')
@@ -290,10 +276,8 @@ const useUserStore = create(
             .single();
 
           const displayName = userData?.display_name || user.email;
-          console.log('processGameCompletion: Display name:', displayName);
 
           // Call the stored procedure to process game completion
-          console.log('processGameCompletion: Calling RPC with data:', gameData);
           const { data, error } = await supabase
             .rpc('process_game_completion', {
               p_user_id: user.id,
@@ -306,27 +290,22 @@ const useUserStore = create(
             });
 
           if (error) {
-            console.error('processGameCompletion: RPC error:', error);
             // Don't set global loading state
             // set({ error: error.message, isLoading: false });
             return { success: false, error: error.message };
           }
 
-          console.log('processGameCompletion: RPC successful, refreshing user stats');
           // Refresh user stats
           await get().fetchUserStats();
           
-          console.log('processGameCompletion: NOT setting global loading to false');
           // Don't set global loading state
           // set({ isLoading: false });
 
-          console.log('processGameCompletion: Completed successfully');
           return { 
             success: true, 
             data: data?.[0] || {} // Return the first result from the procedure
           };
         } catch (error) {
-          console.error('processGameCompletion: Catch block error:', error);
           // Don't set global loading state
           // set({ error: error.message, isLoading: false });
           return { success: false, error: error.message };
@@ -347,13 +326,11 @@ const useUserStore = create(
             .limit(limit);
 
           if (error) {
-            console.error('Error fetching recent scores:', error);
             return [];
           }
 
           return data || [];
         } catch (error) {
-          console.error('Error fetching recent scores:', error);
           return [];
         }
       },
@@ -372,13 +349,11 @@ const useUserStore = create(
             .order('month', { ascending: false });
 
           if (error) {
-            console.error('Error fetching user stars:', error);
             return [];
           }
 
           return data || [];
         } catch (error) {
-          console.error('Error fetching user stars:', error);
           return [];
         }
       },

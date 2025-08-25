@@ -7,10 +7,7 @@ const supabaseAnonKey = Constants.expoConfig?.extra?.supabaseAnonKey;
 
 // Debug logging (only in development)
 if (__DEV__) {
-  console.log('Supabase URL:', supabaseUrl);
-  console.log('Supabase Key exists:', !!supabaseAnonKey);
-  console.log('Constants.expoConfig.extra:', Constants.expoConfig?.extra);
-  console.log('Constants.expoConfig:', Constants.expoConfig);
+
 }
 
 // Graceful error handling for missing environment variables
@@ -22,13 +19,11 @@ if (!supabaseUrl || !supabaseAnonKey) {
     - Extra available: ${!!Constants.expoConfig?.extra}`;
   
   if (__DEV__) {
-    console.error(errorMessage);
   }
   
   // In production, create a dummy client to prevent crashes
   // The app will show an error screen instead
   if (!__DEV__) {
-    console.warn('Creating dummy Supabase client due to missing environment variables');
   } else {
     throw new Error(errorMessage);
   }
@@ -49,7 +44,6 @@ const createSupabaseClient = () => {
       }
     );
   } catch (error) {
-    console.error('Failed to create Supabase client:', error);
     // Return a mock client that won't crash the app
     return {
       auth: {
@@ -77,14 +71,12 @@ export const setupAuthListener = (callback) => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
         if (__DEV__) {
-          console.log('Auth event:', event, session?.user?.email);
         }
         callback(event, session);
       }
     );
     return subscription;
   } catch (error) {
-    console.error('Failed to setup auth listener:', error);
     return { unsubscribe: () => {} };
   }
 };
@@ -95,7 +87,6 @@ export const isAuthenticated = async () => {
     const { data: { session } } = await supabase.auth.getSession();
     return !!session?.user;
   } catch (error) {
-    console.error('Failed to check authentication:', error);
     return false;
   }
 };
@@ -106,7 +97,6 @@ export const getCurrentUser = async () => {
     const { data: { session } } = await supabase.auth.getSession();
     return session?.user || null;
   } catch (error) {
-    console.error('Failed to get current user:', error);
     return null;
   }
 };

@@ -15,7 +15,6 @@ export default function GameOverModalNew({
   isNewHighScore = false,
   foundWords = []
 }) {
-  console.log('GameOverModalNew render - visible:', visible);
   
   const scaleAnim = useRef(new Animated.Value(0)).current;
   const confettiRef = useRef(null);
@@ -46,7 +45,6 @@ export default function GameOverModalNew({
       <Dialog 
         visible={visible} 
         onDismiss={() => {
-          console.log('GameOverModalNew - onDismiss called');
           // Do nothing - prevent dismissal
         }}
         style={{ backgroundColor: 'transparent' }}
@@ -183,7 +181,6 @@ export default function GameOverModalNew({
             <Button
               mode="contained"
               onPress={() => {
-                console.log('Play Again button pressed');
                 onPlayAgain && onPlayAgain();
               }}
               style={{
@@ -207,7 +204,6 @@ export default function GameOverModalNew({
               <Button
                 mode="outlined"
                 onPress={() => {
-                  console.log('Found Words button pressed');
                   onShowFoundWords && onShowFoundWords();
                 }}
                 style={{
@@ -232,9 +228,10 @@ export default function GameOverModalNew({
             
             <Button
               mode="outlined"
-              onPress={() => {
-                console.log('Main Menu button pressed');
-                onMainMenu && onMainMenu();
+              onPress={async () => {
+                if (onMainMenu) {
+                  await onMainMenu();
+                }
               }}
               style={{
                 borderRadius: 8,

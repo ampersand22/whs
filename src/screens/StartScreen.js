@@ -52,12 +52,10 @@ const StartScreen = ({ navigation }) => {
         .single();
 
       if (error) {
-        console.error("Error loading user data:", error);
       } else {
         setUserData(data);
       }
     } catch (error) {
-      console.error("Error loading user data:", error);
     }
   };
 
@@ -128,7 +126,6 @@ const StartScreen = ({ navigation }) => {
       await signOut();
       setUserData(null);
     } catch (error) {
-      console.error("Sign out error:", error);
     }
   };
 

@@ -8,7 +8,6 @@ const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_KEY; // You'll need to add this to .env
 
 if (!supabaseUrl || !supabaseServiceKey) {
-  console.error('Missing SUPABASE_URL or SUPABASE_SERVICE_KEY in .env file');
   process.exit(1);
 }
 
@@ -22,7 +21,6 @@ const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey, {
 
 async function createTestUser() {
   try {
-    console.log('Creating test user...');
     
     // Create user in Supabase Auth
     const { data: authData, error: authError } = await supabaseAdmin.auth.admin.createUser({
@@ -32,11 +30,9 @@ async function createTestUser() {
     });
 
     if (authError) {
-      console.error('Error creating auth user:', authError);
       return;
     }
 
-    console.log('Auth user created:', authData.user.id);
 
     // Create user in custom table
     const { data: userData, error: userError } = await supabaseAdmin
@@ -55,17 +51,11 @@ async function createTestUser() {
       .single();
 
     if (userError) {
-      console.error('Error creating user profile:', userError);
       return;
     }
 
-    console.log('User profile created successfully!');
-    console.log('You can now log in with:');
-    console.log('Email: alice@example.com');
-    console.log('Password: password123');
 
   } catch (error) {
-    console.error('Unexpected error:', error);
   }
 }
 

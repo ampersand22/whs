@@ -42,7 +42,7 @@ function AppNavigator() {
       try {
         await initialize();
       } catch (error) {
-        console.error('App initialization error:', error);
+        // App initialization error
         setInitError(error.message || 'Failed to initialize app');
       }
     };

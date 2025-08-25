@@ -11,10 +11,6 @@ export default function FoundWordsModal({
   foundWordsBoardNumbers = [],
   score = 0
 }) {
-  console.log('FoundWordsModal render - visible:', visible);
-  console.log('FoundWordsModal - foundWords:', foundWords);
-  console.log('FoundWordsModal - foundWordsBoardNumbers:', foundWordsBoardNumbers);
-  console.log('FoundWordsModal - score:', score);
   
   const scaleAnim = useRef(new Animated.Value(0)).current;
 
@@ -45,8 +41,6 @@ export default function FoundWordsModal({
 
   const sortedLengths = Object.keys(wordsByLength).sort((a, b) => parseInt(b) - parseInt(a));
 
-  console.log('FoundWordsModal - wordsByLength:', wordsByLength);
-  console.log('FoundWordsModal - sortedLengths:', sortedLengths);
 
   return (
     <Portal>

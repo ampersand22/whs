@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import {
   View,
   ImageBackground,
@@ -57,12 +57,11 @@ function GameScreen() {
 
   // Monitor game logic modal state and sync with local state
   React.useEffect(() => {
-    if (gameLogic.showGameOverModal && !foundWordsModalVisible) {
-      setGameOverModalVisible(true);
-    } else {
-      setGameOverModalVisible(false);
+    const shouldShowModal = gameLogic.showGameOverModal && !foundWordsModalVisible;
+    if (shouldShowModal !== gameOverModalVisible) {
+      setGameOverModalVisible(shouldShowModal);
     }
-  }, [gameLogic.showGameOverModal, foundWordsModalVisible]);
+  }, [gameLogic.showGameOverModal, foundWordsModalVisible, gameOverModalVisible]);
 
   // Initialize game on mount
   useEffect(() => {
@@ -72,17 +71,12 @@ function GameScreen() {
   // Add navigation focus listener for debugging
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
-      console.log('GameScreen focused');
     });
 
     const unsubscribeBlur = navigation.addListener('blur', () => {
-      console.log('GameScreen blurred - this might explain why modal disappears');
-      console.log('Navigation blur event - something is navigating away from GameScreen');
     });
 
     const unsubscribeBeforeRemove = navigation.addListener('beforeRemove', (e) => {
-      console.log('GameScreen beforeRemove event:', e.data.action);
-      console.log('Something is trying to remove/navigate away from GameScreen');
     });
 
     return () => {
@@ -94,14 +88,10 @@ function GameScreen() {
 
   // Monitor modal state changes
   useEffect(() => {
-    console.log('GameScreen - showGameOverModal changed to:', gameLogic.showGameOverModal);
     if (gameLogic.showGameOverModal) {
-      console.log('Modal should be visible now - checking if screen is still focused');
       
       // Add a longer delay to see if navigation happens during this time
       setTimeout(() => {
-        console.log('After 2 seconds - modal should still be visible');
-        console.log('Current modal state:', gameLogic.showGameOverModal);
       }, 2000);
     }
   }, [gameLogic.showGameOverModal]);
@@ -109,7 +99,6 @@ function GameScreen() {
   // Add effect to monitor when component unmounts
   useEffect(() => {
     return () => {
-      console.log('GameScreen component is unmounting - this explains why modal disappears');
     };
   }, []);
 
@@ -124,11 +113,10 @@ function GameScreen() {
     }
   };
 
-  const goBackToStart = () => {
-    console.log('goBackToStart called - this is what causes navigation to Start screen');
-    console.log('Call stack:', new Error().stack);
-    navigation.goBack();
-  };
+  const goBackToStart = useCallback(() => {
+    console.log('🔍 GameScreen: Navigating back to Start screen');
+    navigation.navigate('Start');
+  }, [navigation]);
 
   // Menu modal handlers
   const handleShowMenu = () => {
@@ -139,28 +127,20 @@ function GameScreen() {
     setMenuModalVisible(false);
   };
 
-  const handleRestartGame = async () => {
+  const handleRestartGame = useCallback(async () => {
     setMenuModalVisible(false);
-    
-
-    
     gameLogic.restartGame();
-  };
+  }, [gameLogic]);
 
-  const handleBackToMenu = async () => {
-    console.log('handleBackToMenu called');
+  const handleBackToMenu = useCallback(async () => {
+    console.log('🔍 GameScreen: handleBackToMenu called');
     setMenuModalVisible(false);
-    
-
-    
-    console.log('handleBackToMenu: About to call goBackToStart');
     goBackToStart();
-  };
+  }, [goBackToStart]);
 
   const currentBackgroundImage = getBackgroundImage(gameLogic.resetCount);
 
   // Debug: Log modal visibility state
-  console.log('GameScreen render - showGameOverModal:', gameLogic.showGameOverModal, 'gameOverVisible:', gameLogic.gameOverVisible);
 
   // Render main game screen
   return (
@@ -271,20 +251,14 @@ function GameScreen() {
         isNewHighScore={gameLogic.isNewHighScore}
         foundWords={gameLogic.foundWords}
         onPlayAgain={async () => {
-          console.log('Play Again pressed');
           setGameOverModalVisible(false);
           gameLogic.restartGame();
         }}
         onMainMenu={async () => {
-          console.log('Main Menu pressed');
           setGameOverModalVisible(false);
           goBackToStart();
         }}
         onShowFoundWords={() => {
-          console.log('Show Found Words pressed');
-          console.log('GameScreen - foundWords:', gameLogic.foundWords);
-          console.log('GameScreen - foundWordsBoardNumbers:', gameLogic.foundWordsBoardNumbers);
-          console.log('GameScreen - score:', gameLogic.score);
           setGameOverModalVisible(false); // Close game over modal first
           setFoundWordsModalVisible(true); // Then show found words modal
         }}
@@ -294,7 +268,6 @@ function GameScreen() {
       <FoundWordsModal
         visible={foundWordsModalVisible}
         onClose={() => {
-          console.log('Found Words modal closed');
           setFoundWordsModalVisible(false);
           setGameOverModalVisible(true); // Return to game over modal
         }}

@@ -43,14 +43,12 @@ const ProfileScreen = ({ navigation }) => {
         .single();
 
       if (error) {
-        console.error("Error loading user data:", error);
         Alert.alert("Error", "Failed to load profile data");
       } else {
         setUserData(data);
         setDisplayName(data.display_name || "");
       }
     } catch (error) {
-      console.error("Error loading user data:", error);
       Alert.alert("Error", "Failed to load profile data");
     } finally {
       setLoading(false);
@@ -71,7 +69,6 @@ const ProfileScreen = ({ navigation }) => {
         .eq("id", user.id);
 
       if (error) {
-        console.error("Error updating profile:", error);
         Alert.alert("Error", "Failed to update profile");
       } else {
         Alert.alert("Success", "Profile updated successfully!");
@@ -79,7 +76,6 @@ const ProfileScreen = ({ navigation }) => {
         await loadUserData();
       }
     } catch (error) {
-      console.error("Error updating profile:", error);
       Alert.alert("Error", "Failed to update profile");
     } finally {
       setSaving(false);
@@ -122,7 +118,6 @@ const ProfileScreen = ({ navigation }) => {
       });
 
       if (updateError) {
-        console.error("Error updating password:", updateError);
         Alert.alert("Error", "Failed to update password");
       } else {
         Alert.alert("Success", "Password updated successfully!");
@@ -132,7 +127,6 @@ const ProfileScreen = ({ navigation }) => {
         setConfirmPassword("");
       }
     } catch (error) {
-      console.error("Error changing password:", error);
       Alert.alert("Error", "Failed to update password");
     } finally {
       setSaving(false);

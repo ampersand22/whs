@@ -26,11 +26,8 @@ export default function GameOverModal({
   const celebrationAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
-    console.log('GameOverModal visibility changed:', visible);
-    console.log('GameOverModal props:', { score, foundWords: foundWords?.length, isNewHighScore });
     
     if (visible) {
-      console.log('GameOverModal: Starting animation');
       // Animate modal appearance
       Animated.parallel([
         Animated.timing(scaleAnim, {
@@ -84,7 +81,6 @@ export default function GameOverModal({
         pulseAnimation.stop();
       };
     } else {
-      console.log('GameOverModal: Resetting animation');
       // Reset animation values
       scaleAnim.setValue(0.8);
       opacityAnim.setValue(0);

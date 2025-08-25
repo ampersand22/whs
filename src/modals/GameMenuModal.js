@@ -24,6 +24,11 @@ const GameMenuModal = ({ visible, onClose, onRestart, onBackToMenu }) => {
   // State for confirmation dialog
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
 
+  // Debug effect to track confirmation dialog state
+  useEffect(() => {
+    console.log('🔍 GameMenuModal: showConfirmDialog changed to:', showConfirmDialog);
+  }, [showConfirmDialog]);
+
   useEffect(() => {
     if (visible) {
       Animated.parallel([
@@ -74,15 +79,22 @@ const GameMenuModal = ({ visible, onClose, onRestart, onBackToMenu }) => {
   }, [visible]);
 
   const handleBackToMenuPress = () => {
-    setShowConfirmDialog(true);
+    console.log('🔍 GameMenuModal: Back to Menu button pressed - calling onBackToMenu directly');
+    if (onBackToMenu) {
+      onBackToMenu();
+    }
   };
 
   const handleConfirmBackToMenu = () => {
+    console.log('🔍 GameMenuModal: User confirmed back to menu - calling onBackToMenu');
     setShowConfirmDialog(false);
-    onBackToMenu();
+    if (onBackToMenu) {
+      onBackToMenu();
+    }
   };
 
   const handleCancelBackToMenu = () => {
+    console.log('🔍 GameMenuModal: User cancelled back to menu');
     setShowConfirmDialog(false);
   };
 
@@ -244,45 +256,6 @@ const GameMenuModal = ({ visible, onClose, onRestart, onBackToMenu }) => {
             </View>
           </Animated.View>
         </View>
-
-        {/* Confirmation Dialog */}
-        <Portal>
-          <Dialog 
-            visible={showConfirmDialog} 
-            onDismiss={handleCancelBackToMenu}
-            style={{ backgroundColor: 'white', borderRadius: 16 }}
-          >
-            <Dialog.Title style={{ textAlign: 'center', fontSize: 20 }}>
-              🤔 Leave Game?
-            </Dialog.Title>
-            <Dialog.Content>
-              <Paragraph style={{ textAlign: 'center', fontSize: 16, lineHeight: 24 }}>
-                Are you sure you want to go back to the main menu? 
-                {'\n\n'}
-                <Text style={{ fontWeight: 'bold', color: '#d32f2f' }}>
-                  Your current progress will be lost!
-                </Text>
-              </Paragraph>
-            </Dialog.Content>
-            <Dialog.Actions style={{ justifyContent: 'space-around', paddingHorizontal: 16 }}>
-              <Button 
-                onPress={handleCancelBackToMenu}
-                textColor="#666"
-                style={{ flex: 1, marginRight: 8 }}
-              >
-                Cancel
-              </Button>
-              <Button 
-                mode="contained"
-                onPress={handleConfirmBackToMenu}
-                buttonColor="#d32f2f"
-                style={{ flex: 1, marginLeft: 8 }}
-              >
-                Leave Game
-              </Button>
-            </Dialog.Actions>
-          </Dialog>
-        </Portal>
       </Modal>
     </Portal>
   );

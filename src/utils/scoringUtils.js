@@ -65,7 +65,6 @@ const getWordLengthCategory = (wordLength) => {
  */
 export const getPointsForWord = (word, boardNumber) => {
   if (!word || typeof word !== 'string') {
-    console.warn('Invalid word provided to getPointsForWord:', word);
     return 0;
   }
 
@@ -77,7 +76,6 @@ export const getPointsForWord = (word, boardNumber) => {
   
   const points = SCORING_MATRIX[lengthCategory][boardKey];
   
-  console.log(`Scoring: "${word}" (${wordLength} letters) on board ${boardNumber + 1} = ${points} points`);
   
   return points;
 };
@@ -89,7 +87,6 @@ export const getPointsForWord = (word, boardNumber) => {
  * @returns {number} Points for the word (using old system)
  */
 export const getPointsPerWord = (resetCount) => {
-  console.warn('getPointsPerWord is deprecated. Use getPointsForWord instead.');
   switch (resetCount) {
     case 0:
       return 100;

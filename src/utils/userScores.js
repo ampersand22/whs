@@ -11,7 +11,6 @@ import { supabase } from '../config/supabase';
  */
 export const saveUserScore = async (user, score, timeLeft, foundWords, gameDuration = 300) => {
   if (!user) {
-    console.log("No authenticated user to save score");
     return null;
   }
 
@@ -24,7 +23,6 @@ export const saveUserScore = async (user, score, timeLeft, foundWords, gameDurat
       .single();
 
     if (userError) {
-      console.error('Error fetching user data:', userError);
       return null;
     }
 
@@ -43,14 +41,11 @@ export const saveUserScore = async (user, score, timeLeft, foundWords, gameDurat
       });
 
     if (error) {
-      console.error("Error saving score:", error);
       return null;
     }
 
-    console.log("Score saved successfully!");
     return data?.[0]?.game_score_id || null;
   } catch (error) {
-    console.error("Error saving score:", error);
     return null;
   }
 };
@@ -73,13 +68,11 @@ export const getUserHighScore = async (userId) => {
       .single();
     
     if (error) {
-      console.error("Error getting high score:", error);
       return 0;
     }
 
     return data?.high_score || 0;
   } catch (error) {
-    console.error("Error getting high score:", error);
     return 0;
   }
 };
@@ -104,13 +97,11 @@ export const getUserRecentScores = async (userId, limit = 10) => {
       .limit(limit);
     
     if (error) {
-      console.error("Error getting recent scores:", error);
       return [];
     }
 
     return data || [];
   } catch (error) {
-    console.error("Error getting recent scores:", error);
     return [];
   }
 };
@@ -132,13 +123,11 @@ export const getMonthlyLeaderboard = async (year, month, limit = 10) => {
       });
     
     if (error) {
-      console.error("Error getting leaderboard:", error);
       return [];
     }
 
     return data || [];
   } catch (error) {
-    console.error("Error getting leaderboard:", error);
     return [];
   }
 };
@@ -174,7 +163,6 @@ export const getUserMonthlyRank = async (userId, year, month) => {
     
     return userEntry?.rank || null;
   } catch (error) {
-    console.error("Error getting user rank:", error);
     return null;
   }
 };
@@ -198,13 +186,11 @@ export const getUserStars = async (userId) => {
       .order('month', { ascending: false });
     
     if (error) {
-      console.error("Error getting user stars:", error);
       return [];
     }
 
     return data || [];
   } catch (error) {
-    console.error("Error getting user stars:", error);
     return [];
   }
 };

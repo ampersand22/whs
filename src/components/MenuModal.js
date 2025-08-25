@@ -20,10 +20,8 @@ const MenuModal = ({
       if (supported) {
         await Linking.openURL(patreonUrl);
       } else {
-        console.log("Can't open Patreon URL");
       }
     } catch (error) {
-      console.error('Error opening Patreon:', error);
     }
   };
 

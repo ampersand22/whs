@@ -16,7 +16,6 @@ class ErrorBoundary extends React.Component {
     // Log error to crash reporting service in production
     if (!__DEV__) {
       // You can integrate with Sentry, Crashlytics, etc. here
-      console.error('Production Error:', error, errorInfo);
     }
   }
 

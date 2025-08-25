@@ -76,12 +76,10 @@ const LeaderboardModal = ({ visible, onClose }) => {
       });
 
       if (error) {
-        console.error("Error loading leaderboard:", error);
       } else {
         setLeaderboard(data || []);
       }
     } catch (error) {
-      console.error("Error loading leaderboard:", error);
     } finally {
       setLoadingLeaderboard(false);
     }
