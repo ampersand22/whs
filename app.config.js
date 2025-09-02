@@ -28,7 +28,7 @@ export default {
     ios: {
       supportsTablet: true,
       bundleIdentifier: "com.worrzle.app",
-      buildNumber: "10",
+      buildNumber: "11",
       runtimeVersion: "1.0.0",
       infoPlist: {
         NSUserTrackingUsageDescription:
@@ -44,7 +44,7 @@ export default {
     ],
     android: {
       package: "com.worrzle.app",
-      versionCode: 8,
+      versionCode: 9,
       adaptiveIcon: {
         foregroundImage: "./assets/adaptive-icon.png",
         backgroundColor: "#6B46C1",
