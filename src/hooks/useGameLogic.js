@@ -180,6 +180,7 @@ export const useGameLogic = () => {
     endTimer, // Temporary for testing
     setPreviewWord,
     setIsTouching,
+    setShowGameOverModal,
     
     // Constants
     INITIAL_TIME,

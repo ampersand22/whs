@@ -114,8 +114,31 @@ function GameScreen() {
   };
 
   const goBackToStart = useCallback(() => {
-    console.log('🔍 GameScreen: Navigating back to Start screen');
-    navigation.navigate('Start');
+    console.log('🔍 GameScreen: goBackToStart FUNCTION CALLED');
+    console.log('🔍 GameScreen: Navigation object exists:', !!navigation);
+    console.log('🔍 GameScreen: Navigation methods:', Object.keys(navigation || {}));
+    
+    try {
+      console.log('🔍 GameScreen: Attempting navigation.navigate("Start")');
+      navigation.navigate('Start');
+      console.log('🔍 GameScreen: Navigation command sent successfully');
+      
+      // Add a small delay to see if navigation actually happens
+      setTimeout(() => {
+        console.log('🔍 GameScreen: 1 second after navigation - should be on Start screen now');
+      }, 1000);
+      
+    } catch (error) {
+      console.error('🔍 GameScreen: Navigation error:', error);
+      console.log('🔍 GameScreen: Trying alternative navigation methods...');
+      
+      try {
+        navigation.goBack();
+        console.log('🔍 GameScreen: Fallback goBack() successful');
+      } catch (fallbackError) {
+        console.error('🔍 GameScreen: All navigation methods failed:', fallbackError);
+      }
+    }
   }, [navigation]);
 
   // Menu modal handlers
@@ -254,9 +277,13 @@ function GameScreen() {
           setGameOverModalVisible(false);
           gameLogic.restartGame();
         }}
-        onMainMenu={async () => {
+        onMainMenu={() => {
+          console.log('🔍 GameScreen: Game Over Modal Main Menu HANDLER CALLED');
           setGameOverModalVisible(false);
-          goBackToStart();
+          gameLogic.setShowGameOverModal(false);
+          setTimeout(() => {
+            goBackToStart();
+          }, 100);
         }}
         onShowFoundWords={() => {
           setGameOverModalVisible(false); // Close game over modal first

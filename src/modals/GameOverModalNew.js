@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from "react";
-import { View, Text, Dimensions, Animated } from "react-native";
-import { Portal, Dialog, Button } from "react-native-paper";
+import { View, Text, Dimensions, Animated, Modal, Pressable } from "react-native";
+import { Portal, Button } from "react-native-paper";
 import ConfettiCannon from 'react-native-confetti-cannon';
 
 const { width, height } = Dimensions.get('window');
@@ -15,6 +15,8 @@ export default function GameOverModalNew({
   isNewHighScore = false,
   foundWords = []
 }) {
+  console.log('🔍 GameOverModalNew: Rendering with visible =', visible);
+  console.log('🔍 GameOverModalNew: onMainMenu function exists?', typeof onMainMenu === 'function');
   
   const scaleAnim = useRef(new Animated.Value(0)).current;
   const confettiRef = useRef(null);
@@ -42,25 +44,41 @@ export default function GameOverModalNew({
 
   return (
     <Portal>
-      <Dialog 
-        visible={visible} 
-        onDismiss={() => {
-          // Do nothing - prevent dismissal
+      <Modal
+        visible={visible}
+        transparent
+        animationType="none"
+        onRequestClose={() => {
+          console.log('🔍 GameOverModalNew - Modal onRequestClose called');
+          // Prevent dismissal - user must use buttons
         }}
-        style={{ backgroundColor: 'transparent' }}
       >
-        <Animated.View style={{
-          backgroundColor: 'white',
-          borderRadius: 16,
-          padding: 30,
-          margin: 16,
-          alignItems: 'center',
-          width: width * 0.9,
-          maxWidth: 500,
-          minWidth: 320,
-          alignSelf: 'center',
-          transform: [{ scale: scaleAnim }]
-        }}>
+        <Pressable 
+          style={{
+            flex: 1,
+            backgroundColor: 'rgba(0,0,0,0.5)',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+          onPress={() => {
+            console.log('🔍 GameOverModalNew - Background pressed (should not close)');
+            // Don't close on background press
+          }}
+        >
+          <Pressable
+            onPress={(e) => e.stopPropagation()}
+          >
+            <Animated.View style={{
+              backgroundColor: 'white',
+              borderRadius: 16,
+              padding: 30,
+              margin: 16,
+              alignItems: 'center',
+              width: width * 0.9,
+              maxWidth: 500,
+              minWidth: 320,
+              transform: [{ scale: scaleAnim }]
+            }}>
           {/* Confetti for new high score */}
           {isNewHighScore && (
             <ConfettiCannon
@@ -228,9 +246,22 @@ export default function GameOverModalNew({
             
             <Button
               mode="outlined"
-              onPress={async () => {
+              onPress={() => {
+                console.log('🚨 MAIN MENU BUTTON PRESSED! 🚨');
+                console.log('🔍 GameOverModalNew: Main Menu button CLICKED');
+                console.log('🔍 GameOverModalNew: onMainMenu prop type:', typeof onMainMenu);
+                console.log('🔍 GameOverModalNew: onMainMenu exists:', !!onMainMenu);
+                
                 if (onMainMenu) {
-                  await onMainMenu();
+                  console.log('🔍 GameOverModalNew: About to call onMainMenu function');
+                  try {
+                    onMainMenu();
+                    console.log('🔍 GameOverModalNew: onMainMenu called successfully');
+                  } catch (error) {
+                    console.error('🔍 GameOverModalNew: Error calling onMainMenu:', error);
+                  }
+                } else {
+                  console.error('🔍 GameOverModalNew: onMainMenu is not available!');
                 }
               }}
               style={{
@@ -253,7 +284,9 @@ export default function GameOverModalNew({
             </Button>
           </View>
         </Animated.View>
-      </Dialog>
+          </Pressable>
+        </Pressable>
+      </Modal>
     </Portal>
   );
 }

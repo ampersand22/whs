@@ -4,7 +4,7 @@ export default {
   expo: {
     name: "Worrzle",
     slug: "worrzle",
-    version: "1.0.5",
+    version: "1.0.0",
     orientation: "portrait",
     icon: "./assets/icon.png",
     userInterfaceStyle: "light",
@@ -27,9 +27,9 @@ export default {
     },
     ios: {
       supportsTablet: true,
-      bundleIdentifier: "com.worrzle.app", // You can change this to your preferred bundle ID
-      buildNumber: "9",
-      runtimeVersion: "1.0.5",
+      bundleIdentifier: "com.worrzle.app",
+      buildNumber: "10",
+      runtimeVersion: "1.0.0",
       infoPlist: {
         NSUserTrackingUsageDescription:
           "This app uses advertising ID for personalized ads and analytics to improve your gaming experience.",
@@ -42,12 +42,9 @@ export default {
     plugins: [
       // "expo-dev-client", // Only for development builds
     ],
-    // updates: {
-    //   url: "https://u.expo.dev/a329fc47-12f7-4466-8fa6-781ed75ea686",
-    // },
     android: {
-      package: "com.worrzle.app", // You can change this to match your iOS bundle ID
-      versionCode: 7,
+      package: "com.worrzle.app",
+      versionCode: 8,
       adaptiveIcon: {
         foregroundImage: "./assets/adaptive-icon.png",
         backgroundColor: "#6B46C1",
@@ -59,8 +56,8 @@ export default {
       },
     },
     extra: {
-      supabaseUrl: process.env.SUPABASE_URL,
-      supabaseAnonKey: process.env.SUPABASE_ANON_KEY,
+      supabaseUrl: process.env.SUPABASE_URL || process.env.EXPO_PUBLIC_SUPABASE_URL,
+      supabaseAnonKey: process.env.SUPABASE_ANON_KEY || process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY,
       eas: {
         projectId: "a329fc47-12f7-4466-8fa6-781ed75ea686",
       },
