@@ -143,17 +143,10 @@ const StartScreen = ({ navigation }) => {
     return (
       <ImageBackground 
         source={require('../../assets/background1.png')} 
-        style={{ 
-          flex: 1, 
-          width: screenWidth, 
-          height: screenHeight,
-          position: 'absolute',
-          top: 0,
-          left: 0
-        }}
+        style={{ flex: 1 }}
         resizeMode="cover"
       >
-        <SafeAreaView style={{ flex: 1 }}>
+        <SafeAreaView style={{ flex: 1 }} edges={['top', 'left', 'right', 'bottom']}>
           <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
             <ActivityIndicator size="large" />
             <Text style={{ marginTop: 16 }}>Loading...</Text>
@@ -166,24 +159,18 @@ const StartScreen = ({ navigation }) => {
   return (
     <ImageBackground 
       source={require('../../assets/background1.png')} 
-      style={{ 
-        flex: 1, 
-        width: screenWidth, 
-        height: screenHeight,
-        position: 'absolute',
-        top: 0,
-        left: 0
-      }}
+      style={{ flex: 1 }}
       resizeMode="cover"
     >
-      <SafeAreaView style={{ flex: 1 }} data-testid="start-screen">
+      <SafeAreaView style={{ flex: 1 }} edges={['top', 'left', 'right', 'bottom']} data-testid="start-screen">
         <KeyboardAvoidingView 
           style={{ flex: 1 }} 
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
           keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
         >
           <ScrollView 
-            style={{ flexGrow: 1 }}
+            style={{ flex: 1 }}
+            contentContainerStyle={{ flexGrow: 1 }}
             keyboardShouldPersistTaps="handled"
             showsVerticalScrollIndicator={false}
           >

@@ -131,6 +131,7 @@ function AppNavigator() {
           component={GameScreen}
           options={{
             title: "Game",
+            gestureEnabled: false,
           }}
         />
         <Stack.Screen

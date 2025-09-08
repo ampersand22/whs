@@ -24,11 +24,6 @@ const GameMenuModal = ({ visible, onClose, onRestart, onBackToMenu }) => {
   // State for confirmation dialog
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
 
-  // Debug effect to track confirmation dialog state
-  useEffect(() => {
-    console.log('🔍 GameMenuModal: showConfirmDialog changed to:', showConfirmDialog);
-  }, [showConfirmDialog]);
-
   useEffect(() => {
     if (visible) {
       Animated.parallel([
@@ -79,14 +74,12 @@ const GameMenuModal = ({ visible, onClose, onRestart, onBackToMenu }) => {
   }, [visible]);
 
   const handleBackToMenuPress = () => {
-    console.log('🔍 GameMenuModal: Back to Menu button pressed - calling onBackToMenu directly');
     if (onBackToMenu) {
       onBackToMenu();
     }
   };
 
   const handleConfirmBackToMenu = () => {
-    console.log('🔍 GameMenuModal: User confirmed back to menu - calling onBackToMenu');
     setShowConfirmDialog(false);
     if (onBackToMenu) {
       onBackToMenu();
@@ -94,7 +87,6 @@ const GameMenuModal = ({ visible, onClose, onRestart, onBackToMenu }) => {
   };
 
   const handleCancelBackToMenu = () => {
-    console.log('🔍 GameMenuModal: User cancelled back to menu');
     setShowConfirmDialog(false);
   };
 

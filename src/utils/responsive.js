@@ -6,28 +6,41 @@ const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 // Device type detection
 export const isTablet = () => {
   const aspectRatio = screenHeight / screenWidth;
+  const minDimension = Math.min(screenWidth, screenHeight);
+  
   return (
     (Platform.OS === 'ios' && aspectRatio < 1.6) ||
-    (Platform.OS === 'android' && screenWidth >= 600)
+    (Platform.OS === 'android' && minDimension >= 600)
   );
 };
 
 export const isLargeTablet = () => {
-  return screenWidth >= 768;
+  const minDimension = Math.min(screenWidth, screenHeight);
+  return minDimension >= 768;
 };
 
 export const isSmallPhone = () => {
-  return screenWidth < 375;
+  const minDimension = Math.min(screenWidth, screenHeight);
+  return minDimension < 375;
 };
 
 // Responsive dimensions
 export const getResponsiveDimensions = () => {
   const isTab = isTablet();
   const isLargeTab = isLargeTablet();
+  const minDimension = Math.min(screenWidth, screenHeight);
+  const maxDimension = Math.max(screenWidth, screenHeight);
+  
+  // Calculate grid size based on available space
+  const availableWidth = minDimension * 0.9;
+  const availableHeight = maxDimension * 0.6; // Leave space for header and controls
+  const gridSize = Math.min(availableWidth, availableHeight);
   
   return {
-    // Grid sizing
-    gridMaxWidth: isLargeTab ? 500 : isTab ? 400 : screenWidth * 0.9,
+    // Grid sizing - responsive to actual screen size
+    gridMaxWidth: isLargeTab ? Math.min(500, gridSize) : 
+                  isTab ? Math.min(400, gridSize) : 
+                  Math.min(screenWidth * 0.9, gridSize),
     gridPadding: isTab ? 20 : 10,
     
     // Font sizes
@@ -36,14 +49,20 @@ export const getResponsiveDimensions = () => {
     bodyFontSize: isLargeTab ? 18 : isTab ? 16 : 14,
     letterFontSize: isLargeTab ? 32 : isTab ? 28 : 24,
     
-    // Spacing
-    containerPadding: isTab ? 24 : 16,
-    sectionSpacing: isTab ? 20 : 16,
+    // Spacing - responsive to screen size
+    containerPadding: isTab ? 24 : Math.max(16, screenWidth * 0.04),
+    sectionSpacing: isTab ? 20 : Math.max(12, screenHeight * 0.02),
     buttonHeight: isTab ? 56 : 48,
     
     // Layout
     useHorizontalLayout: isTab && screenWidth > screenHeight,
     sidebarWidth: isLargeTab ? 300 : 250,
+    
+    // Screen dimensions
+    screenWidth,
+    screenHeight,
+    minDimension,
+    maxDimension,
   };
 };
 

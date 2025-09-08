@@ -24,14 +24,6 @@ const getSupabaseConfig = () => {
 
 const { supabaseUrl, supabaseAnonKey } = getSupabaseConfig();
 
-// Debug logging (only in development)
-if (__DEV__) {
-  console.log('Supabase URL:', supabaseUrl);
-  console.log('Supabase Key exists:', !!supabaseAnonKey);
-  console.log('Constants.expoConfig.extra:', Constants.expoConfig?.extra);
-  console.log('Constants.expoConfig:', Constants.expoConfig);
-}
-
 // Validate configuration
 if (!supabaseUrl || !supabaseAnonKey) {
   const errorMessage = `Missing Supabase environment variables:
@@ -91,9 +83,6 @@ export const setupAuthListener = (callback) => {
   try {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
-        if (__DEV__) {
-          console.log('Auth event:', event, session?.user?.email);
-        }
         callback(event, session);
       }
     );

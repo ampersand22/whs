@@ -86,38 +86,44 @@ const useUserStore = create(
         try {
           set({ isLoading: true, error: null });
 
-          // Sign up with Supabase Auth
           const { data: authData, error: authError } = await supabase.auth.signUp({
             email,
             password,
           });
 
           if (authError) {
-            set({ error: authError.message, isLoading: false });
-            return { success: false, error: authError.message };
+            const friendlyError = get().getFriendlyAuthError(authError.message);
+            set({ error: friendlyError, isLoading: false });
+            return { success: false, error: friendlyError };
           }
 
-          // If user is created, add to our users table
-          if (authData.user) {
+          if (authData.user && authData.session) {
             const { error: dbError } = await supabase
               .from('whs-users')
               .insert({
                 id: authData.user.id,
                 email: authData.user.email,
                 display_name: displayName,
-                password_hash: 'handled_by_supabase_auth', // Placeholder since Supabase handles this
+                password_hash: 'handled_by_supabase_auth',
               });
 
             if (dbError) {
-              // Don't fail the signup if profile creation fails
+              console.warn('Profile creation failed:', dbError);
             }
+
+            set({ 
+              user: authData.user, 
+              isAuthenticated: true, 
+              isLoading: false 
+            });
           }
 
           set({ isLoading: false });
           return { success: true, user: authData.user };
         } catch (error) {
-          set({ error: error.message, isLoading: false });
-          return { success: false, error: error.message };
+          const friendlyError = get().getFriendlyAuthError(error.message);
+          set({ error: friendlyError, isLoading: false });
+          return { success: false, error: friendlyError };
         }
       },
 
@@ -132,15 +138,17 @@ const useUserStore = create(
           });
 
           if (error) {
-            set({ error: error.message, isLoading: false });
-            return { success: false, error: error.message };
+            const friendlyError = get().getFriendlyAuthError(error.message);
+            set({ error: friendlyError, isLoading: false });
+            return { success: false, error: friendlyError };
           }
 
           await get().setUserSession(data.session);
           return { success: true, user: data.user };
         } catch (error) {
-          set({ error: error.message, isLoading: false });
-          return { success: false, error: error.message };
+          const friendlyError = get().getFriendlyAuthError(error.message);
+          set({ error: friendlyError, isLoading: false });
+          return { success: false, error: friendlyError };
         }
       },
 
@@ -176,6 +184,39 @@ const useUserStore = create(
           set({ error: error.message, isLoading: false });
           return { success: false, error: error.message };
         }
+      },
+
+      // Helper to convert technical errors to user-friendly messages
+      getFriendlyAuthError: (errorMessage) => {
+        const message = errorMessage.toLowerCase();
+        
+        if (message.includes('invalid login credentials') || message.includes('invalid email or password')) {
+          return 'Invalid email or password. Please check your credentials and try again.';
+        }
+        if (message.includes('user already registered')) {
+          return 'An account with this email already exists. Try signing in instead.';
+        }
+        if (message.includes('invalid email')) {
+          return 'Please enter a valid email address.';
+        }
+        if (message.includes('password should be at least')) {
+          return 'Password must be at least 6 characters long.';
+        }
+        if (message.includes('signup is disabled')) {
+          return 'Account creation is currently disabled. Please try again later.';
+        }
+        if (message.includes('email not confirmed')) {
+          return 'Please check your email and confirm your account before signing in.';
+        }
+        if (message.includes('too many requests')) {
+          return 'Too many attempts. Please wait a moment before trying again.';
+        }
+        if (message.includes('network') || message.includes('fetch')) {
+          return 'Network error. Please check your connection and try again.';
+        }
+        
+        // Return original message if no match found
+        return errorMessage;
       },
 
       // Fetch user stats from database

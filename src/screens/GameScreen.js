@@ -114,27 +114,13 @@ function GameScreen() {
   };
 
   const goBackToStart = useCallback(() => {
-    console.log('🔍 GameScreen: goBackToStart FUNCTION CALLED');
-    console.log('🔍 GameScreen: Navigation object exists:', !!navigation);
-    console.log('🔍 GameScreen: Navigation methods:', Object.keys(navigation || {}));
-    
     try {
-      console.log('🔍 GameScreen: Attempting navigation.navigate("Start")');
       navigation.navigate('Start');
-      console.log('🔍 GameScreen: Navigation command sent successfully');
-      
-      // Add a small delay to see if navigation actually happens
-      setTimeout(() => {
-        console.log('🔍 GameScreen: 1 second after navigation - should be on Start screen now');
-      }, 1000);
-      
     } catch (error) {
       console.error('🔍 GameScreen: Navigation error:', error);
-      console.log('🔍 GameScreen: Trying alternative navigation methods...');
       
       try {
         navigation.goBack();
-        console.log('🔍 GameScreen: Fallback goBack() successful');
       } catch (fallbackError) {
         console.error('🔍 GameScreen: All navigation methods failed:', fallbackError);
       }
@@ -156,7 +142,6 @@ function GameScreen() {
   }, [gameLogic]);
 
   const handleBackToMenu = useCallback(async () => {
-    console.log('🔍 GameScreen: handleBackToMenu called');
     setMenuModalVisible(false);
     goBackToStart();
   }, [goBackToStart]);
@@ -170,40 +155,30 @@ function GameScreen() {
     <View style={{ flex: 1 }}>
       <ImageBackground
         source={currentBackgroundImage}
-        style={{
-          flex: 1,
-          width: screenWidth,
-          height: screenHeight,
-          position: 'absolute',
-          top: 0,
-          left: 0
-        }}
+        style={{ flex: 1 }}
         resizeMode="cover"
         data-testid="game-background"
       >
         <SafeAreaView
-          style={{ flex: 1, width: '100%' }}
-          edges={['top', 'left', 'right']}
+          style={{ flex: 1 }}
+          edges={['top', 'left', 'right', 'bottom']}
           data-testid="game-safe-area"
         >
           <View
             style={{
               flex: 1,
               justifyContent: 'space-between',
+              paddingHorizontal: dimensions.containerPadding,
               paddingBottom: 8,
             }}
             data-testid="game-main-container"
           >
             {/* Header */}
-            <View style={{ width: '100%' }}>
-              <GameHeader
-                score={gameLogic.score}
-                timeLeft={gameLogic.timeLeft}
-                resetCount={gameLogic.resetCount}
-              />
-            </View>
-
-
+            <GameHeader
+              score={gameLogic.score}
+              timeLeft={gameLogic.timeLeft}
+              resetCount={gameLogic.resetCount}
+            />
 
             {/* Main Game Area */}
             <View
@@ -211,7 +186,7 @@ function GameScreen() {
                 alignItems: 'center',
                 justifyContent: 'center',
                 flex: 1,
-                marginTop: 0,
+                paddingVertical: dimensions.sectionSpacing,
               }}
             >
               {/* Word Preview */}
@@ -278,7 +253,6 @@ function GameScreen() {
           gameLogic.restartGame();
         }}
         onMainMenu={() => {
-          console.log('🔍 GameScreen: Game Over Modal Main Menu HANDLER CALLED');
           setGameOverModalVisible(false);
           gameLogic.setShowGameOverModal(false);
           setTimeout(() => {
