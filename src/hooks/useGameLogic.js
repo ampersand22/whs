@@ -40,28 +40,25 @@ export const useGameLogic = () => {
 
   // Game timer effect
   useEffect(() => {
-    // Don't run timer if game is over
-    if (gameOverVisible || showGameOverModal) {
-      return;
-    }
-
-    if (timeLeft <= 0) {
-      handleGameEnd();
+    // Don't start timer if game is over
+    if (gameOverVisible || showGameOverModal || timeLeft <= 0) {
       return;
     }
 
     const timer = setInterval(() => {
       setTimeLeft((prev) => {
-        if (prev <= 1) {
-          // Timer is about to hit 0, don't decrement further
+        const newTime = prev - 1;
+        if (newTime <= 0) {
+          // Timer reached 0, trigger game end
+          setTimeout(() => handleGameEnd(), 0);
           return 0;
         }
-        return prev - 1;
+        return newTime;
       });
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [timeLeft, gameOverVisible, showGameOverModal]);
+  }, [gameOverVisible, showGameOverModal]); // Remove timeLeft from dependencies
 
   // Debug effect to track showGameOverModal changes
   useEffect(() => {
@@ -100,19 +97,18 @@ export const useGameLogic = () => {
   };
 
   const handleGameEnd = async () => {
+    // Prevent multiple calls
+    if (gameOverVisible || showGameOverModal) {
+      return;
+    }
     
-    // Set modal state first and ensure it's rendered before doing async operations
+    // Set modal state first
     setShowGameOverModal(true);
     setGameOverVisible(true);
     
-    
-    // Wait for the next tick to ensure state has been applied and modal is rendered
-    await new Promise(resolve => setTimeout(resolve, 100));
-    
-    if (user) {
+    // Ensure score is saved even if user is not authenticated
+    if (user && score > 0) {
       try {
-        
-        // Only use processGameCompletion since saveUserScore does the same thing
         const gameData = {
           score: score,
           timeLeft: timeLeft,
@@ -121,19 +117,21 @@ export const useGameLogic = () => {
           gameDuration: INITIAL_TIME - timeLeft,
         };
 
+        console.log('Saving game score:', gameData);
         const result = await processGameCompletion(gameData);
 
         if (result.success) {
-
+          console.log('Score saved successfully');
           if (score > userHighScore) {
             setUserHighScore(score);
           }
         } else {
+          console.error('Failed to save score:', result.error);
         }
       } catch (error) {
+        console.error('Error saving game score:', error);
       }
     }
-    
   };
 
   const restartGame = () => {
