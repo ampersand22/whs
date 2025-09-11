@@ -22,7 +22,11 @@ export const useGameLogic = () => {
   const [isWordRepeated, setIsWordRepeated] = useState(false);
   const [isTouching, setIsTouching] = useState(false);
   const [gameOverVisible, setGameOverVisible] = useState(false);
-  const [showGameOverModal, setShowGameOverModal] = useState(false); // Simple boolean state
+  const [showGameOverModal, setShowGameOverModal] = useState(false);
+
+  // Timer refs to prevent Android issues
+  const timerRef = useRef(null);
+  const gameEndedRef = useRef(false);
 
   // Initialize game
   const initializeGame = async () => {
@@ -38,27 +42,49 @@ export const useGameLogic = () => {
     }
   };
 
-  // Game timer effect
+  // Game timer effect - robust implementation for Android
   useEffect(() => {
+    // Clear any existing timer
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+    }
+
     // Don't start timer if game is over
-    if (gameOverVisible || showGameOverModal || timeLeft <= 0) {
+    if (gameOverVisible || showGameOverModal || gameEndedRef.current) {
       return;
     }
 
-    const timer = setInterval(() => {
-      setTimeLeft((prev) => {
-        const newTime = prev - 1;
-        if (newTime <= 0) {
-          // Timer reached 0, trigger game end
-          setTimeout(() => handleGameEnd(), 0);
+    // Start new timer
+    timerRef.current = setInterval(() => {
+      setTimeLeft((prevTime) => {
+        if (prevTime <= 1 || gameEndedRef.current) {
+          // Game should end
+          if (!gameEndedRef.current) {
+            gameEndedRef.current = true;
+            setTimeout(() => handleGameEnd(), 100);
+          }
           return 0;
         }
-        return newTime;
+        return prevTime - 1;
       });
     }, 1000);
 
-    return () => clearInterval(timer);
-  }, [gameOverVisible, showGameOverModal]); // Remove timeLeft from dependencies
+    // Cleanup function
+    return () => {
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+      }
+    };
+  }, [gameOverVisible, showGameOverModal]);
+
+  // Cleanup timer on unmount
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+      }
+    };
+  }, []);
 
   // Debug effect to track showGameOverModal changes
   useEffect(() => {
@@ -98,15 +124,23 @@ export const useGameLogic = () => {
 
   const handleGameEnd = async () => {
     // Prevent multiple calls
-    if (gameOverVisible || showGameOverModal) {
+    if (gameEndedRef.current || gameOverVisible || showGameOverModal) {
       return;
     }
     
-    // Set modal state first
+    gameEndedRef.current = true;
+    
+    // Clear timer immediately
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+      timerRef.current = null;
+    }
+    
+    // Set modal state
     setShowGameOverModal(true);
     setGameOverVisible(true);
     
-    // Ensure score is saved even if user is not authenticated
+    // Save score
     if (user && score > 0) {
       try {
         const gameData = {
@@ -135,6 +169,13 @@ export const useGameLogic = () => {
   };
 
   const restartGame = () => {
+    // Clear timer and reset refs
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+      timerRef.current = null;
+    }
+    gameEndedRef.current = false;
+    
     setResetCount(0);
     setScore(0);
     setFoundWords([]);
@@ -144,8 +185,9 @@ export const useGameLogic = () => {
     setIsWordRepeated(false);
     setIsTouching(false);
     setGameOverVisible(false);
-    setShowGameOverModal(false); // Reset modal state
+    setShowGameOverModal(false);
     initializeGame();
+  };
   };
 
   // Temporary method for testing - manually end the timer
