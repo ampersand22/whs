@@ -52,10 +52,6 @@ export default {
       edgeToEdgeEnabled: true,
       permissions: ["INTERNET", "ACCESS_NETWORK_STATE"],
       runtimeVersion: "1.0.2",
-      proguard: {
-        obfuscate: true,
-        shrinkResources: true,
-      },
     },
     extra: {
       supabaseUrl: process.env.SUPABASE_URL || process.env.EXPO_PUBLIC_SUPABASE_URL,
