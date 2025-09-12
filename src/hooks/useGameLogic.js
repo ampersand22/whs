@@ -188,7 +188,6 @@ export const useGameLogic = () => {
     setShowGameOverModal(false);
     initializeGame();
   };
-  };
 
   // Temporary method for testing - manually end the timer
   const endTimer = () => {
