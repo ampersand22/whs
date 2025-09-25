@@ -29,7 +29,7 @@ export default function LetterGrid({ board, onWordFormed, previewWord, setPrevie
 
   // Get grid position on mount and layout changes
   useEffect(() => {
-    setTimeout(() => {
+    const measureGrid = () => {
       if (gridRef.current) {
         const handle = findNodeHandle(gridRef.current);
         if (handle) {
@@ -43,7 +43,12 @@ export default function LetterGrid({ board, onWordFormed, previewWord, setPrevie
           });
         }
       }
-    }, 500);
+    };
+
+    // Multiple measurement attempts for iPhone 16 compatibility
+    setTimeout(measureGrid, 100);
+    setTimeout(measureGrid, 500);
+    setTimeout(measureGrid, 1000);
   }, []);
 
   const getCurrentWord = () =>
@@ -144,12 +149,12 @@ export default function LetterGrid({ board, onWordFormed, previewWord, setPrevie
     const colOffset = rawCol - col;
     const rowOffset = rawRow - row;
 
-    // Only accept touch if it's within the inner area of the cell (10%-90%)
+    // Accept touch if it's within the cell bounds (more lenient for iPhone 16)
     const isInsideCenter =
-      colOffset >= 0.1 &&
-      colOffset <= 0.9 &&
-      rowOffset >= 0.1 &&
-      rowOffset <= 0.9;
+      colOffset >= 0.05 &&
+      colOffset <= 0.95 &&
+      rowOffset >= 0.05 &&
+      rowOffset <= 0.95;
 
     // Check if the cell is valid and not already selected
     if (
