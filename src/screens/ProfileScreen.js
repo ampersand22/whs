@@ -10,6 +10,7 @@ import {
   ActivityIndicator,
   Divider,
   IconButton,
+  RadioButton,
 } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { supabase } from "../config/supabase";
@@ -22,9 +23,14 @@ const ProfileScreen = ({ navigation }) => {
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [userData, setUserData] = useState(null);
+  const [passwordCardExpanded, setPasswordCardExpanded] = useState(false);
+  const [profileCardExpanded, setProfileCardExpanded] = useState(true);
+  const [accountCardExpanded, setAccountCardExpanded] = useState(false);
+  const [languageCardExpanded, setLanguageCardExpanded] = useState(false);
   
   // Form states
   const [displayName, setDisplayName] = useState("");
+  const [selectedLanguage, setSelectedLanguage] = useState("en");
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -33,7 +39,12 @@ const ProfileScreen = ({ navigation }) => {
     loadUserData();
   }, []);
 
-  const loadUserData = async () => {
+  const loadUserData = async (retryCount = 0) => {
+    if (!user?.id) {
+      Alert.alert("Error", "User not found. Please log in again.");
+      return;
+    }
+
     setLoading(true);
     try {
       const { data, error } = await supabase
@@ -43,13 +54,46 @@ const ProfileScreen = ({ navigation }) => {
         .single();
 
       if (error) {
-        Alert.alert("Error", "Failed to load profile data");
+        console.error("Profile load error:", error);
+        
+        // Check if it's a network error and retry
+        if (error.message?.includes('Network request failed') && retryCount < 2) {
+          console.log(`Retrying profile load... (attempt ${retryCount + 1})`);
+          setTimeout(() => loadUserData(retryCount + 1), 1000);
+          return;
+        }
+        
+        Alert.alert(
+          "Connection Error", 
+          "Unable to load profile data. Please check your internet connection and try again.",
+          [
+            { text: "Retry", onPress: () => loadUserData(0) },
+            { text: "Cancel", style: "cancel" }
+          ]
+        );
       } else {
         setUserData(data);
         setDisplayName(data.display_name || "");
+        setSelectedLanguage(data.language || "en");
       }
     } catch (error) {
-      Alert.alert("Error", "Failed to load profile data");
+      console.error("Profile load exception:", error);
+      
+      // Retry on network errors
+      if (retryCount < 2) {
+        console.log(`Retrying profile load... (attempt ${retryCount + 1})`);
+        setTimeout(() => loadUserData(retryCount + 1), 1000);
+        return;
+      }
+      
+      Alert.alert(
+        "Connection Error", 
+        "Unable to connect to the server. Please check your internet connection.",
+        [
+          { text: "Retry", onPress: () => loadUserData(0) },
+          { text: "Cancel", style: "cancel" }
+        ]
+      );
     } finally {
       setLoading(false);
     }
@@ -65,7 +109,10 @@ const ProfileScreen = ({ navigation }) => {
     try {
       const { error } = await supabase
         .from("whs-users")
-        .update({ display_name: displayName.trim() })
+        .update({ 
+          display_name: displayName.trim(),
+          language: selectedLanguage
+        })
         .eq("id", user.id);
 
       if (error) {
@@ -183,117 +230,186 @@ const ProfileScreen = ({ navigation }) => {
           {/* Profile Info Card */}
           <Card style={{ marginBottom: 20, elevation: 4 }} data-testid="profile-info-card">
             <Card.Content>
-              <Title style={{ marginBottom: 16 }}>Profile Information</Title>
+              <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+                <Title style={{ marginBottom: 0 }}>Profile Information</Title>
+                <IconButton
+                  icon={profileCardExpanded ? "chevron-up" : "chevron-down"}
+                  onPress={() => setProfileCardExpanded(!profileCardExpanded)}
+                  data-testid="profile-card-toggle"
+                />
+              </View>
               
-              {/* Email (Read-only) */}
-              <TextInput
-                label="Email"
-                value={user?.email || ""}
-                disabled
-                style={{ 
-                  marginBottom: 16,
-                  backgroundColor: "#f5f5f5"
-                }}
-                textColor="#666"
-                data-testid="email-input"
-              />
+              {profileCardExpanded && (
+                <View style={{ marginTop: 16 }}>
+                  {/* Email (Read-only) */}
+                  <TextInput
+                    label="Email"
+                    value={user?.email || ""}
+                    disabled
+                    style={{ 
+                      marginBottom: 16,
+                      backgroundColor: "#f5f5f5"
+                    }}
+                    textColor="#666"
+                    data-testid="email-input"
+                  />
 
-              {/* Display Name */}
-              <TextInput
-                label="Display Name"
-                value={displayName}
-                onChangeText={setDisplayName}
-                style={{ marginBottom: 16 }}
-                data-testid="display-name-input"
-              />
+                  {/* Display Name */}
+                  <TextInput
+                    label="Display Name"
+                    value={displayName}
+                    onChangeText={setDisplayName}
+                    style={{ marginBottom: 16 }}
+                    data-testid="display-name-input"
+                  />
 
-              {/* Stats */}
-              {userData && (
-                <View style={{ marginBottom: 16 }}>
-                  <Text style={{ fontSize: 16, fontWeight: "bold", marginBottom: 8 }}>
-                    Game Statistics
-                  </Text>
-                  <Text style={{ fontSize: 14, marginBottom: 4 }}>
-                    High Score: {userData.high_score || 0}
-                  </Text>
-                  <Text style={{ fontSize: 14, marginBottom: 4 }}>
-                    Games Played: {userData.total_games_played || 0}
-                  </Text>
-                  <Text style={{ fontSize: 14 }}>
-                    Stars Earned: {userData.total_stars || 0} ⭐
-                  </Text>
+                  {/* Stats */}
+                  {userData && (
+                    <View style={{ marginBottom: 16 }}>
+                      <Text style={{ fontSize: 16, fontWeight: "bold", marginBottom: 8 }}>
+                        Game Statistics
+                      </Text>
+                      <Text style={{ fontSize: 14, marginBottom: 4 }}>
+                        High Score: {userData.high_score || 0}
+                      </Text>
+                      <Text style={{ fontSize: 14, marginBottom: 4 }}>
+                        Games Played: {userData.total_games_played || 0}
+                      </Text>
+                      <Text style={{ fontSize: 14 }}>
+                        Stars Earned: {userData.total_stars || 0} ⭐
+                      </Text>
+                    </View>
+                  )}
+
+                  <Button
+                    mode="contained"
+                    onPress={handleUpdateProfile}
+                    loading={saving}
+                    disabled={saving}
+                    style={{ marginTop: 8 }}
+                    data-testid="update-profile-button"
+                  >
+                    Update Profile
+                  </Button>
                 </View>
               )}
-
-              <Button
-                mode="contained"
-                onPress={handleUpdateProfile}
-                loading={saving}
-                disabled={saving}
-                style={{ marginTop: 8 }}
-                data-testid="update-profile-button"
-              >
-                Update Profile
-              </Button>
             </Card.Content>
           </Card>
 
           {/* Change Password Card */}
           <Card style={{ marginBottom: 20, elevation: 4 }} data-testid="password-card">
             <Card.Content>
-              <Title style={{ marginBottom: 16 }}>Change Password</Title>
+              <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+                <Title style={{ marginBottom: 0 }}>Change Password</Title>
+                <IconButton
+                  icon={passwordCardExpanded ? "chevron-up" : "chevron-down"}
+                  onPress={() => setPasswordCardExpanded(!passwordCardExpanded)}
+                  data-testid="password-card-toggle"
+                />
+              </View>
               
-              <TextInput
-                label="Current Password"
-                value={currentPassword}
-                onChangeText={setCurrentPassword}
-                secureTextEntry
-                style={{ marginBottom: 12 }}
-                data-testid="current-password-input"
-              />
+              {passwordCardExpanded && (
+                <View style={{ marginTop: 16 }}>
+                  <TextInput
+                    label="Current Password"
+                    value={currentPassword}
+                    onChangeText={setCurrentPassword}
+                    secureTextEntry
+                    style={{ marginBottom: 12 }}
+                    data-testid="current-password-input"
+                  />
 
-              <TextInput
-                label="New Password"
-                value={newPassword}
-                onChangeText={setNewPassword}
-                secureTextEntry
-                style={{ marginBottom: 12 }}
-                data-testid="new-password-input"
-              />
+                  <TextInput
+                    label="New Password"
+                    value={newPassword}
+                    onChangeText={setNewPassword}
+                    secureTextEntry
+                    style={{ marginBottom: 12 }}
+                    data-testid="new-password-input"
+                  />
 
-              <TextInput
-                label="Confirm New Password"
-                value={confirmPassword}
-                onChangeText={setConfirmPassword}
-                secureTextEntry
-                style={{ marginBottom: 16 }}
-                data-testid="confirm-password-input"
-              />
+                  <TextInput
+                    label="Confirm New Password"
+                    value={confirmPassword}
+                    onChangeText={setConfirmPassword}
+                    secureTextEntry
+                    style={{ marginBottom: 16 }}
+                    data-testid="confirm-password-input"
+                  />
 
-              <Button
-                mode="outlined"
-                onPress={handleChangePassword}
-                loading={saving}
-                disabled={saving}
-                data-testid="change-password-button"
-              >
-                Change Password
-              </Button>
+                  <Button
+                    mode="outlined"
+                    onPress={handleChangePassword}
+                    loading={saving}
+                    disabled={saving}
+                    data-testid="change-password-button"
+                  >
+                    Change Password
+                  </Button>
+                </View>
+              )}
+            </Card.Content>
+          </Card>
+
+          {/* Language Card */}
+          <Card style={{ marginBottom: 20, elevation: 4 }} data-testid="language-card">
+            <Card.Content>
+              <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+                <Title style={{ marginBottom: 0 }}>Language</Title>
+                <IconButton
+                  icon={languageCardExpanded ? "chevron-up" : "chevron-down"}
+                  onPress={() => setLanguageCardExpanded(!languageCardExpanded)}
+                  data-testid="language-card-toggle"
+                />
+              </View>
+              
+              {languageCardExpanded && (
+                <View style={{ marginTop: 16 }}>
+                  <RadioButton.Group 
+                    onValueChange={setSelectedLanguage} 
+                    value={selectedLanguage}
+                  >
+                    <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 12 }}>
+                      <RadioButton value="en" />
+                      <Text style={{ marginLeft: 8, fontSize: 16 }}>English</Text>
+                    </View>
+                    <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 16 }}>
+                      <RadioButton value="pt-BR" />
+                      <Text style={{ marginLeft: 8, fontSize: 16 }}>Português (Brasil)</Text>
+                    </View>
+                  </RadioButton.Group>
+                  
+                  <Text style={{ fontSize: 12, color: "#666", fontStyle: "italic" }}>
+                    Note: Portuguese translation is coming soon
+                  </Text>
+                </View>
+              )}
             </Card.Content>
           </Card>
 
           {/* Account Info */}
           <Card style={{ marginBottom: 20, elevation: 4 }} data-testid="account-info-card">
             <Card.Content>
-              <Title style={{ marginBottom: 16 }}>Account Information</Title>
+              <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+                <Title style={{ marginBottom: 0 }}>Account Information</Title>
+                <IconButton
+                  icon={accountCardExpanded ? "chevron-up" : "chevron-down"}
+                  onPress={() => setAccountCardExpanded(!accountCardExpanded)}
+                  data-testid="account-card-toggle"
+                />
+              </View>
               
-              <Text style={{ fontSize: 14, color: "#666", marginBottom: 8 }}>
-                Account created: {userData?.created_at ? new Date(userData.created_at).toLocaleDateString() : "Unknown"}
-              </Text>
-              
-              <Text style={{ fontSize: 14, color: "#666" }}>
-                Last played: {userData?.last_played ? new Date(userData.last_played).toLocaleDateString() : "Never"}
-              </Text>
+              {accountCardExpanded && (
+                <View style={{ marginTop: 16 }}>
+                  <Text style={{ fontSize: 14, color: "#666", marginBottom: 8 }}>
+                    Account created: {userData?.created_at ? new Date(userData.created_at).toLocaleDateString() : "Unknown"}
+                  </Text>
+                  
+                  <Text style={{ fontSize: 14, color: "#666" }}>
+                    Last played: {userData?.last_played ? new Date(userData.last_played).toLocaleDateString() : "Never"}
+                  </Text>
+                </View>
+              )}
             </Card.Content>
           </Card>
         </ScrollView>
