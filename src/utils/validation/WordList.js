@@ -1,17 +1,7 @@
 // utils/WordList.js
 
-import scrabbleWordList from "../../assets/wordListScrabble.json";
-import bonusWordList from "../../assets/wordListBonus.json";
 import { isValidEnglishWord } from "./EnglishWordList";
 import { isValidPortugueseWord } from "./PortugueseWordList";
-
-// Normalize word lists to lowercase for consistent comparison
-const normalizedScrabbleWordList = scrabbleWordList.map((word) => word.toLowerCase());
-const normalizedBonusWordList = bonusWordList.map((word) => word.toLowerCase());
-
-// Create Sets for efficient lookup
-const wordSet = new Set(normalizedScrabbleWordList);
-const bonusWordSet = new Set(normalizedBonusWordList);
 
 /**
  * Checks if a word is valid according to the current language
@@ -19,8 +9,8 @@ const bonusWordSet = new Set(normalizedBonusWordList);
  * @param {string} language - The language to check against ('english' or 'portuguese')
  * @returns {boolean} - True if the word is valid
  */
-export const isValidWord = (word, language = 'english') => {
-  if (language === 'portuguese') {
+export const isValidWord = (word, language = "english") => {
+  if (language === "portuguese") {
     return isValidPortugueseWord(word);
   }
   return isValidEnglishWord(word);
@@ -32,15 +22,14 @@ export const isValidWord = (word, language = 'english') => {
  * @returns {boolean} - True if the word is valid in English
  */
 export const isValidEnglishWordLegacy = (word) => {
-  return wordSet.has(word.toLowerCase());
-};
+  return isValidEnglishWord(word);
 };
 
 /**
- * Checks if a word is a bonus word
+ * Checks if a word is a bonus word (placeholder for future implementation)
  * @param {string} word - The word to check
- * @returns {boolean} - True if the word is a bonus word
+ * @returns {boolean} - Always returns false for now
  */
 export const isBonusWord = (word) => {
-  return bonusWordSet.has(word.toLowerCase());
+  return false;
 };

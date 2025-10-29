@@ -10,16 +10,16 @@ import { View, Text, Dimensions } from "react-native";
 import StartScreen from "./src/screens/StartScreen";
 import GameScreen from "./src/screens/GameScreen";
 import ProfileScreen from "./src/screens/ProfileScreen";
-import TestPortGameScreen from "./src/screens/TestPortGameScreen";
+import PortugueseGameScreen from "./src/screens/PortugueseGameScreen";
 
 // Components
-import ErrorBoundary from "./src/components/ErrorBoundary";
+import ErrorBoundary from "./src/components/ui/ErrorBoundary";
 
 // Store
 import useUserStore from "./src/stores/userStore";
 
 // Responsive utilities
-import { isTablet } from "./src/utils/responsive";
+import { isTablet } from "./src/constants/responsive";
 
 const theme = {
   ...MD3LightTheme,
@@ -144,9 +144,9 @@ function AppNavigator() {
         />
         <Stack.Screen
           name="TestPortGame"
-          component={TestPortGameScreen}
+          component={PortugueseGameScreen}
           options={{
-            title: "Portuguese Test",
+            title: "Portuguese Game",
           }}
         />
       </Stack.Navigator>

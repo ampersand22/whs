@@ -15,7 +15,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { supabase } from "../config/supabase";
 import useUserStore from "../stores/userStore";
-import { getResponsiveDimensions, isTablet } from "../utils/responsive";
+import { getResponsiveDimensions, isTablet } from "../constants/responsive";
 
 const ProfileScreen = ({ navigation }) => {
   const { user, updateProfile } = useUserStore();

@@ -12,18 +12,17 @@ import { useGameLogic } from '../hooks/useGameLogic';
 import { useGameAnimations } from '../hooks/useGameAnimations';
 
 // Components
-import LetterGrid from '../components/LetterGrid';
-import GameHeader from '../components/GameHeader';
-import WordPreview from '../components/WordPreview';
-import GameControls from '../components/GameControls';
-import GameOverModal from '../modals/GameOverModal';
+import LetterGrid from '../components/game/LetterGrid';
+import GameHeader from '../components/game/GameHeader';
+import WordPreview from '../components/game/WordPreview';
+import GameControls from '../components/game/GameControls';
 import GameOverModalNew from '../modals/GameOverModalNew';
 import GameMenuModal from '../modals/GameMenuModal';
 import FoundWordsModal from '../modals/FoundWordsModal';
 
 
 // Utils
-import { getResponsiveDimensions } from '../utils/responsive';
+import { getResponsiveDimensions } from '../constants/responsive';
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 
@@ -277,25 +276,6 @@ function GameScreen() {
         score={gameLogic.score}
       />
 
-      {/* 
-      Original Game Over Modal - Commented out for testing
-      <GameOverModal
-        visible={gameLogic.modalVisible}
-        onClose={() => {
-          // Modal should only close via Play Again or Back to Start buttons
-          // This prevents accidental dismissal
-        }}
-        score={gameLogic.score}
-        foundWords={gameLogic.foundWords}
-        isNewHighScore={gameLogic.isNewHighScore}
-        onPlayAgain={async () => {
-          gameLogic.restartGame();
-        }}
-        onBackToStart={async () => {
-          goBackToStart();
-        }}
-      />
-      */}
     </View>
   );
 }

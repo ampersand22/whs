@@ -10,8 +10,11 @@ import {
   Chip,
 } from "react-native-paper";
 import { LinearGradient } from "expo-linear-gradient";
-import Logo from "./Logo";
-import MenuModal from "./MenuModal";
+import Logo from "../ui/Logo";
+import MenuModal from "../ui/MenuModal";
+import LanguageModal from "../../modals/LanguageModal";
+import useUserStore from "../../stores/userStore";
+import { getTranslation } from "../../constants/translations";
 
 const AuthenticatedView = ({
   userData,
@@ -23,9 +26,22 @@ const AuthenticatedView = ({
   onSignOut,
 }) => {
   const [menuVisible, setMenuVisible] = useState(false);
+  const [languageModalVisible, setLanguageModalVisible] = useState(false);
+  const { language, setLanguage } = useUserStore();
 
   const showMenu = () => setMenuVisible(true);
   const hideMenu = () => setMenuVisible(false);
+
+  const showLanguageModal = () => setLanguageModalVisible(true);
+  const hideLanguageModal = () => setLanguageModalVisible(false);
+
+  const handleLanguageSelect = (selectedLanguage) => {
+    setLanguage(selectedLanguage);
+  };
+
+  const getLanguageDisplayName = () => {
+    return language === "portuguese" ? "Português" : "English";
+  };
 
   return (
     <>
@@ -41,41 +57,48 @@ const AuthenticatedView = ({
             end={{ x: 1, y: 1 }}
             style={styles.gradientBackground}
           >
-          <Card.Content style={styles.cardContent}>
-            <View style={styles.welcomeHeader}>
-              <Avatar.Icon
-                size={50}
-                icon="account-circle"
-                style={styles.avatar}
-                color="#fff"
-              />
-              <View style={styles.welcomeText}>
-                <Title data-testid="welcome-title" style={styles.welcomeTitle}>
-                  Welcome back! 👋
-                </Title>
-                <Text style={styles.userName}>
-                  {userData?.display_name || user?.email?.split("@")[0]}
-                </Text>
-              </View>
-            </View>
-
-            <View style={styles.statsContainer}>
-              <View style={styles.statItem}>
-                <Text style={styles.statLabel}>🏆 High Score</Text>
-                <Text style={styles.statValue} data-testid="user-stats">
-                  {userData?.high_score || 0}
-                </Text>
+            <Card.Content style={styles.cardContent}>
+              <View style={styles.welcomeHeader}>
+                <Avatar.Icon
+                  size={50}
+                  icon="account-circle"
+                  style={styles.avatar}
+                  color="#fff"
+                />
+                <View style={styles.welcomeText}>
+                  <Title
+                    data-testid="welcome-title"
+                    style={styles.welcomeTitle}
+                  >
+                    {getTranslation("welcomeBack", language)}!
+                  </Title>
+                  <Text style={styles.userName}>
+                    {userData?.display_name || user?.email?.split("@")[0]}
+                  </Text>
+                </View>
               </View>
 
-              <View style={styles.statItem}>
-                <Text style={styles.statLabel}>🎮 Games Played</Text>
-                <Text style={styles.statValue}>
-                  {userData?.total_games_played || 0}
-                </Text>
+              <View style={styles.statsContainer}>
+                <View style={styles.statItem}>
+                  <Text style={styles.statLabel}>
+                    🏆 {getTranslation("highScore", language)}
+                  </Text>
+                  <Text style={styles.statValue} data-testid="user-stats">
+                    {userData?.high_score || 0}
+                  </Text>
+                </View>
+
+                <View style={styles.statItem}>
+                  <Text style={styles.statLabel}>
+                    🎮 {getTranslation("gamesPlayed", language)}
+                  </Text>
+                  <Text style={styles.statValue}>
+                    {userData?.total_games_played || 0}
+                  </Text>
+                </View>
               </View>
-            </View>
-          </Card.Content>
-        </LinearGradient>
+            </Card.Content>
+          </LinearGradient>
         </View>
       </Card>
 
@@ -101,7 +124,7 @@ const AuthenticatedView = ({
             labelStyle={{ fontSize: 16 }}
             data-testid="play-game-button"
           >
-            Play Game
+            {getTranslation("playGame", language)}
           </Button>
 
           <Button
@@ -115,26 +138,55 @@ const AuthenticatedView = ({
             labelStyle={{ fontSize: 16 }}
             data-testid="how-to-play-button"
           >
-            How to Play
+            {getTranslation("howToPlay", language)}
           </Button>
         </View>
 
-        {/* Menu Button */}
-        <Button
-          mode="outlined"
-          onPress={showMenu}
+        {/* Menu and Language buttons side by side */}
+        <View
           style={{
-            height: 48,
-            borderColor: "white",
-            backgroundColor: "transparent",
+            flexDirection: "row",
+            justifyContent: "space-between",
+            gap: 10,
           }}
-          contentStyle={{ height: 48 }}
-          labelStyle={{ fontSize: 16, color: "white" }}
-          data-testid="menu-button"
         >
-          Menu
-        </Button>
+          <Button
+            mode="contained"
+            onPress={showLanguageModal}
+            style={{
+              flex: 1,
+              height: 48,
+            }}
+            contentStyle={{ height: 48 }}
+            labelStyle={{ fontSize: 16 }}
+            data-testid="language-button"
+          >
+            {getLanguageDisplayName()}
+          </Button>
+
+          <Button
+            mode="contained"
+            onPress={showMenu}
+            style={{
+              flex: 1,
+              height: 48,
+            }}
+            contentStyle={{ height: 48 }}
+            labelStyle={{ fontSize: 16 }}
+            data-testid="menu-button"
+          >
+            {getTranslation("menu", language)}
+          </Button>
+        </View>
       </View>
+
+      {/* Language Modal */}
+      <LanguageModal
+        visible={languageModalVisible}
+        onClose={hideLanguageModal}
+        currentLanguage={language}
+        onLanguageSelect={handleLanguageSelect}
+      />
 
       {/* Menu Modal */}
       <MenuModal

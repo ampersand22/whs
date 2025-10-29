@@ -8,7 +8,7 @@ import {
   Divider,
   Chip,
 } from "react-native-paper";
-import { getScoringBreakdown } from "../utils/scoringUtils";
+import { getScoringBreakdown } from "../utils/scoring/scoringUtils";
 
 const ScoringInfoModal = ({ visible, onClose, currentBoard = 0 }) => {
   const allBoards = [0, 1, 2, 3, 4]; // Boards 1-5 (0-indexed)

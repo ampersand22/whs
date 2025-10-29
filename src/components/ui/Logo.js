@@ -22,7 +22,7 @@ const Logo = ({
         }}
       >
         <Image
-          source={require("../../assets/worzzle2.png")}
+          source={require("../../../assets/worzzle2.png")}
           style={{
             width: "100%",
             height: "100%",

@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text } from 'react-native';
-import { isValidWord } from '../utils/WordList';
-import { getResponsiveDimensions, isTablet } from '../utils/responsive';
+import { isValidWord } from '../../utils/validation/WordList';
+import { getResponsiveDimensions, isTablet } from '../../constants/responsive';
 
 const WordPreview = ({ previewWord, resetCount = 0, foundWords = [], isTouching = false }) => {
   const dimensions = getResponsiveDimensions();

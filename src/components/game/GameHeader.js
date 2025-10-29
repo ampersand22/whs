@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text } from 'react-native';
-import { getResponsiveDimensions, isTablet } from '../utils/responsive';
+import { getResponsiveDimensions, isTablet } from '../../constants/responsive';
 
 const GameHeader = ({ score, timeLeft, resetCount }) => {
   const dimensions = getResponsiveDimensions();

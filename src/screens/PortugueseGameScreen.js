@@ -2,18 +2,18 @@ import React, { useState, useEffect } from 'react';
 import { View, ImageBackground, Dimensions } from 'react-native';
 import { Text, Card, Title, Button } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import LetterGrid from '../components/LetterGrid';
-import WordPreview from '../components/WordPreview';
-import GameHeader from '../components/GameHeader';
-import GameControls from '../components/GameControls';
+import LetterGrid from '../components/game/LetterGrid';
+import WordPreview from '../components/game/WordPreview';
+import GameHeader from '../components/game/GameHeader';
+import GameControls from '../components/game/GameControls';
 import GameOverModalNew from '../modals/GameOverModalNew';
-import { generatePortugueseBoard } from '../utils/portBoardGenerator';
-import { isValidPortugueseWord, getPortugueseWordCount } from '../utils/PortugueseWordList';
-import { getResponsiveDimensions } from '../utils/responsive';
+import { generatePortugueseBoard } from '../utils/game/portBoardGenerator';
+import { isValidPortugueseWord, getPortugueseWordCount } from '../utils/validation/PortugueseWordList';
+import { getResponsiveDimensions } from '../constants/responsive';
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 
-const TestPortGameScreen = ({ navigation }) => {
+const PortugueseGameScreen = ({ navigation }) => {
   const dimensions = getResponsiveDimensions();
   const gridSize = dimensions.gridMaxWidth;
 
@@ -175,4 +175,4 @@ const TestPortGameScreen = ({ navigation }) => {
   );
 };
 
-export default TestPortGameScreen;
+export default PortugueseGameScreen;

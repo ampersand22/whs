@@ -5,9 +5,9 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { supabase } from "../config/supabase";
 import useUserStore from "../stores/userStore";
 import LeaderboardModal from "../modals/LeaderboardModal";
-import UnauthenticatedView from "../components/UnauthenticatedView";
-import AuthenticatedView from "../components/AuthenticatedView";
-import AuthDialogs from "../components/AuthDialogs";
+import UnauthenticatedView from "../components/auth/UnauthenticatedView";
+import AuthenticatedView from "../components/auth/AuthenticatedView";
+import AuthDialogs from "../components/auth/AuthDialogs";
 
 const StartScreen = ({ navigation }) => {
   const {
@@ -17,6 +17,7 @@ const StartScreen = ({ navigation }) => {
     signUp,
     signIn,
     signOut,
+    language,
   } = useUserStore();
 
   // Get screen dimensions for full coverage
@@ -214,6 +215,7 @@ const StartScreen = ({ navigation }) => {
           showHowToPlay={showHowToPlay}
           setShowHowToPlay={setShowHowToPlay}
           loading={loading}
+          language={language}
         />
 
         {/* Leaderboard Modal */}

@@ -9,8 +9,8 @@ import {
   findNodeHandle,
 } from "react-native";
 import { Surface } from "react-native-paper";
-import { isValidWord } from "../utils/WordList";
-import { getResponsiveDimensions, isTablet } from "../utils/responsive";
+import { isValidWord } from "../../utils/validation/WordList";
+import { getResponsiveDimensions, isTablet } from "../../constants/responsive";
 
 const { width: screenWidth } = Dimensions.get("window");
 

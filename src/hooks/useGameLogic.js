@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
-import { generateBoard } from '../utils/BoardGenerator';
-import { isValidWord, isBonusWord } from '../utils/WordList';
-import { getPointsForWord } from '../utils/scoringUtils';
-import { saveUserScore, getUserHighScore } from '../utils/userScores';
+import { generateBoard } from '../utils/game/BoardGenerator';
+import { isValidWord, isBonusWord } from '../utils/validation/WordList';
+import { getPointsForWord } from '../utils/scoring/scoringUtils';
+import { saveUserScore, getUserHighScore } from '../services/userService';
 import useUserStore from '../stores/userStore';
 
 export const useGameLogic = () => {
