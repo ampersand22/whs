@@ -412,6 +412,20 @@ const ProfileScreen = ({ navigation }) => {
               )}
             </Card.Content>
           </Card>
+
+          {/* Portuguese Test Button */}
+          <Button
+            mode="outlined"
+            onPress={() => navigation.navigate('TestPortGame')}
+            style={{ 
+              marginBottom: 20,
+              backgroundColor: 'white',
+              borderColor: 'white',
+              borderWidth: 2
+            }}
+          >
+            Test Portuguese Game
+          </Button>
         </ScrollView>
       </SafeAreaView>
     </ImageBackground>

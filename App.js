@@ -10,6 +10,7 @@ import { View, Text, Dimensions } from "react-native";
 import StartScreen from "./src/screens/StartScreen";
 import GameScreen from "./src/screens/GameScreen";
 import ProfileScreen from "./src/screens/ProfileScreen";
+import TestPortGameScreen from "./src/screens/TestPortGameScreen";
 
 // Components
 import ErrorBoundary from "./src/components/ErrorBoundary";
@@ -139,6 +140,13 @@ function AppNavigator() {
           component={ProfileScreen}
           options={{
             title: "Profile",
+          }}
+        />
+        <Stack.Screen
+          name="TestPortGame"
+          component={TestPortGameScreen}
+          options={{
+            title: "Portuguese Test",
           }}
         />
       </Stack.Navigator>

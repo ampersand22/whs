@@ -12,6 +12,7 @@ const useUserStore = create(
       isAuthenticated: false,
       isLoading: false,
       error: null,
+      language: 'english', // Default language
 
       // User stats
       userStats: {
@@ -26,6 +27,7 @@ const useUserStore = create(
       setLoading: (loading) => set({ isLoading: loading }),
       setError: (error) => set({ error }),
       clearError: () => set({ error: null }),
+      setLanguage: (language) => set({ language }),
 
       // Initialize auth state
       initialize: async () => {

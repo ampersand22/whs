@@ -1,11 +1,13 @@
 # Worrzle - React Native Expo Game
 
-A competitive word-finding game built with React Native, Expo, and Supabase. Players compete monthly to find words on a 5x5 letter grid and earn stars for top performance.
+A competitive word-finding game built with React Native, Expo, and Supabase. Players compete monthly to find words on a 5x5 letter grid and earn stars for top performance. **Now supports both English and Portuguese!**
 
 ## 🎮 Game Features
 
 - **5x5 Letter Grid**: Swipe to connect letters and form words
-- **Real Word Validation**: Uses comprehensive Scrabble word list
+- **Multi-Language Support**: Play in English or Portuguese
+- **Real Word Validation**: Uses comprehensive word databases (176K English, 754K Portuguese)
+- **Optimized Letter Distribution**: Data-driven board generation based on language frequency
 - **Advanced Scoring System**: Points vary by word length and board number
 - **Monthly Competition**: Compete for monthly leaderboard rankings
 - **Star System**: Monthly winners earn stars ⭐
