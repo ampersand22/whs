@@ -42,7 +42,7 @@ const translations = {
     backToMainMenu: "Back to Main Menu",
     resumeGame: "Resume Game",
 
-    // new (ScoringInfoModal)
+    // (ScoringInfoModal)
     scoringSystem: "Scoring System",
     scoringSubtitle:
       "Points vary by word length and board number. Find longer words on earlier boards for maximum points!",
@@ -56,6 +56,19 @@ const translations = {
     tip3: "Strategic play - Find long words early, or clear short words to progress",
     tip4: "Bonus words - Special words still give 300 points regardless of board",
     close: "Got it!",
+
+    // (GameHeader)
+    score: "Score",
+    time: "Time",
+    board: "Board",
+    minute: "minute",
+    minutes: "minutes",
+    second: "second",
+    seconds: "seconds",
+
+    // new (GameControls)
+    newBoard: "New Board",
+    gameMenu: "Game Menu",
   },
 
   portuguese: {
@@ -101,7 +114,7 @@ const translations = {
     backToMainMenu: "Voltar ao menu principal",
     resumeGame: "Retomar jogo",
 
-    // new (ScoringInfoModal)
+    // (ScoringInfoModal)
     scoringSystem: "Sistema de pontuação",
     scoringSubtitle:
       "Os pontos variam conforme o tamanho da palavra e o número do tabuleiro. Encontre palavras mais longas nos primeiros tabuleiros para obter o máximo de pontos!",
@@ -115,9 +128,31 @@ const translations = {
     tip3: "Jogo estratégico — encontre palavras longas cedo ou limpe palavras curtas para avançar",
     tip4: "Palavras bônus — palavras especiais sempre valem 300 pontos, independentemente do tabuleiro",
     close: "Entendi!",
+
+    // (GameHeader)
+    score: "Pontuação",
+    time: "Tempo",
+    board: "Tabuleiro",
+    minute: "minuto",
+    minutes: "minutos",
+    second: "segundo",
+    seconds: "segundos",
+
+    // new (GameControls)
+    newBoard: "Novo tabuleiro",
+    gameMenu: "Menu do jogo",
   },
 };
 
 export const getTranslation = (key, language = "english") => {
   return translations[language]?.[key] || translations.english[key] || key;
+};
+
+export const getPluralizedTime = (language, value, unit) => {
+  const lang = translations[language] || translations.english;
+  if (value === 1) {
+    return `${value} ${lang[unit]}`;
+  } else {
+    return `${value} ${lang[`${unit}s`]}`;
+  }
 };

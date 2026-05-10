@@ -34,6 +34,7 @@ const WordPreview = ({ previewWord, resetCount = 0, foundWords = [], isTouching 
         borderRadius: isTablet() ? 12 : 10,
         padding: dimensions.containerPadding,
         marginBottom: 10,
+        marginHorizontal: 10,
         minHeight: isTablet() ? 60 : 50,
         justifyContent: 'center',
         alignItems: 'center',

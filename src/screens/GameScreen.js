@@ -1,41 +1,36 @@
-import React, { useEffect, useState, useCallback } from 'react';
-import {
-  View,
-  ImageBackground,
-  Dimensions,
-} from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { useNavigation } from '@react-navigation/native';
+import React, { useEffect, useState, useCallback } from "react";
+import { View, ImageBackground, Dimensions } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { useNavigation } from "@react-navigation/native";
 
 // Custom hooks
-import { useGameLogic } from '../hooks/useGameLogic';
-import { useGameAnimations } from '../hooks/useGameAnimations';
+import { useGameLogic } from "../hooks/useGameLogic";
+import { useGameAnimations } from "../hooks/useGameAnimations";
 
 // Components
-import LetterGrid from '../components/game/LetterGrid';
-import GameHeader from '../components/game/GameHeader';
-import WordPreview from '../components/game/WordPreview';
-import GameControls from '../components/game/GameControls';
-import GameOverModalNew from '../modals/GameOverModalNew';
-import GameMenuModal from '../modals/GameMenuModal';
-import FoundWordsModal from '../modals/FoundWordsModal';
-
+import LetterGrid from "../components/game/LetterGrid";
+import GameHeader from "../components/game/GameHeader";
+import WordPreview from "../components/game/WordPreview";
+import GameControls from "../components/game/GameControls";
+import GameOverModalNew from "../modals/GameOverModalNew";
+import GameMenuModal from "../modals/GameMenuModal";
+import FoundWordsModal from "../modals/FoundWordsModal";
 
 // Utils
-import { getResponsiveDimensions } from '../constants/responsive';
+import { getResponsiveDimensions } from "../constants/responsive";
 
-const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
+const { width: screenWidth, height: screenHeight } = Dimensions.get("window");
 
 // Background image utility
 const getBackgroundImage = (boardNumber) => {
   const backgrounds = [
-    require('../../assets/background1.png'),
-    require('../../assets/background2.png'),
-    require('../../assets/background3.jpg'),
-    require('../../assets/background4.png'),
-    require('../../assets/background5.png'),
+    require("../../assets/background1.png"),
+    require("../../assets/background2.png"),
+    require("../../assets/background3.jpg"),
+    require("../../assets/background4.png"),
+    require("../../assets/background5.png"),
   ];
-  
+
   const index = Math.min(boardNumber, backgrounds.length - 1);
   return backgrounds[index];
 };
@@ -51,16 +46,22 @@ function GameScreen() {
 
   // Local state for menu modal
   const [menuModalVisible, setMenuModalVisible] = React.useState(false);
-  const [foundWordsModalVisible, setFoundWordsModalVisible] = React.useState(false);
+  const [foundWordsModalVisible, setFoundWordsModalVisible] =
+    React.useState(false);
   const [gameOverModalVisible, setGameOverModalVisible] = React.useState(false);
 
   // Monitor game logic modal state and sync with local state
   React.useEffect(() => {
-    const shouldShowModal = gameLogic.showGameOverModal && !foundWordsModalVisible;
+    const shouldShowModal =
+      gameLogic.showGameOverModal && !foundWordsModalVisible;
     if (shouldShowModal !== gameOverModalVisible) {
       setGameOverModalVisible(shouldShowModal);
     }
-  }, [gameLogic.showGameOverModal, foundWordsModalVisible, gameOverModalVisible]);
+  }, [
+    gameLogic.showGameOverModal,
+    foundWordsModalVisible,
+    gameOverModalVisible,
+  ]);
 
   // Initialize game on mount
   useEffect(() => {
@@ -69,14 +70,14 @@ function GameScreen() {
 
   // Add navigation focus listener for debugging
   useEffect(() => {
-    const unsubscribe = navigation.addListener('focus', () => {
-    });
+    const unsubscribe = navigation.addListener("focus", () => {});
 
-    const unsubscribeBlur = navigation.addListener('blur', () => {
-    });
+    const unsubscribeBlur = navigation.addListener("blur", () => {});
 
-    const unsubscribeBeforeRemove = navigation.addListener('beforeRemove', (e) => {
-    });
+    const unsubscribeBeforeRemove = navigation.addListener(
+      "beforeRemove",
+      (e) => {}
+    );
 
     return () => {
       unsubscribe();
@@ -88,17 +89,14 @@ function GameScreen() {
   // Monitor modal state changes
   useEffect(() => {
     if (gameLogic.showGameOverModal) {
-      
       // Add a longer delay to see if navigation happens during this time
-      setTimeout(() => {
-      }, 2000);
+      setTimeout(() => {}, 2000);
     }
   }, [gameLogic.showGameOverModal]);
 
   // Add effect to monitor when component unmounts
   useEffect(() => {
-    return () => {
-    };
+    return () => {};
   }, []);
 
   // Enhanced word formed handler with animations
@@ -114,14 +112,17 @@ function GameScreen() {
 
   const goBackToStart = useCallback(() => {
     try {
-      navigation.navigate('Start');
+      navigation.navigate("Start");
     } catch (error) {
-      console.error('🔍 GameScreen: Navigation error:', error);
-      
+      console.error("🔍 GameScreen: Navigation error:", error);
+
       try {
         navigation.goBack();
       } catch (fallbackError) {
-        console.error('🔍 GameScreen: All navigation methods failed:', fallbackError);
+        console.error(
+          "🔍 GameScreen: All navigation methods failed:",
+          fallbackError
+        );
       }
     }
   }, [navigation]);
@@ -148,6 +149,7 @@ function GameScreen() {
   const currentBackgroundImage = getBackgroundImage(gameLogic.resetCount);
 
   // Debug: Log modal visibility state
+  console.log("English Game");
 
   // Render main game screen
   return (
@@ -160,13 +162,13 @@ function GameScreen() {
       >
         <SafeAreaView
           style={{ flex: 1 }}
-          edges={['top', 'left', 'right', 'bottom']}
+          edges={["top", "left", "right", "bottom"]}
           data-testid="game-safe-area"
         >
           <View
             style={{
               flex: 1,
-              justifyContent: 'space-between',
+              justifyContent: "space-between",
               paddingHorizontal: dimensions.containerPadding,
               paddingBottom: 8,
             }}
@@ -182,8 +184,8 @@ function GameScreen() {
             {/* Main Game Area */}
             <View
               style={{
-                alignItems: 'center',
-                justifyContent: 'center',
+                alignItems: "center",
+                justifyContent: "center",
                 flex: 1,
                 paddingVertical: dimensions.sectionSpacing,
               }}
@@ -226,8 +228,6 @@ function GameScreen() {
                 onShowMenu={handleShowMenu}
               />
             </View>
-
-
           </View>
         </SafeAreaView>
       </ImageBackground>
@@ -275,7 +275,6 @@ function GameScreen() {
         foundWordsBoardNumbers={gameLogic.foundWordsBoardNumbers}
         score={gameLogic.score}
       />
-
     </View>
   );
 }

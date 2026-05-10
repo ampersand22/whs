@@ -416,7 +416,7 @@ const ProfileScreen = ({ navigation }) => {
           {/* Portuguese Test Button */}
           <Button
             mode="outlined"
-            onPress={() => navigation.navigate('TestPortGame')}
+            onPress={() => navigation.navigate('PortuguesGame')}
             style={{ 
               marginBottom: 20,
               backgroundColor: 'white',

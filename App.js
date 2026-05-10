@@ -34,7 +34,7 @@ const Stack = createStackNavigator();
 
 function AppNavigator() {
   const { initialize, isLoading, error } = useUserStore();
-  const [screenData, setScreenData] = useState(Dimensions.get('window'));
+  const [screenData, setScreenData] = useState(Dimensions.get("window"));
   const [initError, setInitError] = useState(null);
 
   // Initialize the user store and ads when app starts
@@ -44,7 +44,7 @@ function AppNavigator() {
         await initialize();
       } catch (error) {
         // App initialization error
-        setInitError(error.message || 'Failed to initialize app');
+        setInitError(error.message || "Failed to initialize app");
       }
     };
 
@@ -53,7 +53,7 @@ function AppNavigator() {
 
   // Handle orientation changes
   useEffect(() => {
-    const subscription = Dimensions.addEventListener('change', ({ window }) => {
+    const subscription = Dimensions.addEventListener("change", ({ window }) => {
       setScreenData(window);
     });
 
@@ -64,22 +64,36 @@ function AppNavigator() {
   if (initError || error) {
     return (
       <View
-        style={{ 
-          flex: 1, 
-          justifyContent: "center", 
+        style={{
+          flex: 1,
+          justifyContent: "center",
           alignItems: "center",
           padding: 20,
-          backgroundColor: '#f5f5f5'
+          backgroundColor: "#f5f5f5",
         }}
         data-testid="app-error"
       >
-        <Text style={{ fontSize: 24, fontWeight: 'bold', marginBottom: 16, textAlign: 'center' }}>
+        <Text
+          style={{
+            fontSize: 24,
+            fontWeight: "bold",
+            marginBottom: 16,
+            textAlign: "center",
+          }}
+        >
           Oops! Something went wrong
         </Text>
-        <Text style={{ fontSize: 16, textAlign: 'center', marginBottom: 24, color: '#666' }}>
-          {initError || error || 'An unexpected error occurred'}
+        <Text
+          style={{
+            fontSize: 16,
+            textAlign: "center",
+            marginBottom: 24,
+            color: "#666",
+          }}
+        >
+          {initError || error || "An unexpected error occurred"}
         </Text>
-        <Text style={{ fontSize: 14, textAlign: 'center', color: '#999' }}>
+        <Text style={{ fontSize: 14, textAlign: "center", color: "#999" }}>
           Please try restarting the app
         </Text>
       </View>
@@ -143,10 +157,11 @@ function AppNavigator() {
           }}
         />
         <Stack.Screen
-          name="TestPortGame"
+          name="PortugueseGame"
           component={PortugueseGameScreen}
           options={{
             title: "Portuguese Game",
+            gestureEnabled: false,
           }}
         />
       </Stack.Navigator>

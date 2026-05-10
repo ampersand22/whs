@@ -1,12 +1,14 @@
 import React from 'react';
 import { View } from 'react-native';
 import { Button } from 'react-native-paper';
+import { getTranslation } from '../../constants/translations';
 
 const GameControls = ({ 
   resetCount, 
   maxResets, 
   onResetBoard, 
-  onShowMenu
+  onShowMenu,
+  language = "english"
 }) => {
   return (
     <View style={{ alignItems: 'center', gap: 10, marginBottom: 10 }}>
@@ -20,7 +22,7 @@ const GameControls = ({
           textColor="white"
           data-testid="reset-board-button"
         >
-          New Board ({resetCount + 1}/{maxResets})
+          {getTranslation("newBoard", language)} ({resetCount + 1}/{maxResets})
         </Button>
 
         <Button
@@ -30,7 +32,7 @@ const GameControls = ({
           textColor="white"
           data-testid="menu-button"
         >
-          Game Menu
+          {getTranslation("gameMenu", language)}
         </Button>
       </View>
     </View>

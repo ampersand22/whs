@@ -1,17 +1,18 @@
-import React, { useState, useEffect } from 'react';
-import { View, ImageBackground, Dimensions } from 'react-native';
-import { Text, Card, Title, Button } from 'react-native-paper';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import LetterGrid from '../components/game/LetterGrid';
-import WordPreview from '../components/game/WordPreview';
-import GameHeader from '../components/game/GameHeader';
-import GameControls from '../components/game/GameControls';
-import GameOverModalNew from '../modals/GameOverModalNew';
-import { generatePortugueseBoard } from '../utils/game/portBoardGenerator';
-import { isValidPortugueseWord, getPortugueseWordCount } from '../utils/validation/PortugueseWordList';
-import { getResponsiveDimensions } from '../constants/responsive';
+import React, { useState, useEffect } from "react";
+import { View, ImageBackground, Dimensions } from "react-native";
+import { Text, Card, Title, Button } from "react-native-paper";
+import { SafeAreaView } from "react-native-safe-area-context";
+import LetterGrid from "../components/game/LetterGrid";
+import WordPreview from "../components/game/WordPreview";
+import GameHeader from "../components/game/GameHeader";
+import GameControls from "../components/game/GameControls";
+import GameOverModalNew from "../modals/GameOverModalNew";
+import { generatePortugueseBoard } from "../utils/game/portBoardGenerator";
+import { isValidWord } from "../utils/validation/WordList";
+import { getPointsForWord } from "../utils/scoring/scoringUtils";
+import { getResponsiveDimensions } from "../constants/responsive";
 
-const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
+const { width: screenWidth, height: screenHeight } = Dimensions.get("window");
 
 const PortugueseGameScreen = ({ navigation }) => {
   const dimensions = getResponsiveDimensions();
@@ -19,7 +20,7 @@ const PortugueseGameScreen = ({ navigation }) => {
 
   // Game state
   const [testBoard, setTestBoard] = useState(() => generatePortugueseBoard());
-  const [previewWord, setPreviewWord] = useState('');
+  const [previewWord, setPreviewWord] = useState("");
   const [foundWords, setFoundWords] = useState([]);
   const [isTouching, setIsTouching] = useState(false);
   const [score, setScore] = useState(0);
@@ -35,6 +36,7 @@ const PortugueseGameScreen = ({ navigation }) => {
       return () => clearTimeout(timer);
     } else if (timeLeft === 0 && isGameActive) {
       // Game over - show modal
+      console.log("Game over - showing modal");
       setIsGameActive(false);
       setGameOverModalVisible(true);
     }
@@ -42,17 +44,17 @@ const PortugueseGameScreen = ({ navigation }) => {
 
   const handleWordFormed = (word) => {
     if (!isGameActive) return; // Don't process words if game is over
-    
-    console.log('Word formed:', word);
-    const isValid = isValidPortugueseWord(word);
-    console.log('Is valid Portuguese word:', isValid);
-    
+
+    console.log("Word formed:", word);
+    const isValid = isValidWord(word, "portuguese");
+    console.log("Is valid Portuguese word:", isValid);
+
     if (isValid && !foundWords.includes(word.toLowerCase())) {
       const newFoundWords = [...foundWords, word.toLowerCase()];
       setFoundWords(newFoundWords);
-      
-      // Simple scoring based on word length
-      const points = word.length >= 5 ? 150 : word.length >= 4 ? 100 : 50;
+
+      // Use proper scoring system with board number
+      const points = getPointsForWord(word, resetCount);
       setScore(score + points);
     }
   };
@@ -61,7 +63,7 @@ const PortugueseGameScreen = ({ navigation }) => {
     if (resetCount < 5 && isGameActive) {
       setTestBoard(generatePortugueseBoard());
       setResetCount(resetCount + 1);
-      setPreviewWord('');
+      setPreviewWord("");
     }
   };
 
@@ -76,7 +78,7 @@ const PortugueseGameScreen = ({ navigation }) => {
     setTimeLeft(180);
     setResetCount(0);
     setFoundWords([]);
-    setPreviewWord('');
+    setPreviewWord("");
     setGameOverModalVisible(false);
     setIsGameActive(true);
   };
@@ -85,21 +87,23 @@ const PortugueseGameScreen = ({ navigation }) => {
     navigation.goBack();
   };
 
+  console.log("Portugues Game");
+
   return (
     <View style={{ flex: 1 }}>
       <ImageBackground
-        source={require('../../assets/background1.png')}
+        source={require("../../assets/background1.png")}
         style={{ flex: 1 }}
         resizeMode="cover"
       >
         <SafeAreaView
           style={{ flex: 1 }}
-          edges={['top', 'left', 'right', 'bottom']}
+          edges={["top", "left", "right", "bottom"]}
         >
           <View
             style={{
               flex: 1,
-              justifyContent: 'space-between',
+              justifyContent: "space-between",
               paddingHorizontal: dimensions.containerPadding,
               paddingBottom: 8,
             }}
@@ -109,13 +113,14 @@ const PortugueseGameScreen = ({ navigation }) => {
               score={score}
               timeLeft={timeLeft}
               resetCount={resetCount}
+              language="portuguese"
             />
 
             {/* Main Game Area */}
             <View
               style={{
-                alignItems: 'center',
-                justifyContent: 'center',
+                alignItems: "center",
+                justifyContent: "center",
                 flex: 1,
                 paddingVertical: dimensions.sectionSpacing,
               }}
@@ -154,6 +159,7 @@ const PortugueseGameScreen = ({ navigation }) => {
                 maxResets={5}
                 onResetBoard={handleResetBoard}
                 onShowMenu={handleShowMenu}
+                language="portuguese"
               />
             </View>
           </View>
@@ -161,6 +167,12 @@ const PortugueseGameScreen = ({ navigation }) => {
       </ImageBackground>
 
       {/* Game Over Modal */}
+      {console.log(
+        "Modal visible state:",
+        gameOverModalVisible,
+        "isGameActive:",
+        isGameActive
+      )}
       <GameOverModalNew
         visible={gameOverModalVisible}
         score={score}
