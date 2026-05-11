@@ -159,9 +159,7 @@ export const useGameLogic = () => {
           gameDuration: INITIAL_TIME - currentTimeLeft,
         };
 
-        console.log('[DEBUG] Saving game score:', JSON.stringify(gameData));
         const result = await processGameCompletion(gameData);
-        console.log('[DEBUG] processGameCompletion result:', JSON.stringify(result));
 
         if (result.success) {
           if (currentScore > currentHighScore) {
@@ -169,10 +167,8 @@ export const useGameLogic = () => {
           }
         }
       } catch (error) {
-        console.log('[DEBUG] Error saving game score:', error.message);
+        // Score save failed silently — user still sees game over modal
       }
-    } else {
-      console.log('[DEBUG] Skipping score save - user:', !!user, 'score:', currentScore);
     }
   };
 

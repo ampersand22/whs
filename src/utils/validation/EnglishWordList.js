@@ -1,21 +1,14 @@
 // English Word List Utility
 let englishWordSet = null;
 
-/**
- * Lazy load the English word list
- */
-const loadEnglishWords = async () => {
-  if (!englishWordSet) {
-    try {
-      const englishWords = require("../../../assets/englishWordListFinal.json");
-      englishWordSet = new Set(englishWords);
-    } catch (error) {
-      console.warn("Failed to load English word list:", error);
-      englishWordSet = new Set(); // Empty set as fallback
-    }
-  }
-  return englishWordSet;
-};
+// Preload the word list immediately on import (avoids delay on first word check)
+try {
+  const englishWords = require("../../../assets/englishWordListFinal.json");
+  englishWordSet = new Set(englishWords);
+} catch (error) {
+  console.warn("Failed to load English word list:", error);
+  englishWordSet = new Set();
+}
 
 /**
  * Checks if a word is valid according to the English word list
@@ -23,15 +16,5 @@ const loadEnglishWords = async () => {
  * @returns {boolean} - True if the word is valid
  */
 export const isValidEnglishWord = (word) => {
-  if (!englishWordSet) {
-    // Synchronously load for first use
-    try {
-      const englishWords = require("../../../assets/englishWordListFinal.json");
-      englishWordSet = new Set(englishWords);
-    } catch (error) {
-      console.warn("Failed to load English word list:", error);
-      return false;
-    }
-  }
   return englishWordSet.has(word.toLowerCase());
 };

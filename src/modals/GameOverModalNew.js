@@ -30,7 +30,9 @@ export default function GameOverModalNew({
       // Trigger confetti for new high score
       if (isNewHighScore && confettiRef.current) {
         setTimeout(() => {
-          confettiRef.current.start();
+          if (confettiRef.current) {
+            confettiRef.current.start();
+          }
         }, 500);
       }
     } else {
