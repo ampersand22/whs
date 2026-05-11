@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useCallback } from "react";
-import { View, ImageBackground, Dimensions } from "react-native";
+import React, { useEffect, useCallback } from "react";
+import { View, ImageBackground, BackHandler } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
 
@@ -18,8 +18,6 @@ import FoundWordsModal from "../modals/FoundWordsModal";
 
 // Utils
 import { getResponsiveDimensions } from "../constants/responsive";
-
-const { width: screenWidth, height: screenHeight } = Dimensions.get("window");
 
 // Background image utility
 const getBackgroundImage = (boardNumber) => {
@@ -68,36 +66,17 @@ function GameScreen() {
     gameLogic.initializeGame();
   }, []);
 
-  // Add navigation focus listener for debugging
+  // Handle Android hardware back button
   useEffect(() => {
-    const unsubscribe = navigation.addListener("focus", () => {});
-
-    const unsubscribeBlur = navigation.addListener("blur", () => {});
-
-    const unsubscribeBeforeRemove = navigation.addListener(
-      "beforeRemove",
-      (e) => {}
-    );
-
-    return () => {
-      unsubscribe();
-      unsubscribeBlur();
-      unsubscribeBeforeRemove();
-    };
-  }, [navigation]);
-
-  // Monitor modal state changes
-  useEffect(() => {
-    if (gameLogic.showGameOverModal) {
-      // Add a longer delay to see if navigation happens during this time
-      setTimeout(() => {}, 2000);
-    }
-  }, [gameLogic.showGameOverModal]);
-
-  // Add effect to monitor when component unmounts
-  useEffect(() => {
-    return () => {};
-  }, []);
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+      if (gameOverModalVisible || foundWordsModalVisible) {
+        return false; // Let default behavior handle it in modals
+      }
+      handleShowMenu(); // Show menu instead of navigating away
+      return true; // Prevent default back behavior
+    });
+    return () => backHandler.remove();
+  }, [gameOverModalVisible, foundWordsModalVisible]);
 
   // Enhanced word formed handler with animations
   const handleWordFormed = (word, isRepeated) => {
@@ -114,15 +93,10 @@ function GameScreen() {
     try {
       navigation.navigate("Start");
     } catch (error) {
-      console.error("🔍 GameScreen: Navigation error:", error);
-
       try {
         navigation.goBack();
       } catch (fallbackError) {
-        console.error(
-          "🔍 GameScreen: All navigation methods failed:",
-          fallbackError
-        );
+        // Navigation failed — app may be in an unexpected state
       }
     }
   }, [navigation]);
@@ -147,9 +121,6 @@ function GameScreen() {
   }, [goBackToStart]);
 
   const currentBackgroundImage = getBackgroundImage(gameLogic.resetCount);
-
-  // Debug: Log modal visibility state
-  console.log("English Game");
 
   // Render main game screen
   return (

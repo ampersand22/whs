@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import {
   Modal,
   View,
@@ -6,13 +6,9 @@ import {
   Pressable,
 } from "react-native";
 import { 
-  Portal, 
   Text, 
   Title, 
   Button, 
-  Card,
-  Dialog,
-  Paragraph
 } from "react-native-paper";
 import { LinearGradient } from 'expo-linear-gradient';
 
@@ -20,9 +16,6 @@ const GameMenuModal = ({ visible, onClose, onRestart, onBackToMenu }) => {
   const scaleAnim = useRef(new Animated.Value(0.8)).current;
   const opacityAnim = useRef(new Animated.Value(0)).current;
   const pulseAnim = useRef(new Animated.Value(1)).current;
-  
-  // State for confirmation dialog
-  const [showConfirmDialog, setShowConfirmDialog] = useState(false);
 
   useEffect(() => {
     if (visible) {
@@ -79,26 +72,13 @@ const GameMenuModal = ({ visible, onClose, onRestart, onBackToMenu }) => {
     }
   };
 
-  const handleConfirmBackToMenu = () => {
-    setShowConfirmDialog(false);
-    if (onBackToMenu) {
-      onBackToMenu();
-    }
-  };
-
-  const handleCancelBackToMenu = () => {
-    setShowConfirmDialog(false);
-  };
-
   return (
-    <Portal>
-      <Modal
-        visible={visible}
-        transparent
-        animationType="none"
-        onRequestClose={onClose}
-        data-testid="game-menu-modal"
-      >
+    <Modal
+      visible={visible}
+      transparent
+      animationType="none"
+      onRequestClose={onClose}
+    >
         <Pressable 
           onPress={onClose} 
           style={{
@@ -249,7 +229,6 @@ const GameMenuModal = ({ visible, onClose, onRestart, onBackToMenu }) => {
           </Animated.View>
         </View>
       </Modal>
-    </Portal>
   );
 };
 

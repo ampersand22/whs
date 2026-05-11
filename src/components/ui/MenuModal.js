@@ -2,8 +2,6 @@ import React from "react";
 import { View, Modal, Animated, Dimensions, Linking } from "react-native";
 import { Card, Title, Button, Text, IconButton } from "react-native-paper";
 
-const { width } = Dimensions.get('window');
-
 const MenuModal = ({ 
   visible, 
   onClose, 
@@ -11,6 +9,7 @@ const MenuModal = ({
   onEditProfile, 
   onSignOut 
 }) => {
+  const { width } = Dimensions.get('window');
   // Handle opening Patreon link
   const handleOpenPatreon = async () => {
     const patreonUrl = 'https://www.patreon.com/uainteractive'; // Match original URL from StartScreen

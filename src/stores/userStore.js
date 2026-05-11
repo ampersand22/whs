@@ -106,7 +106,6 @@ const useUserStore = create(
                 id: authData.user.id,
                 email: authData.user.email,
                 display_name: displayName,
-                password_hash: 'handled_by_supabase_auth',
               });
 
             if (dbError) {

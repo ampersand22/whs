@@ -1,8 +1,6 @@
 import React, { useEffect, useRef } from "react";
-import { View, Text, Dimensions, Animated, ScrollView } from "react-native";
-import { Portal, Dialog, Button } from "react-native-paper";
-
-const { width, height } = Dimensions.get('window');
+import { View, Text, Dimensions, Animated, ScrollView, Modal, Pressable } from "react-native";
+import { Button } from "react-native-paper";
 
 export default function FoundWordsModal({ 
   visible, 
@@ -11,7 +9,7 @@ export default function FoundWordsModal({
   foundWordsBoardNumbers = [],
   score = 0
 }) {
-  
+  const { width, height } = Dimensions.get('window');
   const scaleAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
@@ -43,20 +41,30 @@ export default function FoundWordsModal({
 
 
   return (
-    <Portal>
-      <Dialog 
-        visible={visible} 
-        onDismiss={onClose}
-        style={{ backgroundColor: 'transparent' }}
+    <Modal
+      visible={visible}
+      transparent
+      animationType="none"
+      onRequestClose={onClose}
+    >
+      <Pressable
+        style={{
+          flex: 1,
+          backgroundColor: 'rgba(0,0,0,0.5)',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+        onPress={onClose}
       >
+        <Pressable onPress={(e) => e.stopPropagation()}>
         <Animated.View style={{
           backgroundColor: 'white',
           borderRadius: 16,
           padding: 24,
-          margin: 8, // Reduced margin to allow more space
-          width: width * 0.95, // Increased width
-          maxWidth: 600, // Increased max width
-          height: height * 0.85, // Set explicit height to 85% of screen
+          margin: 8,
+          width: width * 0.95,
+          maxWidth: 600,
+          height: height * 0.85,
           alignSelf: 'center',
           transform: [{ scale: scaleAnim }]
         }}>
@@ -186,7 +194,8 @@ export default function FoundWordsModal({
             </Button>
           </View>
         </Animated.View>
-      </Dialog>
-    </Portal>
+        </Pressable>
+      </Pressable>
+    </Modal>
   );
 }

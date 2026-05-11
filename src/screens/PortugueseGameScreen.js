@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, ImageBackground, Dimensions } from "react-native";
+import { View, ImageBackground } from "react-native";
 import { Text, Card, Title, Button } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import LetterGrid from "../components/game/LetterGrid";
@@ -11,8 +11,6 @@ import { generatePortugueseBoard } from "../utils/game/portBoardGenerator";
 import { isValidWord } from "../utils/validation/WordList";
 import { getPointsForWord } from "../utils/scoring/scoringUtils";
 import { getResponsiveDimensions } from "../constants/responsive";
-
-const { width: screenWidth, height: screenHeight } = Dimensions.get("window");
 
 const PortugueseGameScreen = ({ navigation }) => {
   const dimensions = getResponsiveDimensions();
@@ -35,25 +33,20 @@ const PortugueseGameScreen = ({ navigation }) => {
       const timer = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
       return () => clearTimeout(timer);
     } else if (timeLeft === 0 && isGameActive) {
-      // Game over - show modal
-      console.log("Game over - showing modal");
       setIsGameActive(false);
       setGameOverModalVisible(true);
     }
   }, [timeLeft, isGameActive]);
 
   const handleWordFormed = (word) => {
-    if (!isGameActive) return; // Don't process words if game is over
+    if (!isGameActive) return;
 
-    console.log("Word formed:", word);
     const isValid = isValidWord(word, "portuguese");
-    console.log("Is valid Portuguese word:", isValid);
 
     if (isValid && !foundWords.includes(word.toLowerCase())) {
       const newFoundWords = [...foundWords, word.toLowerCase()];
       setFoundWords(newFoundWords);
 
-      // Use proper scoring system with board number
       const points = getPointsForWord(word, resetCount);
       setScore(score + points);
     }
@@ -86,8 +79,6 @@ const PortugueseGameScreen = ({ navigation }) => {
   const handleMainMenu = () => {
     navigation.goBack();
   };
-
-  console.log("Portugues Game");
 
   return (
     <View style={{ flex: 1 }}>
@@ -167,12 +158,6 @@ const PortugueseGameScreen = ({ navigation }) => {
       </ImageBackground>
 
       {/* Game Over Modal */}
-      {console.log(
-        "Modal visible state:",
-        gameOverModalVisible,
-        "isGameActive:",
-        isGameActive
-      )}
       <GameOverModalNew
         visible={gameOverModalVisible}
         score={score}

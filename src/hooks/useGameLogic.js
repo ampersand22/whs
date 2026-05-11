@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { generateBoard } from '../utils/game/BoardGenerator';
 import { isValidWord, isBonusWord } from '../utils/validation/WordList';
 import { getPointsForWord } from '../utils/scoring/scoringUtils';
-import { saveUserScore, getUserHighScore } from '../services/userService';
+import { getUserHighScore } from '../services/userService';
 import useUserStore from '../stores/userStore';
 
 export const useGameLogic = () => {
@@ -27,6 +27,18 @@ export const useGameLogic = () => {
   // Timer refs to prevent Android issues
   const timerRef = useRef(null);
   const gameEndedRef = useRef(false);
+  
+  // Refs to hold current state values for use in timer callbacks (avoids stale closures)
+  const scoreRef = useRef(score);
+  const foundWordsRef = useRef(foundWords);
+  const timeLeftRef = useRef(timeLeft);
+  const userHighScoreRef = useRef(userHighScore);
+
+  // Keep refs in sync with state
+  scoreRef.current = score;
+  foundWordsRef.current = foundWords;
+  timeLeftRef.current = timeLeft;
+  userHighScoreRef.current = userHighScore;
 
   // Initialize game
   const initializeGame = async () => {
@@ -86,14 +98,6 @@ export const useGameLogic = () => {
     };
   }, []);
 
-  // Debug effect to track showGameOverModal changes
-  useEffect(() => {
-  }, [showGameOverModal]);
-
-  // Debug effect to log current state values
-  useEffect(() => {
-  }, [gameOverVisible, showGameOverModal]);
-
   const handleWordFormed = (word, isRepeated) => {
     if (word.length >= 3 && isValidWord(word.toLowerCase())) {
       setIsWordRepeated(isRepeated);
@@ -110,7 +114,6 @@ export const useGameLogic = () => {
 
         setScore((prev) => prev + points);
       }
-    } else if (word.length >= 3) {
     }
   };
 
@@ -140,30 +143,32 @@ export const useGameLogic = () => {
     setShowGameOverModal(true);
     setGameOverVisible(true);
     
+    // Read current values from refs (avoids stale closure)
+    const currentScore = scoreRef.current;
+    const currentFoundWords = foundWordsRef.current;
+    const currentTimeLeft = timeLeftRef.current;
+    const currentHighScore = userHighScoreRef.current;
+    
     // Save score
-    if (user && score > 0) {
+    if (user && currentScore > 0) {
       try {
         const gameData = {
-          score: score,
-          timeLeft: timeLeft,
-          wordCount: foundWords.length,
-          wordsFound: foundWords,
-          gameDuration: INITIAL_TIME - timeLeft,
+          score: currentScore,
+          timeLeft: currentTimeLeft,
+          wordCount: currentFoundWords.length,
+          wordsFound: currentFoundWords,
+          gameDuration: INITIAL_TIME - currentTimeLeft,
         };
 
-        console.log('Saving game score:', gameData);
         const result = await processGameCompletion(gameData);
 
         if (result.success) {
-          console.log('Score saved successfully');
-          if (score > userHighScore) {
-            setUserHighScore(score);
+          if (currentScore > currentHighScore) {
+            setUserHighScore(currentScore);
           }
-        } else {
-          console.error('Failed to save score:', result.error);
         }
       } catch (error) {
-        console.error('Error saving game score:', error);
+        // Score save failed silently — user still sees game over modal
       }
     }
   };
@@ -189,12 +194,6 @@ export const useGameLogic = () => {
     initializeGame();
   };
 
-  // Temporary method for testing - manually end the timer
-  const endTimer = () => {
-    setTimeLeft(0);
-    handleGameEnd(); // Call directly instead of relying on timer effect
-  };
-
   return {
     // State
     board,
@@ -208,7 +207,7 @@ export const useGameLogic = () => {
     isWordRepeated,
     isTouching,
     gameOverVisible,
-    showGameOverModal, // Simple modal state
+    showGameOverModal,
     
     // Actions
     handleWordFormed,
@@ -216,7 +215,6 @@ export const useGameLogic = () => {
     handleGameEnd,
     restartGame,
     initializeGame,
-    endTimer, // Temporary for testing
     setPreviewWord,
     setIsTouching,
     setShowGameOverModal,

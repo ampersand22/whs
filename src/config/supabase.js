@@ -1,7 +1,7 @@
 import { createClient } from '@supabase/supabase-js';
 import Constants from 'expo-constants';
 
-// Multiple fallback methods to get Supabase configuration
+// Get Supabase configuration from environment
 const getSupabaseConfig = () => {
   // Method 1: From expo-constants (app.config.js extra)
   let supabaseUrl = Constants.expoConfig?.extra?.supabaseUrl;
@@ -11,12 +11,6 @@ const getSupabaseConfig = () => {
   if (!supabaseUrl && typeof process !== 'undefined' && process.env) {
     supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL;
     supabaseAnonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY;
-  }
-  
-  // Method 3: Hardcoded fallback for production (if EAS env vars fail)
-  if (!supabaseUrl) {
-    supabaseUrl = 'https://mnuduacsnqdrypkzkfzi.supabase.co';
-    supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1udWR1YWNzbnFkcnlwa3prZnppIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDg1MjkxNTEsImV4cCI6MjA2NDEwNTE1MX0.xFeewHbRkYgtLB0gS0Xi3YgMxaxS7SocXpO80pInSoQ';
   }
   
   return { supabaseUrl, supabaseAnonKey };

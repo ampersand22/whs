@@ -3,16 +3,10 @@ import {
   View,
   Text,
   Vibration,
-  Dimensions,
-  Animated,
-  UIManager,
-  findNodeHandle,
 } from "react-native";
 import { Surface } from "react-native-paper";
 import { isValidWord } from "../../utils/validation/WordList";
 import { getResponsiveDimensions, isTablet } from "../../constants/responsive";
-
-const { width: screenWidth } = Dimensions.get("window");
 
 export default function LetterGrid({ board, onWordFormed, previewWord, setPreviewWord, foundWords, setIsTouching }) {
   const [selectedCells, setSelectedCells] = useState([]);
@@ -27,29 +21,38 @@ export default function LetterGrid({ board, onWordFormed, previewWord, setPrevie
   const rows = board.length;
   const cols = board[0].length;
 
-  // Get grid position on mount and layout changes
-  useEffect(() => {
-    const measureGrid = () => {
-      if (gridRef.current) {
-        const handle = findNodeHandle(gridRef.current);
-        if (handle) {
-          UIManager.measure(handle, (x, y, width, height, pageX, pageY) => {
-            gridPosition.current = {
-              x: pageX,
-              y: pageY,
-              width,
-              height,
-            };
-          });
-        }
-      }
-    };
+  // Check if two cells are adjacent (horizontally, vertically, or diagonally)
+  const isAdjacent = (cell1, cell2) => {
+    return Math.abs(cell1.row - cell2.row) <= 1 && 
+           Math.abs(cell1.col - cell2.col) <= 1;
+  };
 
-    // Multiple measurement attempts for iPhone 16 compatibility
-    setTimeout(measureGrid, 100);
-    setTimeout(measureGrid, 500);
-    setTimeout(measureGrid, 1000);
-  }, []);
+  // Measure grid position using onLayout + measureInWindow (works with New Architecture)
+  const handleGridLayout = (event) => {
+    const { width, height } = event.nativeEvent.layout;
+    // Store layout dimensions immediately
+    gridPosition.current = { 
+      ...gridPosition.current, 
+      width, 
+      height 
+    };
+    // Then get page coordinates
+    if (gridRef.current) {
+      if (gridRef.current.measureInWindow) {
+        gridRef.current.measureInWindow((pageX, pageY, w, h) => {
+          if (pageX != null && pageY != null) {
+            gridPosition.current = { x: pageX, y: pageY, width: w || width, height: h || height };
+          }
+        });
+      } else if (gridRef.current.measure) {
+        gridRef.current.measure((x, y, w, h, pageX, pageY) => {
+          if (pageX != null && pageY != null) {
+            gridPosition.current = { x: pageX, y: pageY, width: w || width, height: h || height };
+          }
+        });
+      }
+    }
+  };
 
   const getCurrentWord = () =>
     selectedCells
@@ -109,6 +112,23 @@ export default function LetterGrid({ board, onWordFormed, previewWord, setPrevie
     isTouching.current = true;
     setIsTouching(true); // Update parent component
     
+    // Re-measure grid position on touch start for accuracy
+    if (gridRef.current) {
+      if (gridRef.current.measureInWindow) {
+        gridRef.current.measureInWindow((pageX, pageY, width, height) => {
+          if (pageX != null && pageY != null && width && height) {
+            gridPosition.current = { x: pageX, y: pageY, width, height };
+          }
+        });
+      } else if (gridRef.current.measure) {
+        gridRef.current.measure((x, y, width, height, pageX, pageY) => {
+          if (pageX != null && pageY != null && width && height) {
+            gridPosition.current = { x: pageX, y: pageY, width, height };
+          }
+        });
+      }
+    }
+    
     // Clear the previous word when starting a new selection
     setSelectedCells([]);
     setPreviewWord(""); // Clear the preview word when a new cell is touched
@@ -165,7 +185,11 @@ export default function LetterGrid({ board, onWordFormed, previewWord, setPrevie
       isInsideCenter &&
       !selectedCells.some((cell) => cell.row === row && cell.col === col)
     ) {
-      setSelectedCells((prev) => [...prev, { row, col }]);
+      // Must be adjacent to the last selected cell (or be the first cell)
+      const lastCell = selectedCells[selectedCells.length - 1];
+      if (selectedCells.length === 0 || isAdjacent(lastCell, { row, col })) {
+        setSelectedCells((prev) => [...prev, { row, col }]);
+      }
     }
   };
 
@@ -181,22 +205,27 @@ export default function LetterGrid({ board, onWordFormed, previewWord, setPrevie
     }
   }, [selectedCells, foundWords]);
 
+  // Cache responsive values outside the render loop
+  const dimensions = getResponsiveDimensions();
+  const tabletMode = isTablet();
+
   return (
     <View style={{ width: "100%", alignItems: "center" }}>
       {/* Grid */}
       <View
         ref={gridRef}
+        onLayout={handleGridLayout}
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
         style={{
           width: "100%",
-          maxWidth: getResponsiveDimensions().gridMaxWidth,
+          maxWidth: dimensions.gridMaxWidth,
           aspectRatio: 1,
           flexDirection: "column",
           alignSelf: "center",
           marginVertical: 4,
-          padding: getResponsiveDimensions().gridPadding / 4,
+          padding: dimensions.gridPadding / 4,
         }}
       >
         {board.map((rowArr, row) => (
@@ -218,20 +247,17 @@ export default function LetterGrid({ board, onWordFormed, previewWord, setPrevie
                 backgroundColor = flashColor; // Green or red for flashing
               }
               
-              const dimensions = getResponsiveDimensions();
-              
               return (
                 <Surface
                   key={`${row}-${col}`}
                   style={{
                     flex: 1,
-                    margin: isTablet() ? 3 : 2,
+                    margin: tabletMode ? 3 : 2,
                     backgroundColor: backgroundColor,
                     justifyContent: "center",
                     alignItems: "center",
-                    borderRadius: isTablet() ? 8 : 6,
+                    borderRadius: tabletMode ? 8 : 6,
                     elevation: 4,
-                    minHeight: isTablet() ? 60 : 50,
                   }}
                 >
                   <Text

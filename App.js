@@ -4,7 +4,7 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { StatusBar } from "expo-status-bar";
-import { View, Text, Dimensions } from "react-native";
+import { View, Text } from "react-native";
 
 // Screens
 import StartScreen from "./src/screens/StartScreen";
@@ -17,9 +17,6 @@ import ErrorBoundary from "./src/components/ui/ErrorBoundary";
 
 // Store
 import useUserStore from "./src/stores/userStore";
-
-// Responsive utilities
-import { isTablet } from "./src/constants/responsive";
 
 const theme = {
   ...MD3LightTheme,
@@ -34,30 +31,19 @@ const Stack = createStackNavigator();
 
 function AppNavigator() {
   const { initialize, isLoading, error } = useUserStore();
-  const [screenData, setScreenData] = useState(Dimensions.get("window"));
   const [initError, setInitError] = useState(null);
 
-  // Initialize the user store and ads when app starts
+  // Initialize the user store when app starts
   useEffect(() => {
     const initializeApp = async () => {
       try {
         await initialize();
       } catch (error) {
-        // App initialization error
         setInitError(error.message || "Failed to initialize app");
       }
     };
 
     initializeApp();
-  }, []);
-
-  // Handle orientation changes
-  useEffect(() => {
-    const subscription = Dimensions.addEventListener("change", ({ window }) => {
-      setScreenData(window);
-    });
-
-    return () => subscription?.remove();
   }, []);
 
   // Show error screen if initialization failed

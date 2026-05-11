@@ -8,7 +8,6 @@ import {
   RefreshControl,
 } from "react-native";
 import {
-  Portal,
   Text,
   Title,
   Button,
@@ -111,14 +110,12 @@ const LeaderboardModal = ({ visible, onClose }) => {
   };
 
   return (
-    <Portal>
-      <Modal
-        visible={visible}
-        transparent
-        animationType="none"
-        onRequestClose={onClose}
-        data-testid="leaderboard-modal"
-      >
+    <Modal
+      visible={visible}
+      transparent
+      animationType="none"
+      onRequestClose={onClose}
+    >
         <Pressable
           onPress={onClose}
           style={{
@@ -302,7 +299,6 @@ const LeaderboardModal = ({ visible, onClose }) => {
           </Animated.View>
         </View>
       </Modal>
-    </Portal>
   );
 };
 

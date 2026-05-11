@@ -1,9 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import { View, Text, Dimensions, Animated, Modal, Pressable } from "react-native";
-import { Portal, Button } from "react-native-paper";
+import { Button } from "react-native-paper";
 import ConfettiCannon from 'react-native-confetti-cannon';
-
-const { width, height } = Dimensions.get('window');
 
 export default function GameOverModalNew({ 
   visible, 
@@ -15,6 +13,7 @@ export default function GameOverModalNew({
   isNewHighScore = false,
   foundWords = []
 }) {
+  const { width } = Dimensions.get('window');
   const scaleAnim = useRef(new Animated.Value(0)).current;
   const confettiRef = useRef(null);
 
@@ -40,15 +39,14 @@ export default function GameOverModalNew({
   }, [visible, isNewHighScore]);
 
   return (
-    <Portal>
-      <Modal
-        visible={visible}
-        transparent
-        animationType="none"
-        onRequestClose={() => {
-          // Prevent dismissal - user must use buttons
-        }}
-      >
+    <Modal
+      visible={visible}
+      transparent
+      animationType="none"
+      onRequestClose={() => {
+        // Prevent dismissal - user must use buttons
+      }}
+    >
         <Pressable 
           style={{
             flex: 1,
@@ -243,13 +241,7 @@ export default function GameOverModalNew({
               mode="outlined"
               onPress={() => {
                 if (onMainMenu) {
-                  try {
-                    onMainMenu();
-                  } catch (error) {
-                    console.error('🔍 GameOverModalNew: Error calling onMainMenu:', error);
-                  }
-                } else {
-                  console.error('🔍 GameOverModalNew: onMainMenu is not available!');
+                  onMainMenu();
                 }
               }}
               style={{
@@ -275,6 +267,5 @@ export default function GameOverModalNew({
           </Pressable>
         </Pressable>
       </Modal>
-    </Portal>
   );
 }

@@ -54,11 +54,8 @@ const ProfileScreen = ({ navigation }) => {
         .single();
 
       if (error) {
-        console.error("Profile load error:", error);
-        
         // Check if it's a network error and retry
         if (error.message?.includes('Network request failed') && retryCount < 2) {
-          console.log(`Retrying profile load... (attempt ${retryCount + 1})`);
           setTimeout(() => loadUserData(retryCount + 1), 1000);
           return;
         }
@@ -77,11 +74,8 @@ const ProfileScreen = ({ navigation }) => {
         setSelectedLanguage(data.language || "en");
       }
     } catch (error) {
-      console.error("Profile load exception:", error);
-      
       // Retry on network errors
       if (retryCount < 2) {
-        console.log(`Retrying profile load... (attempt ${retryCount + 1})`);
         setTimeout(() => loadUserData(retryCount + 1), 1000);
         return;
       }
@@ -416,7 +410,7 @@ const ProfileScreen = ({ navigation }) => {
           {/* Portuguese Test Button */}
           <Button
             mode="outlined"
-            onPress={() => navigation.navigate('PortuguesGame')}
+            onPress={() => navigation.navigate('PortugueseGame')}
             style={{ 
               marginBottom: 20,
               backgroundColor: 'white',

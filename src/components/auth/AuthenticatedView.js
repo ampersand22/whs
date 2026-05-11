@@ -3,11 +3,9 @@ import { View, StyleSheet } from "react-native";
 import {
   Card,
   Title,
-  Paragraph,
   Button,
   Text,
   Avatar,
-  Chip,
 } from "react-native-paper";
 import { LinearGradient } from "expo-linear-gradient";
 import Logo from "../ui/Logo";

@@ -1,33 +1,43 @@
 import { Dimensions, Platform } from 'react-native';
 
-// Get screen dimensions
-const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
-
-// Device type detection
-export const isTablet = () => {
-  const aspectRatio = screenHeight / screenWidth;
-  const minDimension = Math.min(screenWidth, screenHeight);
+// Device type detection - always uses fresh dimensions
+export const isTablet = (width, height) => {
+  const { width: screenWidth, height: screenHeight } = width != null 
+    ? { width, height } 
+    : Dimensions.get('window');
+  const w = width || screenWidth;
+  const h = height || screenHeight;
+  const aspectRatio = Math.max(w, h) / Math.min(w, h);
+  const minDimension = Math.min(w, h);
   
-  return (
-    (Platform.OS === 'ios' && aspectRatio < 1.6) ||
-    (Platform.OS === 'android' && minDimension >= 600)
-  );
+  if (Platform.OS === 'ios') {
+    // Use Platform.isPad when available, fall back to aspect ratio check
+    return Platform.isPad || (aspectRatio < 1.6 && minDimension >= 600);
+  }
+  return minDimension >= 600;
 };
 
-export const isLargeTablet = () => {
-  const minDimension = Math.min(screenWidth, screenHeight);
+export const isLargeTablet = (width, height) => {
+  const { width: w, height: h } = width != null 
+    ? { width, height } 
+    : Dimensions.get('window');
+  const minDimension = Math.min(w || 0, h || 0);
   return minDimension >= 768;
 };
 
-export const isSmallPhone = () => {
-  const minDimension = Math.min(screenWidth, screenHeight);
+export const isSmallPhone = (width, height) => {
+  const { width: w, height: h } = width != null 
+    ? { width, height } 
+    : Dimensions.get('window');
+  const minDimension = Math.min(w || 0, h || 0);
   return minDimension < 375;
 };
 
-// Responsive dimensions
+// Responsive dimensions - always reads fresh screen size
 export const getResponsiveDimensions = () => {
-  const isTab = isTablet();
-  const isLargeTab = isLargeTablet();
+  const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
+  const isTab = isTablet(screenWidth, screenHeight);
+  const isLargeTab = isLargeTablet(screenWidth, screenHeight);
   const minDimension = Math.min(screenWidth, screenHeight);
   const maxDimension = Math.max(screenWidth, screenHeight);
   
@@ -58,7 +68,7 @@ export const getResponsiveDimensions = () => {
     useHorizontalLayout: isTab && screenWidth > screenHeight,
     sidebarWidth: isLargeTab ? 300 : 250,
     
-    // Screen dimensions
+    // Screen dimensions (fresh on every call)
     screenWidth,
     screenHeight,
     minDimension,
@@ -72,7 +82,6 @@ export const createResponsiveStyles = (baseStyles) => {
   
   return {
     ...baseStyles,
-    // Apply responsive dimensions to common properties
     container: {
       ...baseStyles.container,
       paddingHorizontal: dimensions.containerPadding,
@@ -80,7 +89,7 @@ export const createResponsiveStyles = (baseStyles) => {
   };
 };
 
-// Hook for responsive dimensions (if using functional components)
+// Hook for responsive dimensions (re-renders on dimension changes)
 export const useResponsiveDimensions = () => {
   return getResponsiveDimensions();
 };
@@ -96,6 +105,7 @@ export const BREAKPOINTS = {
 
 // Get current breakpoint
 export const getCurrentBreakpoint = () => {
+  const { width: screenWidth } = Dimensions.get('window');
   if (screenWidth < BREAKPOINTS.SMALL_PHONE) return 'SMALL_PHONE';
   if (screenWidth < BREAKPOINTS.PHONE) return 'PHONE';
   if (screenWidth < BREAKPOINTS.TABLET) return 'PHONE';

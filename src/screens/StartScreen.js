@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Alert, ScrollView, ImageBackground, Dimensions, KeyboardAvoidingView, Platform, Linking } from "react-native";
+import { View, Alert, ScrollView, ImageBackground, KeyboardAvoidingView, Platform } from "react-native";
 import { Text, ActivityIndicator } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { supabase } from "../config/supabase";
@@ -19,9 +19,6 @@ const StartScreen = ({ navigation }) => {
     signOut,
     language,
   } = useUserStore();
-
-  // Get screen dimensions for full coverage
-  const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 
   // Modal states
   const [showSignUp, setShowSignUp] = useState(false);
