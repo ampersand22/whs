@@ -72,7 +72,6 @@ export const useGameLogic = () => {
         if (prevTime <= 1 || gameEndedRef.current) {
           // Game should end
           if (!gameEndedRef.current) {
-            gameEndedRef.current = true;
             setTimeout(() => handleGameEnd(), 100);
           }
           return 0;
@@ -126,8 +125,8 @@ export const useGameLogic = () => {
   };
 
   const handleGameEnd = async () => {
-    // Prevent multiple calls
-    if (gameEndedRef.current || gameOverVisible || showGameOverModal) {
+    // Prevent multiple calls using ref (state may be stale in timer callback)
+    if (gameEndedRef.current) {
       return;
     }
     

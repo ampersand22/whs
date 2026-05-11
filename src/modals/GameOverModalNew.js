@@ -97,12 +97,9 @@ export default function GameOverModalNew({
               <Text style={{
                 fontSize: 18,
                 fontWeight: 'bold',
-                color: '#FFD700',
+                color: '#4CAF50',
                 textAlign: 'center',
                 marginTop: 8,
-                textShadowColor: '#FFA500',
-                textShadowOffset: { width: 1, height: 1 },
-                textShadowRadius: 2
               }}>
                 🎉 NEW HIGH SCORE! 🎉
               </Text>
@@ -129,10 +126,7 @@ export default function GameOverModalNew({
               <Text style={{
                 fontSize: 18,
                 fontWeight: 'bold',
-                color: isNewHighScore ? '#FFD700' : '#333',
-                textShadowColor: isNewHighScore ? '#FFA500' : 'transparent',
-                textShadowOffset: { width: 1, height: 1 },
-                textShadowRadius: isNewHighScore ? 1 : 0
+                color: '#333',
               }}>
                 {score.toLocaleString()}
               </Text>
@@ -156,7 +150,7 @@ export default function GameOverModalNew({
               <Text style={{
                 fontSize: 18,
                 fontWeight: 'bold',
-                color: '#333'
+                color: isNewHighScore ? '#4CAF50' : '#333'
               }}>
                 {Math.max(score, highScore).toLocaleString()}
               </Text>
