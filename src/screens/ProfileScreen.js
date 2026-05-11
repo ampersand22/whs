@@ -407,8 +407,8 @@ const ProfileScreen = ({ navigation }) => {
             </Card.Content>
           </Card>
 
-          {/* Portuguese Test Button */}
-          <Button
+          {/* Portuguese Test Button - disabled for now */}
+          {/* <Button
             mode="outlined"
             onPress={() => navigation.navigate('PortugueseGame')}
             style={{ 
@@ -419,7 +419,7 @@ const ProfileScreen = ({ navigation }) => {
             }}
           >
             Test Portuguese Game
-          </Button>
+          </Button> */}
         </ScrollView>
       </SafeAreaView>
     </ImageBackground>

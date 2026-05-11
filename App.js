@@ -10,7 +10,7 @@ import { View, Text } from "react-native";
 import StartScreen from "./src/screens/StartScreen";
 import GameScreen from "./src/screens/GameScreen";
 import ProfileScreen from "./src/screens/ProfileScreen";
-import PortugueseGameScreen from "./src/screens/PortugueseGameScreen";
+// import PortugueseGameScreen from "./src/screens/PortugueseGameScreen";
 
 // Components
 import ErrorBoundary from "./src/components/ui/ErrorBoundary";
@@ -142,14 +142,14 @@ function AppNavigator() {
             title: "Profile",
           }}
         />
-        <Stack.Screen
+        {/* <Stack.Screen
           name="PortugueseGame"
           component={PortugueseGameScreen}
           options={{
             title: "Portuguese Game",
             gestureEnabled: false,
           }}
-        />
+        /> */}
       </Stack.Navigator>
     </NavigationContainer>
   );

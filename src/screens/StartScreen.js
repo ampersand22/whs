@@ -129,11 +129,12 @@ const StartScreen = ({ navigation }) => {
 
   // Event handlers for authenticated view
   const handlePlayGame = () => {
-    if (language === "portuguese") {
-      navigation.navigate("PortugueseGame");
-    } else {
-      navigation.navigate("Game");
-    }
+    // Portuguese game disabled for now
+    // if (language === "portuguese") {
+    //   navigation.navigate("PortugueseGame");
+    // } else {
+    navigation.navigate("Game");
+    // }
   };
   const handleShowLeaderboard = () => setShowLeaderboard(true);
   const handleEditProfile = () => navigation.navigate("Profile");

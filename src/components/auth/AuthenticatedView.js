@@ -10,7 +10,6 @@ import {
 import { LinearGradient } from "expo-linear-gradient";
 import Logo from "../ui/Logo";
 import MenuModal from "../ui/MenuModal";
-import LanguageModal from "../../modals/LanguageModal";
 import useUserStore from "../../stores/userStore";
 import { getTranslation } from "../../constants/translations";
 
@@ -24,22 +23,10 @@ const AuthenticatedView = ({
   onSignOut,
 }) => {
   const [menuVisible, setMenuVisible] = useState(false);
-  const [languageModalVisible, setLanguageModalVisible] = useState(false);
-  const { language, setLanguage } = useUserStore();
+  const { language } = useUserStore();
 
   const showMenu = () => setMenuVisible(true);
   const hideMenu = () => setMenuVisible(false);
-
-  const showLanguageModal = () => setLanguageModalVisible(true);
-  const hideLanguageModal = () => setLanguageModalVisible(false);
-
-  const handleLanguageSelect = (selectedLanguage) => {
-    setLanguage(selectedLanguage);
-  };
-
-  const getLanguageDisplayName = () => {
-    return language === "portuguese" ? "Português" : "English";
-  };
 
   return (
     <>
@@ -102,7 +89,7 @@ const AuthenticatedView = ({
 
       {/* Game Actions */}
       <View style={{ marginBottom: 20 }} data-testid="game-actions">
-        {/* Play Game and How to Play buttons side by side */}
+        {/* Menu and How to Play buttons side by side */}
         <View
           style={{
             flexDirection: "row",
@@ -113,16 +100,16 @@ const AuthenticatedView = ({
         >
           <Button
             mode="contained"
-            onPress={onPlayGame}
+            onPress={showMenu}
             style={{
               flex: 1,
               height: 48,
             }}
             contentStyle={{ height: 48 }}
             labelStyle={{ fontSize: 16 }}
-            data-testid="play-game-button"
+            data-testid="menu-button"
           >
-            {getTranslation("playGame", language)}
+            {getTranslation("menu", language)}
           </Button>
 
           <Button
@@ -140,51 +127,20 @@ const AuthenticatedView = ({
           </Button>
         </View>
 
-        {/* Menu and Language buttons side by side */}
-        <View
+        {/* Play Game button full width */}
+        <Button
+          mode="contained"
+          onPress={onPlayGame}
           style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            gap: 10,
+            height: 48,
           }}
+          contentStyle={{ height: 48 }}
+          labelStyle={{ fontSize: 16 }}
+          data-testid="play-game-button"
         >
-          <Button
-            mode="contained"
-            onPress={showLanguageModal}
-            style={{
-              flex: 1,
-              height: 48,
-            }}
-            contentStyle={{ height: 48 }}
-            labelStyle={{ fontSize: 16 }}
-            data-testid="language-button"
-          >
-            {getLanguageDisplayName()}
-          </Button>
-
-          <Button
-            mode="contained"
-            onPress={showMenu}
-            style={{
-              flex: 1,
-              height: 48,
-            }}
-            contentStyle={{ height: 48 }}
-            labelStyle={{ fontSize: 16 }}
-            data-testid="menu-button"
-          >
-            {getTranslation("menu", language)}
-          </Button>
-        </View>
+          {getTranslation("playGame", language)}
+        </Button>
       </View>
-
-      {/* Language Modal */}
-      <LanguageModal
-        visible={languageModalVisible}
-        onClose={hideLanguageModal}
-        currentLanguage={language}
-        onLanguageSelect={handleLanguageSelect}
-      />
 
       {/* Menu Modal */}
       <MenuModal
