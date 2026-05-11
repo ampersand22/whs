@@ -74,16 +74,11 @@ const LeaderboardModal = ({ visible, onClose }) => {
         p_limit: 3,
       });
 
-      console.log('[DEBUG] Leaderboard RPC - year:', currentYear, 'month:', currentMonth);
-      console.log('[DEBUG] Leaderboard data:', JSON.stringify(data));
-      console.log('[DEBUG] Leaderboard error:', JSON.stringify(error));
-
       if (error) {
       } else {
         setLeaderboard(data || []);
       }
     } catch (error) {
-      console.log('[DEBUG] Leaderboard exception:', error.message);
     } finally {
       setLoadingLeaderboard(false);
     }
