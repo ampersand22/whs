@@ -15,6 +15,7 @@ import GameControls from "../components/game/GameControls";
 import GameOverModalNew from "../modals/GameOverModalNew";
 import GameMenuModal from "../modals/GameMenuModal";
 import FoundWordsModal from "../modals/FoundWordsModal";
+import BannerAdComponent from "../components/ads/BannerAdComponent";
 
 // Utils
 import { getResponsiveDimensions } from "../constants/responsive";
@@ -202,6 +203,9 @@ function GameScreen() {
           </View>
         </SafeAreaView>
       </ImageBackground>
+
+      {/* Banner Ad */}
+      <BannerAdComponent />
 
       {/* Game Menu Modal */}
       <GameMenuModal

@@ -8,6 +8,7 @@ import LeaderboardModal from "../modals/LeaderboardModal";
 import UnauthenticatedView from "../components/auth/UnauthenticatedView";
 import AuthenticatedView from "../components/auth/AuthenticatedView";
 import AuthDialogs from "../components/auth/AuthDialogs";
+import BannerAdComponent from "../components/ads/BannerAdComponent";
 
 const StartScreen = ({ navigation }) => {
   const {
@@ -227,6 +228,9 @@ const StartScreen = ({ navigation }) => {
           visible={showLeaderboard}
           onClose={() => setShowLeaderboard(false)}
         />
+
+        {/* Banner Ad */}
+        <BannerAdComponent />
       </SafeAreaView>
     </ImageBackground>
   );

@@ -40,7 +40,13 @@ export default {
       favicon: "./assets/favicon.png",
     },
     plugins: [
-      // "expo-dev-client", // Only for development builds
+      [
+        "react-native-google-mobile-ads",
+        {
+          androidAppId: "ca-app-pub-8805412373618815~4348246376",
+          iosAppId: "ca-app-pub-8805412373618815~4348246376",
+        },
+      ],
     ],
     android: {
       package: "com.worrzle.app",
