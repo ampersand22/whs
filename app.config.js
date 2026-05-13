@@ -51,7 +51,7 @@ export default {
     ],
     android: {
       package: "com.worrzle.app",
-      versionCode: 17,
+      versionCode: 18,
       adaptiveIcon: {
         foregroundImage: "./assets/adaptive-icon.png",
         backgroundColor: "#6B46C1",
@@ -59,6 +59,7 @@ export default {
       edgeToEdgeEnabled: true,
       permissions: ["INTERNET", "ACCESS_NETWORK_STATE"],
       runtimeVersion: "1.1.0",
+      enableProguardInReleaseBuilds: true,
     },
     extra: {
       supabaseUrl: process.env.SUPABASE_URL || process.env.EXPO_PUBLIC_SUPABASE_URL,

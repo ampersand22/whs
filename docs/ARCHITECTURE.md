@@ -1,126 +1,114 @@
-# Architecture Overview
+# Architecture
 
-## System Architecture
+## Tech Stack
 
-```
-┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│   React Native  │    │    Supabase     │    │   Word Lists    │
-│      App        │◄──►│   PostgreSQL    │    │   (Static)      │
-└─────────────────┘    └─────────────────┘    └─────────────────┘
-         │                       │
-         ▼                       ▼
-┌─────────────────┐    ┌─────────────────┐
-│  Local Storage  │    │  Real-time      │
-│  (AsyncStorage) │    │  Subscriptions  │
-└─────────────────┘    └─────────────────┘
-```
+| Layer | Technology |
+|-------|-----------|
+| Framework | React Native 0.81.4 + Expo SDK 54 |
+| State Management | Zustand + AsyncStorage persistence |
+| Backend | Supabase (Auth + PostgreSQL + RPC) |
+| Navigation | React Navigation (Stack) |
+| UI Library | React Native Paper (Material Design 3) |
+| Ads | Google AdMob (react-native-google-mobile-ads) |
+| Build/Deploy | EAS Build + EAS Submit |
 
-## Frontend Architecture
-
-### State Management (Zustand)
-
-```javascript
-// stores/userStore.js
-const useUserStore = create((set, get) => ({
-  user: null,
-  language: 'english',
-  setUser: (user) => set({ user }),
-  setLanguage: (lang) => set({ language: lang })
-}))
-```
-
-### Component Structure
+## Project Structure
 
 ```
+App.js                          # Entry point, navigation, providers
 src/
 ├── components/
-│   ├── auth/           # Authentication components
-│   ├── game/           # Game-specific components  
-│   └── ui/             # Reusable UI components
-├── screens/            # Screen components
-├── modals/             # Modal components
-└── utils/              # Business logic
+│   ├── ads/
+│   │   └── BannerAdComponent.js    # AdMob banner wrapper
+│   ├── auth/
+│   │   ├── AuthenticatedView.js    # Logged-in start screen
+│   │   ├── UnauthenticatedView.js  # Login/signup screen
+│   │   ├── AuthDialogs.js          # Sign up/in modals
+│   │   └── dialogs/                # Individual dialog components
+│   ├── game/
+│   │   ├── LetterGrid.js           # 5x5 touch-based word grid
+│   │   ├── GameHeader.js           # Score, timer, board count
+│   │   ├── GameControls.js         # Reset board, menu buttons
+│   │   └── WordPreview.js          # Current word being formed
+│   └── ui/
+│       ├── ErrorBoundary.js        # App-level error catch
+│       ├── Logo.js                 # App logo component
+│       └── MenuModal.js            # Settings/menu modal
+├── config/
+│   └── supabase.js                 # Supabase client initialization
+├── constants/
+│   ├── responsive.js               # Device detection, responsive sizing
+│   └── translations.js             # i18n strings
+├── hooks/
+│   ├── useGameLogic.js             # Core game state and timer
+│   └── useGameAnimations.js        # Word/score animations
+├── modals/
+│   ├── GameOverModalNew.js         # End-of-game results
+│   ├── GameMenuModal.js            # Pause menu
+│   ├── FoundWordsModal.js          # List of found words
+│   ├── LeaderboardModal.js         # Monthly leaderboard
+│   ├── LanguageModal.js            # Language selection (disabled)
+│   └── ScoringInfoModal.js         # Scoring explanation
+├── screens/
+│   ├── StartScreen.js              # Main menu / auth
+│   ├── GameScreen.js               # English game
+│   ├── PortugueseGameScreen.js     # Portuguese game (disabled)
+│   └── ProfileScreen.js            # User profile / settings
+├── services/
+│   └── userService.js              # Supabase API helpers
+├── stores/
+│   └── userStore.js                # Zustand store (auth, stats)
+└── utils/
+    ├── game/
+    │   ├── BoardGenerator.js       # Board generation router
+    │   ├── EnglishBoardGenerator.js # English letter distribution
+    │   └── portBoardGenerator.js   # Portuguese letter distribution
+    ├── scoring/
+    │   └── scoringUtils.js         # Scoring matrix and calculations
+    └── validation/
+        ├── WordList.js             # Language-aware word validation
+        ├── EnglishWordList.js      # English dictionary (Set)
+        └── PortugueseWordList.js   # Portuguese dictionary (Set)
 ```
 
-### Navigation Flow
+## Data Flow
 
 ```
-StartScreen → GameScreen/PortugueseGameScreen → ProfileScreen
-     ↓              ↓                    ↓
-  Auth Flow    Game Logic         User Stats
+User Action → LetterGrid (touch) → useGameLogic (state) → Supabase (persist)
+                                         ↓
+                                   GameScreen (render)
+                                         ↓
+                                   GameOverModal → processGameCompletion RPC
 ```
 
-## Backend Architecture
+## Supabase Schema
 
-### Database Schema
+### Tables
+- `whs-users` — User profiles, high scores, stats
+- `whs-game_scores` — Individual game results
+- `whs-monthly_leaderboards` — Aggregated monthly rankings
+- `whs-monthly_winners` — Monthly competition winners
+- `whs-user_stars` — Achievement stars
 
-```sql
--- Users table
-users (
-  id: uuid PRIMARY KEY,
-  username: text UNIQUE,
-  email: text,
-  created_at: timestamp
-)
+### RPC Functions
+- `process_game_completion` — Saves score, updates stats, updates leaderboard (SECURITY DEFINER)
+- `get_enhanced_leaderboard` — Returns ranked leaderboard for a given month (SECURITY DEFINER)
+- `update_monthly_leaderboard` — Called internally by process_game_completion
 
--- Scores table  
-scores (
-  id: uuid PRIMARY KEY,
-  user_id: uuid REFERENCES users(id),
-  score: integer,
-  language: text,
-  created_at: timestamp
-)
+## Build Profiles
 
--- Monthly winners
-monthly_winners (
-  id: uuid PRIMARY KEY,
-  user_id: uuid REFERENCES users(id),
-  month: text,
-  year: integer,
-  score: integer
-)
-```
+| Profile | Purpose | Distribution |
+|---------|---------|-------------|
+| development | Dev client with hot reload | Internal |
+| development-simulator | iOS simulator builds | Internal |
+| preview | Testing builds | Internal |
+| production | App Store / Google Play | Store |
 
-### Real-time Features
+## Environment Variables
 
-- **Leaderboards**: Live updates via Supabase subscriptions
-- **User presence**: Track active players
-- **Score sync**: Immediate score updates
-
-## Game Logic Architecture
-
-### Board Generation
-
-```javascript
-// Language-specific generators
-generateBoard(language) → BoardGenerator → LanguageSpecificGenerator
-```
-
-### Word Validation
-
-```javascript
-// Multi-language word validation
-validateWord(word, language) → WordValidator → LanguageWordList
-```
-
-### Scoring System
-
-```javascript
-// Dynamic scoring based on board and word length
-calculateScore(word, boardNumber) → ScoringEngine → ScoreMultipliers
-```
-
-## Performance Considerations
-
-- **Lazy loading**: Screens loaded on demand
-- **Memoization**: React.memo for expensive components
-- **Optimistic updates**: UI updates before server confirmation
-- **Caching**: Word lists cached locally
-
-## Security
-
-- **Row Level Security**: Supabase RLS policies
-- **Input validation**: Client and server-side validation
-- **Rate limiting**: Prevent score manipulation
-- **Profanity filtering**: Username content filtering
+| Variable | Used By |
+|----------|---------|
+| `SUPABASE_URL` | app.config.js → supabase.js |
+| `SUPABASE_ANON_KEY` | app.config.js → supabase.js |
+| `EXPO_PUBLIC_SUPABASE_URL` | Fallback for client access |
+| `EXPO_PUBLIC_SUPABASE_ANON_KEY` | Fallback for client access |
