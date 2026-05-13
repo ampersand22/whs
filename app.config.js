@@ -4,7 +4,7 @@ export default {
   expo: {
     name: "Worrzle",
     slug: "worrzle",
-    version: "1.0.2",
+    version: "1.1.0",
     orientation: "portrait",
     icon: "./assets/icon.png",
     userInterfaceStyle: "light",
@@ -28,8 +28,8 @@ export default {
     ios: {
       supportsTablet: true,
       bundleIdentifier: "com.worrzle.app",
-      buildNumber: "16",
-      runtimeVersion: "1.0.2",
+      buildNumber: "17",
+      runtimeVersion: "1.1.0",
       infoPlist: {
         NSUserTrackingUsageDescription:
           "This app uses advertising ID for personalized ads and analytics to improve your gaming experience.",
@@ -40,6 +40,7 @@ export default {
       favicon: "./assets/favicon.png",
     },
     plugins: [
+      "expo-dev-client",
       [
         "react-native-google-mobile-ads",
         {
@@ -50,14 +51,14 @@ export default {
     ],
     android: {
       package: "com.worrzle.app",
-      versionCode: 16,
+      versionCode: 17,
       adaptiveIcon: {
         foregroundImage: "./assets/adaptive-icon.png",
         backgroundColor: "#6B46C1",
       },
       edgeToEdgeEnabled: true,
       permissions: ["INTERNET", "ACCESS_NETWORK_STATE"],
-      runtimeVersion: "1.0.2",
+      runtimeVersion: "1.1.0",
     },
     extra: {
       supabaseUrl: process.env.SUPABASE_URL || process.env.EXPO_PUBLIC_SUPABASE_URL,

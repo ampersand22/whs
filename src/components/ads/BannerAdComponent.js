@@ -1,5 +1,5 @@
-import React from 'react';
-import { View, Platform } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Platform, Text } from 'react-native';
 import { BannerAd, BannerAdSize, TestIds } from 'react-native-google-mobile-ads';
 
 const AD_UNIT_IDS = {
@@ -16,6 +16,20 @@ const getAdUnitId = () => {
 };
 
 export default function BannerAdComponent() {
+  const [adError, setAdError] = useState(null);
+
+  if (adError && __DEV__) {
+    return (
+      <View style={{ padding: 8, backgroundColor: '#ffcccc', alignItems: 'center' }}>
+        <Text style={{ fontSize: 12, color: 'red' }}>{adError}</Text>
+      </View>
+    );
+  }
+
+  if (adError) {
+    return null;
+  }
+
   return (
     <View style={{ alignItems: 'center', width: '100%' }}>
       <BannerAd
@@ -23,6 +37,9 @@ export default function BannerAdComponent() {
         size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
         requestOptions={{
           requestNonPersonalizedAdsOnly: false,
+        }}
+        onAdFailedToLoad={(error) => {
+          setAdError('Ad failed: ' + error.message);
         }}
       />
     </View>
