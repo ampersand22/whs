@@ -30,7 +30,7 @@ const theme = {
 const Stack = createStackNavigator();
 
 function AppNavigator() {
-  const { initialize, isLoading, error } = useUserStore();
+  const { initialize, isLoading } = useUserStore();
   const [initError, setInitError] = useState(null);
 
   // Initialize the user store when app starts
@@ -46,8 +46,8 @@ function AppNavigator() {
     initializeApp();
   }, []);
 
-  // Show error screen if initialization failed
-  if (initError || error) {
+// App.js — only check initError, not store error
+  if (initError) {
     return (
       <View
         style={{
@@ -77,7 +77,7 @@ function AppNavigator() {
             color: "#666",
           }}
         >
-          {initError || error || "An unexpected error occurred"}
+          {initError || "An unexpected error occurred"}
         </Text>
         <Text style={{ fontSize: 14, textAlign: "center", color: "#999" }}>
           Please try restarting the app

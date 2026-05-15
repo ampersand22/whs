@@ -16,6 +16,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { supabase } from "../config/supabase";
 import useUserStore from "../stores/userStore";
 import { getResponsiveDimensions, isTablet } from "../constants/responsive";
+import { validateDisplayName } from "../utils/validation/displayNameValidation";
 
 const ProfileScreen = ({ navigation }) => {
   const { user, updateProfile } = useUserStore();
@@ -96,6 +97,26 @@ const ProfileScreen = ({ navigation }) => {
   const handleUpdateProfile = async () => {
     if (!displayName.trim()) {
       Alert.alert("Error", "Display name cannot be empty");
+      return;
+    }
+
+    // Validate display name format
+    const nameValidation = validateDisplayName(displayName);
+    if (!nameValidation.valid) {
+      Alert.alert("Error", nameValidation.error);
+      return;
+    }
+
+    // Check if display name is already taken by another user
+    const { data: existingUser } = await supabase
+      .from('whs-users')
+      .select('id')
+      .ilike('display_name', displayName.trim())
+      .neq('id', user.id)
+      .maybeSingle();
+
+    if (existingUser) {
+      Alert.alert("Error", "This display name is already taken. Please choose another.");
       return;
     }
 

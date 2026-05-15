@@ -1,7 +1,8 @@
 import React, { useState } from "react";
-import { ScrollView } from "react-native";
+import { ScrollView, Alert } from "react-native";
 import { Portal, Dialog, Button, TextInput } from "react-native-paper";
 import { getTranslation } from "../../../constants/translations";
+import useUserStore from "../../../stores/userStore";
 
 const SignInDialog = ({
   visible,
@@ -15,6 +16,20 @@ const SignInDialog = ({
   language = "english"
 }) => {
   const [showPassword, setShowPassword] = useState(false);
+  const { resetPassword } = useUserStore();
+
+  const handleForgotPassword = async () => {
+    if (!email || !email.trim()) {
+      Alert.alert("Enter Email", "Please enter your email address first, then tap Forgot Password.");
+      return;
+    }
+    const result = await resetPassword(email);
+    if (result.success) {
+      Alert.alert("Check Your Email", "If an account exists with that email, we sent a password reset link.");
+    } else {
+      Alert.alert("Error", result.error);
+    }
+  };
 
   return (
     <Portal>
@@ -30,7 +45,7 @@ const SignInDialog = ({
             keyboardShouldPersistTaps="handled"
             showsVerticalScrollIndicator={false}
             contentContainerStyle={{ paddingBottom: 20 }}
-            style={{ maxHeight: 250 }}
+            style={{ maxHeight: 300 }}
             nestedScrollEnabled={true}
           >
             <TextInput
@@ -58,6 +73,15 @@ const SignInDialog = ({
                 />
               }
             />
+            <Button
+              mode="text"
+              onPress={handleForgotPassword}
+              style={{ alignSelf: 'flex-start', marginTop: 4 }}
+              labelStyle={{ fontSize: 13 }}
+              compact
+            >
+              Forgot Password?
+            </Button>
           </ScrollView>
         </Dialog.Content>
         <Dialog.Actions>

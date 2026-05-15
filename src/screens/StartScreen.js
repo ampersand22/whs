@@ -71,6 +71,12 @@ const StartScreen = ({ navigation }) => {
       return;
     }
 
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email.trim())) {
+      Alert.alert("Error", "Please enter a valid email address");
+      return;
+    }
+
     if (password !== confirmPassword) {
       Alert.alert("Error", "Passwords do not match");
       return;
@@ -105,6 +111,12 @@ const StartScreen = ({ navigation }) => {
   const handleSignIn = async () => {
     if (!email || !password) {
       Alert.alert("Error", "Please fill in all fields");
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email.trim())) {
+      Alert.alert("Error", "Please enter a valid email address");
       return;
     }
 

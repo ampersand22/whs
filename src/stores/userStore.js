@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { supabase } from '../config/supabase';
+import { validateDisplayName } from '../utils/validation/displayNameValidation';
 
 const useUserStore = create(
   persist(
@@ -88,6 +89,25 @@ const useUserStore = create(
         try {
           set({ isLoading: true, error: null });
 
+          // Validate display name format
+          const nameValidation = validateDisplayName(displayName);
+          if (!nameValidation.valid) {
+            set({ isLoading: false });
+            return { success: false, error: nameValidation.error };
+          }
+
+          // Check if display name is already taken
+          const { data: existingUser } = await supabase
+            .from('whs-users')
+            .select('id')
+            .ilike('display_name', displayName.trim())
+            .maybeSingle();
+
+          if (existingUser) {
+            set({ isLoading: false });
+            return { success: false, error: 'This display name is already taken. Please choose another.' };
+          }
+
           const { data: authData, error: authError } = await supabase.auth.signUp({
             email,
             password,
@@ -163,6 +183,19 @@ const useUserStore = create(
           const friendlyError = get().getFriendlyAuthError(error.message);
           set({ error: friendlyError, isLoading: false });
           return { success: false, error: friendlyError };
+        }
+      },
+
+      // Reset password
+      resetPassword: async (email) => {
+        try {
+          const { error } = await supabase.auth.resetPasswordForEmail(email.trim());
+          if (error) {
+            return { success: false, error: error.message };
+          }
+          return { success: true };
+        } catch (error) {
+          return { success: false, error: 'Network error. Please check your connection.' };
         }
       },
 
@@ -418,7 +451,6 @@ const useUserStore = create(
       storage: createJSONStorage(() => AsyncStorage),
       partialize: (state) => ({
         user: state.user,
-        session: state.session,
         isAuthenticated: state.isAuthenticated,
         userStats: state.userStats,
       }),
