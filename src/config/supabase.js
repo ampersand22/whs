@@ -29,8 +29,6 @@ if (!supabaseUrl || !supabaseAnonKey) {
   if (__DEV__) {
     console.error(errorMessage);
     throw new Error(errorMessage);
-  } else {
-    console.warn('Creating dummy Supabase client due to missing environment variables');
   }
 }
 
@@ -49,7 +47,7 @@ const createSupabaseClient = () => {
       },
     });
   } catch (error) {
-    console.error('Failed to create Supabase client:', error);
+    if (__DEV__) console.error('Failed to create Supabase client:', error);
     
     // Return a mock client that won't crash the app
     return {
@@ -82,7 +80,7 @@ export const setupAuthListener = (callback) => {
     );
     return subscription;
   } catch (error) {
-    console.error('Failed to setup auth listener:', error);
+    if (__DEV__) console.error('Failed to setup auth listener:', error);
     return { unsubscribe: () => {} };
   }
 };
@@ -93,7 +91,7 @@ export const isAuthenticated = async () => {
     const { data: { session } } = await supabase.auth.getSession();
     return !!session?.user;
   } catch (error) {
-    console.error('Failed to check authentication:', error);
+    if (__DEV__) console.error('Failed to check authentication:', error);
     return false;
   }
 };
@@ -104,7 +102,7 @@ export const getCurrentUser = async () => {
     const { data: { session } } = await supabase.auth.getSession();
     return session?.user || null;
   } catch (error) {
-    console.error('Failed to get current user:', error);
+    if (__DEV__) console.error('Failed to get current user:', error);
     return null;
   }
 };

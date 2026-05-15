@@ -1,6 +1,6 @@
 import React from "react";
 import { View } from "react-native";
-import { Card, Title, Button, Text } from "react-native-paper";
+import { Card, Button, Text } from "react-native-paper";
 import Logo from "../ui/Logo";
 
 const UnauthenticatedView = ({ 

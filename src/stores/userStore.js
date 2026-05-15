@@ -130,7 +130,7 @@ const useUserStore = create(
               });
 
             if (dbError) {
-              console.warn('Profile creation failed:', dbError);
+              if (__DEV__) console.warn('Profile creation failed:', dbError);
             }
 
             set({ 

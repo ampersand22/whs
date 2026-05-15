@@ -3,19 +3,15 @@ import { View, Alert, ScrollView, ImageBackground } from "react-native";
 import {
   Card,
   Title,
-  Paragraph,
   Button,
   TextInput,
   Text,
   ActivityIndicator,
-  Divider,
   IconButton,
-  RadioButton,
 } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { supabase } from "../config/supabase";
 import useUserStore from "../stores/userStore";
-import { getResponsiveDimensions, isTablet } from "../constants/responsive";
 import { validateDisplayName } from "../utils/validation/displayNameValidation";
 
 const ProfileScreen = ({ navigation }) => {
@@ -27,11 +23,9 @@ const ProfileScreen = ({ navigation }) => {
   const [passwordCardExpanded, setPasswordCardExpanded] = useState(false);
   const [profileCardExpanded, setProfileCardExpanded] = useState(true);
   const [accountCardExpanded, setAccountCardExpanded] = useState(false);
-  const [languageCardExpanded, setLanguageCardExpanded] = useState(false);
   
   // Form states
   const [displayName, setDisplayName] = useState("");
-  const [selectedLanguage, setSelectedLanguage] = useState("en");
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -72,7 +66,6 @@ const ProfileScreen = ({ navigation }) => {
       } else {
         setUserData(data);
         setDisplayName(data.display_name || "");
-        setSelectedLanguage(data.language || "en");
       }
     } catch (error) {
       // Retry on network errors
@@ -126,7 +119,6 @@ const ProfileScreen = ({ navigation }) => {
         .from("whs-users")
         .update({ 
           display_name: displayName.trim(),
-          language: selectedLanguage
         })
         .eq("id", user.id);
 
@@ -366,41 +358,10 @@ const ProfileScreen = ({ navigation }) => {
             </Card.Content>
           </Card>
 
-          {/* Language Card */}
-          <Card style={{ marginBottom: 20, elevation: 4 }} data-testid="language-card">
-            <Card.Content>
-              <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
-                <Title style={{ marginBottom: 0 }}>Language</Title>
-                <IconButton
-                  icon={languageCardExpanded ? "chevron-up" : "chevron-down"}
-                  onPress={() => setLanguageCardExpanded(!languageCardExpanded)}
-                  data-testid="language-card-toggle"
-                />
-              </View>
-              
-              {languageCardExpanded && (
-                <View style={{ marginTop: 16 }}>
-                  <RadioButton.Group 
-                    onValueChange={setSelectedLanguage} 
-                    value={selectedLanguage}
-                  >
-                    <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 12 }}>
-                      <RadioButton value="en" />
-                      <Text style={{ marginLeft: 8, fontSize: 16 }}>English</Text>
-                    </View>
-                    <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 16 }}>
-                      <RadioButton value="pt-BR" />
-                      <Text style={{ marginLeft: 8, fontSize: 16 }}>Português (Brasil)</Text>
-                    </View>
-                  </RadioButton.Group>
-                  
-                  <Text style={{ fontSize: 12, color: "#666", fontStyle: "italic" }}>
-                    Note: Portuguese translation is coming soon
-                  </Text>
-                </View>
-              )}
-            </Card.Content>
-          </Card>
+          {/* Language Card - disabled until Portuguese is ready */}
+          {/* <Card style={{ marginBottom: 20, elevation: 4 }}>
+            ...
+          </Card> */}
 
           {/* Account Info */}
           <Card style={{ marginBottom: 20, elevation: 4 }} data-testid="account-info-card">
@@ -429,18 +390,6 @@ const ProfileScreen = ({ navigation }) => {
           </Card>
 
           {/* Portuguese Test Button - disabled for now */}
-          {/* <Button
-            mode="outlined"
-            onPress={() => navigation.navigate('PortugueseGame')}
-            style={{ 
-              marginBottom: 20,
-              backgroundColor: 'white',
-              borderColor: 'white',
-              borderWidth: 2
-            }}
-          >
-            Test Portuguese Game
-          </Button> */}
         </ScrollView>
       </SafeAreaView>
     </ImageBackground>

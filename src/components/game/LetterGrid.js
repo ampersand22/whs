@@ -143,7 +143,7 @@ export default function LetterGrid({ board, onWordFormed, previewWord, setPrevie
     const touch = evt.nativeEvent.touches
       ? evt.nativeEvent.touches[0]
       : evt.nativeEvent;
-    if (!touch) return;
+    if (!touch || !touch.pageX) return;
 
     const { pageX, pageY } = touch;
     const { x, y, width, height } = gridPosition.current;

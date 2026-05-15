@@ -236,15 +236,6 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "#fff",
   },
-  motivationChip: {
-    alignSelf: "center",
-    backgroundColor: "rgba(255, 255, 255, 0.2)",
-    borderColor: "rgba(255, 255, 255, 0.3)",
-  },
-  chipText: {
-    color: "#fff",
-    fontWeight: "500",
-  },
 });
 
 export default AuthenticatedView;

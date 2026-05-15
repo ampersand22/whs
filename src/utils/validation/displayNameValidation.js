@@ -10,8 +10,8 @@ export const validateDisplayName = (name) => {
     return { valid: false, error: 'Display name cannot be empty.' };
   }
 
-  if (trimmed.length < 2) {
-    return { valid: false, error: 'Display name must be at least 2 characters.' };
+  if (trimmed.length < 3) {
+    return { valid: false, error: 'Display name must be at least 3 characters.' };
   }
 
   if (trimmed.length > 20) {

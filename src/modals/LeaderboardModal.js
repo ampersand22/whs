@@ -287,7 +287,7 @@ const LeaderboardModal = ({ visible, onClose }) => {
             </View>
 
             {/* Close Button */}
-            <View style={{ m: 2 }}>
+            <View style={{ marginTop: 8 }}>
               <Button
                 mode="contained"
                 onPress={onClose}

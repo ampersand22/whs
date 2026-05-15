@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { View, ImageBackground } from "react-native";
-import { Text, Card, Title, Button } from "react-native-paper";
+import { Text } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import LetterGrid from "../components/game/LetterGrid";
 import WordPreview from "../components/game/WordPreview";
