@@ -100,6 +100,7 @@ const useUserStore = create(
           }
 
           if (authData.user && authData.session) {
+            // Immediate sign-in (email confirmation disabled)
             const { error: dbError } = await supabase
               .from('whs-users')
               .insert({
@@ -117,6 +118,18 @@ const useUserStore = create(
               isAuthenticated: true, 
               isLoading: false 
             });
+          } else if (authData.user && !authData.session) {
+            // Email confirmation required — create profile but don't authenticate yet
+            const { error: dbError } = await supabase
+              .from('whs-users')
+              .insert({
+                id: authData.user.id,
+                email: authData.user.email,
+                display_name: displayName,
+              });
+
+            set({ isLoading: false });
+            return { success: true, needsConfirmation: true };
           }
 
           set({ isLoading: false });

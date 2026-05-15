@@ -85,7 +85,11 @@ const StartScreen = ({ navigation }) => {
     try {
       const result = await signUp(email, password, displayName);
       if (result.success) {
-        Alert.alert("Success", "Account created successfully!");
+        if (result.needsConfirmation) {
+          Alert.alert("Check Your Email", "We sent a confirmation link to your email. Please verify your account before signing in.");
+        } else {
+          Alert.alert("Success", "Account created successfully!");
+        }
         setShowSignUp(false);
         resetForm();
       } else {
