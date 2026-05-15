@@ -4,7 +4,7 @@ export default {
   expo: {
     name: "Worrzle",
     slug: "worrzle",
-    version: "1.1.0",
+    version: "1.1.1",
     orientation: "portrait",
     icon: "./assets/icon.png",
     userInterfaceStyle: "light",
@@ -28,8 +28,8 @@ export default {
     ios: {
       supportsTablet: true,
       bundleIdentifier: "com.worrzle.app",
-      buildNumber: "17",
-      runtimeVersion: "1.1.0",
+      buildNumber: "18",
+      runtimeVersion: "1.1.1",
       infoPlist: {
         NSUserTrackingUsageDescription:
           "This app uses advertising ID for personalized ads and analytics to improve your gaming experience.",
@@ -51,14 +51,14 @@ export default {
     ],
     android: {
       package: "com.worrzle.app",
-      versionCode: 18,
+      versionCode: 19,
       adaptiveIcon: {
         foregroundImage: "./assets/adaptive-icon.png",
         backgroundColor: "#6B46C1",
       },
       edgeToEdgeEnabled: true,
       permissions: ["INTERNET", "ACCESS_NETWORK_STATE"],
-      runtimeVersion: "1.1.0",
+      runtimeVersion: "1.1.1",
       enableProguardInReleaseBuilds: true,
     },
     extra: {
