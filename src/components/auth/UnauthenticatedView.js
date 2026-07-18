@@ -1,24 +1,41 @@
 import React from "react";
-import { View } from "react-native";
+import { View, useWindowDimensions } from "react-native";
 import { Card, Button, Text } from "react-native-paper";
 import Logo from "../ui/Logo";
+import { isTablet } from "../../constants/responsive";
 
 const UnauthenticatedView = ({ 
   onSignUp, 
   onSignIn 
 }) => {
+  const { width, height } = useWindowDimensions();
+  const tablet = isTablet(width, height);
+
+  const buttonHeight = tablet ? 60 : 48;
+  const buttonFontSize = tablet ? 18 : 14;
+  const maxButtonWidth = tablet ? 420 : undefined;
+
   return (
-    <>
+    <View style={tablet ? { flex: 1, justifyContent: 'center', alignItems: 'center' } : { flex: 1 }}>
       {/* Logo */}
-      <Logo size="large" marginBottom={40} />
+      <Logo size={tablet ? "large" : "large"} marginBottom={tablet ? 80 : 40} />
 
       {/* Auth Buttons */}
-      <View style={{ marginBottom: 20 }} data-testid="auth-buttons">
+      <View 
+        style={{ 
+          marginBottom: 20, 
+          width: '100%',
+          maxWidth: maxButtonWidth,
+          alignSelf: 'center',
+        }} 
+        data-testid="auth-buttons"
+      >
         <Button
           mode="contained"
           onPress={onSignUp}
-          style={{ marginBottom: 12, height: 48 }}
-          contentStyle={{ height: 48 }}
+          style={{ marginBottom: tablet ? 24 : 12, height: buttonHeight }}
+          contentStyle={{ height: buttonHeight }}
+          labelStyle={{ fontSize: buttonFontSize }}
           data-testid="sign-up-button"
         >
           Create Account
@@ -29,11 +46,11 @@ const UnauthenticatedView = ({
           onPress={onSignIn}
           style={{ 
             marginBottom: 12, 
-            height: 48,
+            height: buttonHeight,
             borderColor: 'white'
           }}
-          contentStyle={{ height: 48 }}
-          labelStyle={{ color: 'white' }}
+          contentStyle={{ height: buttonHeight }}
+          labelStyle={{ color: 'white', fontSize: buttonFontSize }}
           data-testid="sign-in-button"
         >
           Sign In
@@ -44,7 +61,7 @@ const UnauthenticatedView = ({
       <View style={{
         marginTop: 'auto',
         paddingTop: 20,
-        paddingBottom: 20, // Reduced padding since support button is positioned higher
+        paddingBottom: 20,
         alignItems: 'center'
       }}>
         <Text style={{
@@ -55,7 +72,7 @@ const UnauthenticatedView = ({
           © 2025 UA Interactive
         </Text>
       </View>
-    </>
+    </View>
   );
 };
 

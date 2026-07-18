@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, useWindowDimensions } from "react-native";
 import {
   Card,
   Title,
@@ -12,6 +12,7 @@ import Logo from "../ui/Logo";
 import MenuModal from "../ui/MenuModal";
 import useUserStore from "../../stores/userStore";
 import { getTranslation } from "../../constants/translations";
+import { isTablet } from "../../constants/responsive";
 
 const AuthenticatedView = ({
   userData,
@@ -24,17 +25,23 @@ const AuthenticatedView = ({
 }) => {
   const [menuVisible, setMenuVisible] = useState(false);
   const { language } = useUserStore();
+  const { width, height } = useWindowDimensions();
+  const tablet = isTablet(width, height);
+
+  const buttonHeight = tablet ? 90 : 48;
+  const buttonFontSize = tablet ? 28 : 16;
+  const maxContentWidth = tablet ? 540 : undefined;
 
   const showMenu = () => setMenuVisible(true);
   const hideMenu = () => setMenuVisible(false);
 
   return (
-    <>
+    <View style={tablet ? { flex: 1, justifyContent: 'center', alignItems: 'center' } : undefined}>
       {/* Logo */}
-      <Logo size="medium" marginBottom={20} />
+      <Logo size={tablet ? "large" : "medium"} marginBottom={tablet ? 40 : 20} />
 
       {/* Welcome Card */}
-      <Card style={styles.welcomeCard} data-testid="welcome-card">
+      <Card style={[styles.welcomeCard, tablet && { width: maxContentWidth, marginBottom: 32 }]} data-testid="welcome-card">
         <View style={styles.welcomeCardContent}>
           <LinearGradient
             colors={["#667eea", "#764ba2"]}
@@ -42,10 +49,10 @@ const AuthenticatedView = ({
             end={{ x: 1, y: 1 }}
             style={styles.gradientBackground}
           >
-            <Card.Content style={styles.cardContent}>
+            <Card.Content style={[styles.cardContent, tablet && { padding: 32 }]}>
               <View style={styles.welcomeHeader}>
                 <Avatar.Icon
-                  size={50}
+                  size={tablet ? 70 : 50}
                   icon="account-circle"
                   style={styles.avatar}
                   color="#fff"
@@ -53,31 +60,31 @@ const AuthenticatedView = ({
                 <View style={styles.welcomeText}>
                   <Title
                     data-testid="welcome-title"
-                    style={styles.welcomeTitle}
+                    style={[styles.welcomeTitle, tablet && { fontSize: 34 }]}
                   >
                     {getTranslation("welcomeBack", language)}!
                   </Title>
-                  <Text style={styles.userName}>
+                  <Text style={[styles.userName, tablet && { fontSize: 24 }]}>
                     {userData?.display_name || user?.email?.split("@")[0]}
                   </Text>
                 </View>
               </View>
 
-              <View style={styles.statsContainer}>
+              <View style={[styles.statsContainer, tablet && { padding: 20 }]}>
                 <View style={styles.statItem}>
-                  <Text style={styles.statLabel}>
+                  <Text style={[styles.statLabel, tablet && { fontSize: 18 }]}>
                     🏆 {getTranslation("highScore", language)}
                   </Text>
-                  <Text style={styles.statValue} data-testid="user-stats">
+                  <Text style={[styles.statValue, tablet && { fontSize: 30 }]} data-testid="user-stats">
                     {userData?.high_score || 0}
                   </Text>
                 </View>
 
                 <View style={styles.statItem}>
-                  <Text style={styles.statLabel}>
+                  <Text style={[styles.statLabel, tablet && { fontSize: 18 }]}>
                     🎮 {getTranslation("gamesPlayed", language)}
                   </Text>
-                  <Text style={styles.statValue}>
+                  <Text style={[styles.statValue, tablet && { fontSize: 30 }]}>
                     {userData?.total_games_played || 0}
                   </Text>
                 </View>
@@ -88,14 +95,14 @@ const AuthenticatedView = ({
       </Card>
 
       {/* Game Actions */}
-      <View style={{ marginBottom: 20 }} data-testid="game-actions">
+      <View style={{ marginBottom: 20, width: '100%', maxWidth: maxContentWidth }} data-testid="game-actions">
         {/* Menu and How to Play buttons side by side */}
         <View
           style={{
             flexDirection: "row",
             justifyContent: "space-between",
-            marginBottom: 20,
-            gap: 10,
+            marginBottom: tablet ? 28 : 20,
+            gap: tablet ? 16 : 10,
           }}
         >
           <Button
@@ -103,10 +110,11 @@ const AuthenticatedView = ({
             onPress={showMenu}
             style={{
               flex: 1,
-              height: 48,
+              minHeight: buttonHeight,
+              justifyContent: 'center',
             }}
-            contentStyle={{ height: 48 }}
-            labelStyle={{ fontSize: 16 }}
+            contentStyle={{ minHeight: buttonHeight, paddingVertical: tablet ? 16 : 0 }}
+            labelStyle={{ fontSize: buttonFontSize, lineHeight: tablet ? buttonFontSize * 1.4 : undefined }}
             data-testid="menu-button"
           >
             {getTranslation("menu", language)}
@@ -117,10 +125,11 @@ const AuthenticatedView = ({
             onPress={onHowToPlay}
             style={{
               flex: 1,
-              height: 48,
+              minHeight: buttonHeight,
+              justifyContent: 'center',
             }}
-            contentStyle={{ height: 48 }}
-            labelStyle={{ fontSize: 16 }}
+            contentStyle={{ minHeight: buttonHeight, paddingVertical: tablet ? 16 : 0 }}
+            labelStyle={{ fontSize: buttonFontSize, lineHeight: tablet ? buttonFontSize * 1.4 : undefined }}
             data-testid="how-to-play-button"
           >
             {getTranslation("howToPlay", language)}
@@ -132,10 +141,11 @@ const AuthenticatedView = ({
           mode="contained"
           onPress={onPlayGame}
           style={{
-            height: 48,
+            minHeight: buttonHeight,
+            justifyContent: 'center',
           }}
-          contentStyle={{ height: 48 }}
-          labelStyle={{ fontSize: 16 }}
+          contentStyle={{ minHeight: buttonHeight, paddingVertical: tablet ? 16 : 0 }}
+          labelStyle={{ fontSize: buttonFontSize, lineHeight: tablet ? buttonFontSize * 1.4 : undefined }}
           data-testid="play-game-button"
         >
           {getTranslation("playGame", language)}
@@ -156,7 +166,7 @@ const AuthenticatedView = ({
         style={{
           marginTop: "auto",
           paddingTop: 20,
-          paddingBottom: 20, // Reduced padding since support button is positioned higher
+          paddingBottom: 20,
           alignItems: "center",
         }}
       >
@@ -170,7 +180,7 @@ const AuthenticatedView = ({
           © 2025 UA Interactive
         </Text>
       </View>
-    </>
+    </View>
   );
 };
 

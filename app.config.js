@@ -6,7 +6,7 @@ export default {
     slug: "worrzle",
     version: "1.1.1",
     orientation: "portrait",
-    icon: "./assets/icon.png",
+    icon: "./assets/w-home-screen-icon.png",
     userInterfaceStyle: "light",
     newArchEnabled: true,
     description:
@@ -53,7 +53,7 @@ export default {
       package: "com.worrzle.app",
       versionCode: 19,
       adaptiveIcon: {
-        foregroundImage: "./assets/adaptive-icon.png",
+        foregroundImage: "./assets/w-home-screen-icon.png",
         backgroundColor: "#6B46C1",
       },
       edgeToEdgeEnabled: true,

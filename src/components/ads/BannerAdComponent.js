@@ -34,6 +34,9 @@ const getAdUnitId = () => {
 };
 
 export default function BannerAdComponent() {
+  // TODO: Remove this line after screenshots are done
+  return null;
+
   const [adError, setAdError] = useState(null);
   const [adLoaded, setAdLoaded] = useState(false);
 
